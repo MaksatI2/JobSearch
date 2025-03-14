@@ -10,5 +10,5 @@ public class Category {
 
     private String name;
 
-    private Category parentCategory;
+    private Integer parentId;
 }
