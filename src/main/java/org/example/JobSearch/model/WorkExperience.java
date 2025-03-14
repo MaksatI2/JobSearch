@@ -8,6 +8,7 @@ import lombok.Data;
 public class WorkExperience {
     private Integer id;
     private Integer resumeId;
+
     private Integer years;
     private String companyName;
     private String position;

@@ -7,5 +7,6 @@ import lombok.Data;
 @Builder
 public class ContactType {
     private int id;
+
     private String type;
 }

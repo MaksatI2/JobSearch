@@ -10,8 +10,9 @@ import java.security.Timestamp;
 public class Resume {
     private Integer id;
     private Integer applicantId;
-    private String name;
     private Integer categoryId;
+
+    private String name;
     private Float salary;
     private Boolean isActive;
     private Timestamp updateTime;

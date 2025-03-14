@@ -9,14 +9,15 @@ import java.time.LocalDate;
 @Builder
 public class Vacancy {
     private Integer id;
+    private Integer authorId;
+    private Integer categoryId;
+
     private String name;
     private String description;
-    private Integer categoryId;
     private Float salary;
     private LocalDate expFrom;
     private LocalDate expTo;
     private Boolean isActive;
-    private Integer authorId;
     private LocalDate createdDate;
     private LocalDate updateTime;
 }

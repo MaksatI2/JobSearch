@@ -10,6 +10,7 @@ import java.sql.Timestamp;
 public class Message {
     private Integer id;
     private Integer respondedApplicantsId;
+
     private String content;
     private Timestamp timestamp;
 }

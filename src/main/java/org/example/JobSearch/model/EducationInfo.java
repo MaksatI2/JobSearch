@@ -10,6 +10,7 @@ import java.util.Date;
 public class EducationInfo {
     private Integer id;
     private Integer resumeId;
+
     private String institution;
     private String program;
     private Date startDate;

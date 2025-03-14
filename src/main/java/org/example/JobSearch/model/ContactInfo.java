@@ -9,5 +9,6 @@ public class ContactInfo {
     private Integer id;
     private Integer resumeId;
     private Integer typeId;
+
     private String value;
 }
