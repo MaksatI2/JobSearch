@@ -6,10 +6,10 @@ import lombok.Data;
 @Data
 @Builder
 public class WorkExperience {
-    private Integer id;
-    private Integer resumeId;
+    private  Long id;
+    private Long resumeId;
 
-    private Integer years;
+    private Long years;
     private String companyName;
     private String position;
     private String responsibilities;

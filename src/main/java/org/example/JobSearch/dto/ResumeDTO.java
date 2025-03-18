@@ -1,17 +1,16 @@
-package org.example.JobSearch.model;
+package org.example.JobSearch.dto;
 
 import lombok.Builder;
 import lombok.Data;
 
-import java.security.Timestamp;
+import java.sql.Timestamp;
 
 @Data
 @Builder
-public class Resume {
+public class ResumeDTO {
     private Long id;
     private Long applicantId;
     private Long categoryId;
-
     private String name;
     private Float salary;
     private Boolean isActive;

@@ -1,14 +1,13 @@
-package org.example.JobSearch.model;
+package org.example.JobSearch.dto;
 
 import lombok.Builder;
 import lombok.Data;
 
 @Data
 @Builder
-public class RespondedApplicant {
+public class RespondedApplicantDTO {
     private Long id;
     private Long resumeId;
     private Long vacancyId;
-
     private Boolean confirmation;
 }

@@ -6,9 +6,9 @@ import lombok.Data;
 @Builder
 @Data
 public class Category {
-    private Integer id;
+    private Long id;
 
     private String name;
 
-    private Integer parentId;
+    private Long parentId;
 }
