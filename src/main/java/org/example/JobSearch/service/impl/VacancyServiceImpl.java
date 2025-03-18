@@ -12,7 +12,7 @@ import java.util.List;
 public class VacancyServiceImpl implements VacancyService {
 
     @Override
-    public List<VacancyDTO> getVacanciesByCategory(Integer categoryId) {
+    public List<VacancyDTO> getVacanciesByCategory(Long categoryId) {
         //TODO: Сделать логику для вывода всех вакансии по категории
         return List.of();
     }
@@ -23,18 +23,13 @@ public class VacancyServiceImpl implements VacancyService {
     }
 
     @Override
-    public void updateVacancy(Integer vacancyId, VacancyDTO vacancyDto) {
+    public void updateVacancy(Long vacancyId, VacancyDTO vacancyDto) {
         //TODO: Сделать логику для обновления вакансии
     }
 
     @Override
-    public void deleteVacancy(Integer vacancyId) {
+    public void deleteVacancy(Long vacancyId) {
         //TODO: Сделать логику для удаления вакансии
-    }
-
-    @Override
-    public void getApplicantsVacancy(Integer vacancyId) {
-        //TODO: Сделать логику для вывода соискателей откликнувщихся на вакансию
     }
 
     @Override

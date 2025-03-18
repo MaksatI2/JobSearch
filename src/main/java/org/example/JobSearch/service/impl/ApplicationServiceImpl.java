@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 public class ApplicationServiceImpl implements ApplicationService {
 
     @Override
-    public void respondToVacancy(Integer vacancyId, RespondedApplicantDTO respondedApplicantDto) {
+    public void respondToVacancy(Long vacancyId, RespondedApplicantDTO respondedApplicantDto) {
         //TODO Сделать логику для отклика на вакансию
     }
 }

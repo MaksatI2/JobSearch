@@ -5,8 +5,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 
 public interface UserService {
-    void findApplicant(Integer userId);
-    void findEmployer(Integer userId);
+    void findApplicant(Long userId);
+    void findEmployer(Long userId);
 
     void register(UserDTO userDto);
 
@@ -15,4 +15,6 @@ public interface UserService {
     String addAvatar(MultipartFile file);
 
     ResponseEntity<?> getAvatarByName(String imageName);
+
+    void getApplicantsVacancy(Long vacancyId);
 }

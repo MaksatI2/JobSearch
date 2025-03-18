@@ -6,15 +6,14 @@ import org.example.JobSearch.dto.VacancyDTO;
 import java.util.List;
 
 public interface VacancyService {
-    List<VacancyDTO> getVacanciesByCategory(Integer categoryId);
+    List<VacancyDTO> getVacanciesByCategory(Long categoryId);
 
     void createVacancy(VacancyDTO vacancyDto);
 
-    void updateVacancy(Integer vacancyId, VacancyDTO vacancyDto);
+    void updateVacancy(Long vacancyId, VacancyDTO vacancyDto);
 
-    void deleteVacancy(Integer vacancyId);
+    void deleteVacancy(Long vacancyId);
 
     List<VacancyDTO> getAllVacancies();
 
-    void getApplicantsVacancy(Integer vacancyId);
 }

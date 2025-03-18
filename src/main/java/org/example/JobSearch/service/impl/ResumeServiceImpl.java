@@ -17,12 +17,12 @@ public class ResumeServiceImpl implements ResumeService {
     }
 
     @Override
-    public void updateResume(Integer resumeId, ResumeDTO resumeDto) {
+    public void updateResume(Long resumeId, ResumeDTO resumeDto) {
         //TODO: Сделать логику для редактирования резюме
     }
 
     @Override
-    public void deleteResume(Integer resumeId) {
+    public void deleteResume(Long resumeId) {
         //TODO: Сделать логику для удаления резюме
     }
 
@@ -33,7 +33,7 @@ public class ResumeServiceImpl implements ResumeService {
     }
 
     @Override
-    public List<ResumeDTO> getResumesByCategory(Integer categoryId) {
+    public List<ResumeDTO> getResumesByCategory(Long categoryId) {
         //TODO: Сделать логику для вывода всех резюме по категории
         return List.of();
     }

@@ -4,5 +4,5 @@ import org.example.JobSearch.dto.RespondedApplicantDTO;
 
 public interface ApplicationService {
 
-    void respondToVacancy(Integer vacancyId, RespondedApplicantDTO respondedApplicantDto);
+    void respondToVacancy(Long vacancyId, RespondedApplicantDTO respondedApplicantDto);
 }

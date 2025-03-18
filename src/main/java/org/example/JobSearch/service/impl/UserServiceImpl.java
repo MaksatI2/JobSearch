@@ -13,12 +13,12 @@ import org.springframework.web.multipart.MultipartFile;
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
     @Override
-    public void findApplicant(Integer userEmail) {
+    public void findApplicant(Long userEmail) {
         // TODO: сделать логику для поиска соискателя по email
     }
 
     @Override
-    public void findEmployer(Integer userEmail) {
+    public void findEmployer(Long userEmail) {
         // TODO: сделать логику для поиска работодателя по email
     }
 
@@ -41,5 +41,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public ResponseEntity<?> getAvatarByName(String imageName) {
         return new FileUtil().getOutputFile(imageName, "images/", MediaType.IMAGE_JPEG);
+    }
+
+    @Override
+    public void getApplicantsVacancy(Long vacancyId) {
+        //TODO: Сделать логику для вывода соискателей откликнувщихся на вакансию
     }
 }
