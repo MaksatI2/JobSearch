@@ -34,7 +34,7 @@ public class VacancyServiceImpl implements VacancyService {
 
     @Override
     public void getApplicantsVacancy(Integer vacancyId) {
-        //TODO: Сделать логику для вывода всех вакансии по категории
+        //TODO: Сделать логику для вывода соискателей откликнувщихся на вакансию
     }
 
     @Override
