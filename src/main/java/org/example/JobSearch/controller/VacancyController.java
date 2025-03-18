@@ -16,7 +16,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class VacancyController {
     private final VacancyService vacancyService;
-    private final ApplicationService applicationService;
 
     @PostMapping("/createVacancy")
     public ResponseEntity<String> createVacancy(@RequestBody VacancyDTO vacancyDTO) {
@@ -25,13 +24,13 @@ public class VacancyController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<String> updateVacancy(@PathVariable Integer id, @RequestBody VacancyDTO vacancyDTO) {
+    public ResponseEntity<String> updateVacancy(@PathVariable Long id, @RequestBody VacancyDTO vacancyDTO) {
         vacancyService.updateVacancy(id, vacancyDTO);
         return ResponseEntity.ok("Vacancy updated successfully");
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteVacancy(@PathVariable Integer id) {
+    public ResponseEntity<String> deleteVacancy(@PathVariable Long id) {
         vacancyService.deleteVacancy(id);
         return ResponseEntity.ok("Vacancy deleted successfully");
     }
@@ -42,19 +41,8 @@ public class VacancyController {
     }
 
     @GetMapping("/vacancies/category/{categoryId}")
-    public List<VacancyDTO> getVacanciesByCategory(@PathVariable Integer categoryId) {
+    public List<VacancyDTO> getVacanciesByCategory(@PathVariable Long categoryId) {
         return vacancyService.getVacanciesByCategory(categoryId);
     }
 
-    @PostMapping("/response/{vacancyId}")
-    public ResponseEntity<String> responseToVacancy(@PathVariable("vacancyId") Integer vacancyId,@RequestBody RespondedApplicantDTO respondedApplicantDTO) {
-        applicationService.respondToVacancy(vacancyId,respondedApplicantDTO);
-        return ResponseEntity.status(HttpStatus.CREATED).body("Response submitted successfully");
-    }
-
-    @GetMapping("/applicatons")
-    public ResponseEntity<String> getApplicantsForVacancy(Integer vacancyId){
-        vacancyService.getApplicantsVacancy(vacancyId);
-        return ResponseEntity.status(HttpStatus.CREATED).body("Applicants successfully found");
-    }
 }

@@ -24,14 +24,20 @@ public class UserController {
     }
 
     @GetMapping("/findApplicant/{userEmail}")
-    public ResponseEntity<String> findApplicant(@PathVariable("userEmail") Integer userEmail) {
+    public ResponseEntity<String> findApplicant(@PathVariable("userEmail") Long userEmail) {
         userService.findApplicant(userEmail);
         return ResponseEntity.status(HttpStatus.CREATED).body("Applicant successfully found");
     }
 
     @GetMapping("/findEmployer/{userEmail}")
-    public ResponseEntity<String> findEmployer(@PathVariable("userEmail") Integer userEmail) {
+    public ResponseEntity<String> findEmployer(@PathVariable("userEmail") Long userEmail) {
         userService.findEmployer(userEmail);
         return ResponseEntity.status(HttpStatus.CREATED).body("Employer successfully found");
+    }
+
+    @GetMapping("/responded/{vacancyId}")
+    public ResponseEntity<String> getApplicantsForVacancy(@PathVariable("vacancyId") Long vacancyId){
+        userService.getApplicantsVacancy(vacancyId);
+        return ResponseEntity.status(HttpStatus.CREATED).body("Applicants successfully found");
     }
 }

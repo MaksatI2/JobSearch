@@ -22,13 +22,13 @@ public class ResumeController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<String> updateResume(@PathVariable Integer id, @RequestBody ResumeDTO resumeDTO) {
+    public ResponseEntity<String> updateResume(@PathVariable Long id, @RequestBody ResumeDTO resumeDTO) {
         resumeService.updateResume(id, resumeDTO);
         return ResponseEntity.ok("Resume updated successfully");
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteResume(@PathVariable Integer id) {
+    public ResponseEntity<String> deleteResume(@PathVariable Long id) {
         resumeService.deleteResume(id);
         return ResponseEntity.ok("Resume deleted successfully");
     }
@@ -39,7 +39,7 @@ public class ResumeController {
     }
 
     @GetMapping("/resumes/category/{categoryId}")
-    public List<ResumeDTO> getResumesByCategory(@PathVariable Integer categoryId) {
+    public List<ResumeDTO> getResumesByCategory(@PathVariable Long categoryId) {
         return resumeService.getResumesByCategory(categoryId);
     }
 }
