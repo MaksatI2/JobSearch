@@ -8,8 +8,8 @@ import java.sql.Timestamp;
 @Data
 @Builder
 public class Message {
-    private Integer id;
-    private Integer respondedApplicantsId;
+    private Long id;
+    private Long respondedApplicantsId;
 
     private String content;
     private Timestamp timestamp;

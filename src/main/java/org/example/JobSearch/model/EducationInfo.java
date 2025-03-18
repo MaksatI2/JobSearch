@@ -8,8 +8,8 @@ import java.util.Date;
 @Data
 @Builder
 public class EducationInfo {
-    private Integer id;
-    private Integer resumeId;
+    private Long id;
+    private Long resumeId;
 
     private String institution;
     private String program;

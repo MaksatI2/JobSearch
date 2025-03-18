@@ -6,9 +6,9 @@ import lombok.Data;
 @Data
 @Builder
 public class RespondedApplicant {
-    private Integer id;
-    private Integer resumeId;
-    private Integer vacancyId;
+    private Long id;
+    private Long resumeId;
+    private Long vacancyId;
 
     private Boolean confirmation;
 }

@@ -8,9 +8,9 @@ import java.time.LocalDate;
 @Data
 @Builder
 public class Vacancy {
-    private Integer id;
-    private Integer authorId;
-    private Integer categoryId;
+    private Long id;
+    private Long authorId;
+    private Long categoryId;
 
     private String name;
     private String description;

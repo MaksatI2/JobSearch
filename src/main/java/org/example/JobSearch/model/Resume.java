@@ -8,9 +8,9 @@ import java.security.Timestamp;
 @Data
 @Builder
 public class Resume {
-    private Integer id;
-    private Integer applicantId;
-    private Integer categoryId;
+    private Long id;
+    private Long applicantId;
+    private Long categoryId;
 
     private String name;
     private Float salary;
