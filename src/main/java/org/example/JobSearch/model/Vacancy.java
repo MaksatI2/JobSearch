@@ -13,7 +13,6 @@ public class Vacancy {
     private Long id;
     private Long authorId;
     private Long categoryId;
-
     private String name;
     private String description;
     private Float salary;

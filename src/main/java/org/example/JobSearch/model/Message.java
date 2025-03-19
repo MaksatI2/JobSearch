@@ -11,7 +11,6 @@ import java.sql.Timestamp;
 public class Message {
     private Long id;
     private Long respondedApplicantsId;
-
     private String content;
     private Timestamp timestamp;
 }
