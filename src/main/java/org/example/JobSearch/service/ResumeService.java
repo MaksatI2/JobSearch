@@ -12,5 +12,7 @@ public interface ResumeService {
 
     List<ResumeDTO> getAllResumes();
 
+    List<ResumeDTO> getUserResumes(Long applicants_id);
+
     List<ResumeDTO> getResumesByCategory(Long categoryId);
 }
