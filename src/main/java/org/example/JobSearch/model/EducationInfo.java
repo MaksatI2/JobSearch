@@ -6,9 +6,6 @@ import java.util.Date;
 
 @Getter
 @Setter
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
-@Builder
 public class EducationInfo {
     private Long id;
     private Long resumeId;

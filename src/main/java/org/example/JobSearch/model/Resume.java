@@ -6,9 +6,6 @@ import java.security.Timestamp;
 
 @Getter
 @Setter
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
-@Builder
 public class Resume {
     private Long id;
     private Long applicantId;

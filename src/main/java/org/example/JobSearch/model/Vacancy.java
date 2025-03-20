@@ -6,9 +6,6 @@ import java.time.LocalDate;
 
 @Getter
 @Setter
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
-@Builder
 public class Vacancy {
     private Long id;
     private Long authorId;
