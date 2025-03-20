@@ -2,10 +2,11 @@ package org.example.JobSearch.model;
 
 import lombok.*;
 
-import java.security.Timestamp;
+import java.sql.Timestamp;
 
 @Getter
 @Setter
+@Builder
 public class Resume {
     private Long id;
     private Long applicantId;
