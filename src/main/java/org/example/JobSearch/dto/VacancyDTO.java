@@ -15,7 +15,7 @@ public class VacancyDTO {
     private String name;
     private String description;
     private Float salary;
-    private LocalDate expFrom;
-    private LocalDate expTo;
+    private Integer expFrom;
+    private Integer expTo;
     private Boolean isActive;
 }

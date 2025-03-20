@@ -16,8 +16,8 @@ public class Vacancy {
     private String name;
     private String description;
     private Float salary;
-    private LocalDate expFrom;
-    private LocalDate expTo;
+    private Integer expFrom;
+    private Integer expTo;
     private Boolean isActive;
     private LocalDate createdDate;
     private LocalDate updateTime;
