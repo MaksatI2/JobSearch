@@ -1,4 +1,5 @@
 package org.example.JobSearch.dao.mapper;
+
 import org.example.JobSearch.model.User;
 import org.springframework.jdbc.core.RowMapper;
 import java.sql.ResultSet;

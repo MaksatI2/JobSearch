@@ -1,6 +1,5 @@
 package org.example.JobSearch.util;
 
-import lombok.Builder;
 import lombok.SneakyThrows;
 import lombok.experimental.UtilityClass;
 import org.springframework.core.io.ByteArrayResource;
