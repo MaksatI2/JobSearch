@@ -49,4 +49,15 @@ public class VacancyDao {
         String sql = "SELECT * FROM vacancies WHERE category_id = ? AND is_active = TRUE";
         return jdbcTemplate.query(sql, new VacancyMapper(), categoryId);
     }
+
+    public List<Vacancy> getRespondedVacancies(Long applicantId) {
+        String sql = """
+        SELECT v.* FROM vacancies v
+        JOIN responded_applicants pi ON v.id = pi.vacancy_id
+        JOIN resumes r ON ra.resume_id = r.id
+        WHERE r.applicant_id = ?
+    """;
+        return jdbcTemplate.query(sql, new VacancyMapper(), applicantId);
+    }
+
 }
