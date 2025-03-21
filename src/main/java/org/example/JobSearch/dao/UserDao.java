@@ -58,6 +58,17 @@ public class UserDao {
         Integer count = jdbcTemplate.queryForObject(sql, Integer.class, email);
         return count != null && count > 0;
     }
+
+    public List<User> findApplicantsByVacancyId(Long vacancyId) {
+        String sql = """
+        SELECT u.* FROM users u
+        JOIN resumes r ON u.id = r.applicant_id
+        JOIN responded_applicants ra ON r.id = ra.resume_id
+        WHERE ra.vacancy_id = ?
+    """;
+        return jdbcTemplate.query(sql, new UserMapper(), vacancyId);
+    }
+
 }
 
 
