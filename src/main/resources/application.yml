@@ -1,0 +1,13 @@
+server:
+  port: 9090
+spring:
+  application:
+    name: "JobSearch"
+  datasource:
+    url: jdbc:h2:./db/jobSearch;AUTO_SERVER=TRUE
+    username: maksat
+    password: qwerty
+    driver-class-name: org.h2.Driver
+  sql:
+    init:
+      mode: always
