@@ -43,4 +43,8 @@ public class VacancyController {
         return vacancyService.getVacanciesByCategory(categoryId);
     }
 
+    @GetMapping("/respApplToVacancy/{id}")
+    public List<VacancyDTO> getRespApplToVacancy(@PathVariable Long id) {
+        return vacancyService.getRespApplToVacancy(id);
+    }
 }
