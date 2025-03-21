@@ -40,7 +40,7 @@ public class UserServiceImpl implements UserService {
         }
         List<User> users = userDao.findApplicantsByName(name);
         if (users.isEmpty()) {
-            throw new UserNotFoundException();
+            throw new UserNotFoundException("No applicants found with name: " + name);
         }
         return users.stream().map(this::convertToUserDTO).toList();
     }
@@ -125,7 +125,7 @@ public class UserServiceImpl implements UserService {
         }
         List<User> applicants = userDao.findApplicantsByVacancyId(vacancyId);
         if (applicants.isEmpty()) {
-            throw new UserNotFoundException();
+            throw new UserNotFoundException("No applicants found for vacancy ID: " + vacancyId);
         }
         return applicants.stream().map(this::convertToUserDTO).toList();
     }
