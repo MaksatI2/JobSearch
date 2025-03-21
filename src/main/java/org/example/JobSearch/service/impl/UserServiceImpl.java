@@ -1,5 +1,6 @@
 package org.example.JobSearch.service.impl;
 
+import org.example.JobSearch.exceptions.InvalidUserDataException;
 import org.example.JobSearch.model.User;
 import org.example.JobSearch.dao.UserDao;
 import org.example.JobSearch.util.FileUtil;
@@ -34,7 +35,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserDTO> findApplicantsByName(String name) {
+        if (name == null || name.isEmpty()) {
+            throw new InvalidUserDataException("Name cannot be empty");
+        }
         List<User> users = userDao.findApplicantsByName(name);
+        if (users.isEmpty()) {
+            throw new UserNotFoundException();
+        }
         return users.stream().map(this::convertToUserDTO).toList();
     }
 
@@ -54,7 +61,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserDTO> findEmployersByName(String name) {
+        if (name == null || name.isEmpty()) {
+            throw new InvalidUserDataException("Name cannot be empty");
+        }
         List<User> users = userDao.findEmployersByName(name);
+        if (users.isEmpty()) {
+            throw new UserNotFoundException();
+        }
         return users.stream().map(this::convertToUserDTO).toList();
     }
 
@@ -83,17 +96,37 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public String addAvatar(MultipartFile file) {
-        return FileUtil.saveUploadFile(file, "images/");
+        if (file == null || file.isEmpty()) {
+            throw new InvalidUserDataException("File cannot be empty");
+        }
+        try {
+            return FileUtil.saveUploadFile(file, "images/");
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to upload file: " + e.getMessage());
+        }
     }
 
     @Override
     public ResponseEntity<?> getAvatarByName(String imageName) {
-        return FileUtil.getOutputFile(imageName, "images/", MediaType.IMAGE_JPEG);
+        if (imageName == null || imageName.isEmpty()) {
+            throw new InvalidUserDataException("Image name cannot be empty");
+        }
+        try {
+            return FileUtil.getOutputFile(imageName, "images/", MediaType.IMAGE_JPEG);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to retrieve file: " + e.getMessage());
+        }
     }
 
     @Override
     public List<UserDTO> getApplicantsVacancy(Long vacancyId) {
+        if (vacancyId == null) {
+            throw new InvalidUserDataException("Vacancy ID cannot be null");
+        }
         List<User> applicants = userDao.findApplicantsByVacancyId(vacancyId);
+        if (applicants.isEmpty()) {
+            throw new UserNotFoundException();
+        }
         return applicants.stream().map(this::convertToUserDTO).toList();
     }
 
