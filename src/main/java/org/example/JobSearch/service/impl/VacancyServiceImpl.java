@@ -40,6 +40,14 @@ public class VacancyServiceImpl implements VacancyService {
         return vacancyDao.getAllVacancies().stream().map(this::toDTO).collect(Collectors.toList());
     }
 
+    @Override
+    public List<VacancyDTO> getRespApplToVacancy(Long applicantId) {
+        return vacancyDao.getRespondedVacancies(applicantId)
+                .stream()
+                .map(this::toDTO)
+                .collect(Collectors.toList());
+    }
+
     private VacancyDTO toDTO(Vacancy vacancy) {
         return VacancyDTO.builder()
                 .id(vacancy.getId())

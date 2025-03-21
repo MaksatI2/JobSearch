@@ -1,6 +1,5 @@
 package org.example.JobSearch.service;
 
-import org.example.JobSearch.dto.RespondedApplicantDTO;
 import org.example.JobSearch.dto.VacancyDTO;
 
 import java.util.List;
@@ -15,5 +14,7 @@ public interface VacancyService {
     void deleteVacancy(Long vacancyId);
 
     List<VacancyDTO> getAllVacancies();
+
+    List<VacancyDTO> getRespApplToVacancy(Long applicantId);
 
 }
