@@ -18,4 +18,6 @@ public class VacancyDTO {
     private Integer expFrom;
     private Integer expTo;
     private Boolean isActive;
+    private LocalDate createdDate;
+    private LocalDate updateTime;
 }
