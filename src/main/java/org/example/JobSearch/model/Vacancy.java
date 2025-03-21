@@ -6,6 +6,7 @@ import java.time.LocalDate;
 
 @Getter
 @Setter
+@Builder
 public class Vacancy {
     private Long id;
     private Long authorId;
