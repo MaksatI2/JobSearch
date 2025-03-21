@@ -46,7 +46,17 @@ public class VacancyDao {
     }
 
     public List<Vacancy> getVacanciesByCategory(Long categoryId) {
-        String sql = "SELECT * FROM vacancies WHERE category_id = ? AND is_active = TRUE";
+        String sql = """
+        WITH RECURSIVE category_tree(id) AS (
+            SELECT id FROM categories WHERE id = ?
+            UNION ALL
+            SELECT c.id FROM categories c
+            JOIN category_tree ct ON c.parent_id = ct.id
+        )
+        SELECT * FROM vacancies WHERE category_id IN 
+        (SELECT id FROM category_tree)
+        AND is_active = TRUE;
+    """;
         return jdbcTemplate.query(sql, new VacancyMapper(), categoryId);
     }
 
