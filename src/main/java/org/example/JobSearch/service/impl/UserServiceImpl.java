@@ -83,13 +83,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public String addAvatar(MultipartFile file) {
-        FileUtil fu = new FileUtil();
-        return fu.saveUploadFile(file, "images/");
+        return FileUtil.saveUploadFile(file, "images/");
     }
 
     @Override
     public ResponseEntity<?> getAvatarByName(String imageName) {
-        return new FileUtil().getOutputFile(imageName, "images/", MediaType.IMAGE_JPEG);
+        return FileUtil.getOutputFile(imageName, "images/", MediaType.IMAGE_JPEG);
     }
 
     @Override
