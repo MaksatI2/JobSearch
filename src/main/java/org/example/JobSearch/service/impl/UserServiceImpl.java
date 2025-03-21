@@ -93,8 +93,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void getApplicantsVacancy(Long vacancyId) {
-        //TODO: Сделать логику для вывода соискателей откликнувщихся на вакансию
+    public List<UserDTO> getApplicantsVacancy(Long vacancyId) {
+        List<User> applicants = userDao.findApplicantsByVacancyId(vacancyId);
+        return applicants.stream().map(this::convertToUserDTO).toList();
     }
 
     @Override

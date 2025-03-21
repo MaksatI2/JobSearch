@@ -24,7 +24,7 @@ public interface UserService {
 
     ResponseEntity<?> getAvatarByName(String imageName);
 
-    void getApplicantsVacancy(Long vacancyId);
+    List<UserDTO> getApplicantsVacancy(Long vacancyId);
 
     boolean userExists(String email);
 }

@@ -62,9 +62,8 @@ public class UserController {
         return ResponseEntity.ok(exists);
     }
 
-    @GetMapping("/responded/{vacancyId}")
-    public ResponseEntity<String> getApplicantsForVacancy(@PathVariable("vacancyId") Long vacancyId){
-        userService.getApplicantsVacancy(vacancyId);
-        return ResponseEntity.status(HttpStatus.CREATED).body("Applicants successfully found");
+    @GetMapping("/vacancy/{vacancyId}/applicants")
+    public ResponseEntity<List<UserDTO>> getApplicantsForVacancy(@PathVariable("vacancyId") Long vacancyId) {
+        return ResponseEntity.ok(userService.getApplicantsVacancy(vacancyId));
     }
 }
