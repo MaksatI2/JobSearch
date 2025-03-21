@@ -33,3 +33,4 @@ build/
 .vscode/
 .gitattributes
 git rm -rf --cached "git"
+/db/
