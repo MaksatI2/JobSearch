@@ -1,14 +1,12 @@
 package org.example.JobSearch.model;
 
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 
-@Data
-@Builder
+@Getter
+@Setter
 public class WorkExperience {
     private  Long id;
     private Long resumeId;
-
     private Long years;
     private String companyName;
     private String position;

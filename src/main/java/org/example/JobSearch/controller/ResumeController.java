@@ -2,6 +2,7 @@ package org.example.JobSearch.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.example.JobSearch.dto.ResumeDTO;
+import org.example.JobSearch.exceptions.ResumeNotFoundException;
 import org.example.JobSearch.service.ResumeService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,13 +34,33 @@ public class ResumeController {
         return ResponseEntity.ok("Resume deleted successfully");
     }
 
-    @GetMapping("/resumes")
-    public List<ResumeDTO> getAllResumes() {
-        return resumeService.getAllResumes();
+    @GetMapping("/allResumes")
+    public ResponseEntity<?> getAllResumes() {
+        try {
+            List<ResumeDTO> resumes = resumeService.getAllResumes();
+            return ResponseEntity.ok(resumes);
+        } catch (ResumeNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/getUserResumes/{applicantId}")
+    public ResponseEntity<?> getUserResumes(@PathVariable Long applicantId) {
+        try {
+            List<ResumeDTO> resumes = resumeService.getUserResumes(applicantId);
+            return ResponseEntity.ok(resumes);
+        } catch (ResumeNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
     }
 
     @GetMapping("/resumes/category/{categoryId}")
-    public List<ResumeDTO> getResumesByCategory(@PathVariable Long categoryId) {
-        return resumeService.getResumesByCategory(categoryId);
+    public ResponseEntity<?> getResumesByCategory(@PathVariable Long categoryId) {
+        try {
+            List<ResumeDTO> resumes = resumeService.getResumesByCategory(categoryId);
+            return ResponseEntity.ok(resumes);
+        } catch (ResumeNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
     }
 }

@@ -1,14 +1,12 @@
 package org.example.JobSearch.model;
 
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 
-@Data
-@Builder
+@Getter
+@Setter
 public class User {
     private Long id;
     private String email;
-
     private String name;
     private String surname;
     private Integer age;

@@ -1,11 +1,15 @@
 package org.example.JobSearch.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.example.JobSearch.dto.UserDTO;
+import org.example.JobSearch.exceptions.UserNotFoundException;
 import org.example.JobSearch.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/users")
@@ -23,21 +27,93 @@ public class UserController {
         return userService.getAvatarByName(imageName);
     }
 
-    @GetMapping("/findApplicant/{userEmail}")
-    public ResponseEntity<String> findApplicant(@PathVariable("userEmail") Long userEmail) {
-        userService.findApplicant(userEmail);
-        return ResponseEntity.status(HttpStatus.CREATED).body("Applicant successfully found");
+    @GetMapping("/findApplicant/email/{email}")
+    public ResponseEntity<?> findApplicant(@PathVariable String email) {
+        try {
+            UserDTO user = userService.findApplicant(email);
+            return ResponseEntity.ok(user);
+        } catch (UserNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal server error: " + e.getMessage());
+        }
     }
 
-    @GetMapping("/findEmployer/{userEmail}")
-    public ResponseEntity<String> findEmployer(@PathVariable("userEmail") Long userEmail) {
-        userService.findEmployer(userEmail);
-        return ResponseEntity.status(HttpStatus.CREATED).body("Employer successfully found");
+    @GetMapping("/findApplicant/phone/{phoneNumber}")
+    public ResponseEntity<?> findApplicantByPhone(@PathVariable String phoneNumber) {
+        try {
+            UserDTO user = userService.findApplicantByPhone(phoneNumber);
+            return ResponseEntity.ok(user);
+        } catch (UserNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal server error: " + e.getMessage());
+        }
     }
 
-    @GetMapping("/responded/{vacancyId}")
-    public ResponseEntity<String> getApplicantsForVacancy(@PathVariable("vacancyId") Long vacancyId){
-        userService.getApplicantsVacancy(vacancyId);
-        return ResponseEntity.status(HttpStatus.CREATED).body("Applicants successfully found");
+    @GetMapping("/findApplicant/name/{name}")
+    public ResponseEntity<?> findApplicantsByName(@PathVariable String name) {
+        try {
+            List<UserDTO> users = userService.findApplicantsByName(name);
+            return ResponseEntity.ok(users);
+        } catch (UserNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal server error: " + e.getMessage());
+        }
+    }
+
+    @GetMapping("/findEmployer/email/{email}")
+    public ResponseEntity<?> findEmployer(@PathVariable String email) {
+        try {
+            UserDTO user = userService.findEmployer(email);
+            return ResponseEntity.ok(user);
+        } catch (UserNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal server error: " + e.getMessage());
+        }
+    }
+
+    @GetMapping("/findEmployer/phone/{phoneNumber}")
+    public ResponseEntity<?> findEmployerByPhone(@PathVariable String phoneNumber) {
+        try {
+            UserDTO user = userService.findEmployerByPhone(phoneNumber);
+            return ResponseEntity.ok(user);
+        } catch (UserNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal server error: " + e.getMessage());
+        }
+    }
+
+    @GetMapping("/findEmployer/name/{name}")
+    public ResponseEntity<?> findEmployersByName(@PathVariable String name) {
+        try {
+            List<UserDTO> users = userService.findEmployersByName(name);
+            return ResponseEntity.ok(users);
+        } catch (UserNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal server error: " + e.getMessage());
+        }
+    }
+
+    @GetMapping("/exists/{email}")
+    public ResponseEntity<Boolean> checkUserExists(@PathVariable String email) {
+        boolean exists = userService.userExists(email);
+        return ResponseEntity.ok(exists);
+    }
+
+    @GetMapping("/vacancy/{vacancyId}/applicants")
+    public ResponseEntity<?> getApplicantsForVacancy(@PathVariable("vacancyId") Long vacancyId) {
+        try {
+            List<UserDTO> applicants = userService.getApplicantsVacancy(vacancyId);
+            return ResponseEntity.ok(applicants);
+        } catch (UserNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal server error: " + e.getMessage());
+        }
     }
 }

@@ -1,16 +1,14 @@
 package org.example.JobSearch.model;
 
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 
 import java.util.Date;
 
-@Data
-@Builder
+@Getter
+@Setter
 public class EducationInfo {
     private Long id;
     private Long resumeId;
-
     private String institution;
     private String program;
     private Date startDate;

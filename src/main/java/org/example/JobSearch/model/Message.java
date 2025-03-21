@@ -1,16 +1,13 @@
 package org.example.JobSearch.model;
 
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 
 import java.sql.Timestamp;
-
-@Data
-@Builder
+@Getter
+@Setter
 public class Message {
     private Long id;
     private Long respondedApplicantsId;
-
     private String content;
     private Timestamp timestamp;
 }

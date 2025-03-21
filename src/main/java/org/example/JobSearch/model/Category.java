@@ -1,14 +1,11 @@
 package org.example.JobSearch.model;
 
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 
-@Builder
-@Data
+@Getter
+@Setter
 public class Category {
     private Long id;
-
     private String name;
-
     private Long parentId;
 }

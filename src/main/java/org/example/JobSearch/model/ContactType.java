@@ -1,12 +1,10 @@
 package org.example.JobSearch.model;
 
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 
-@Data
-@Builder
+@Getter
+@Setter
 public class ContactType {
     private Integer id;
-
     private String type;
 }
