@@ -53,11 +53,16 @@ public class VacancyDao {
     public List<Vacancy> getRespondedVacancies(Long applicantId) {
         String sql = """
         SELECT v.* FROM vacancies v
-        JOIN responded_applicants pi ON v.id = pi.vacancy_id
+        JOIN responded_applicants ra ON v.id = ra.vacancy_id
         JOIN resumes r ON ra.resume_id = r.id
         WHERE r.applicant_id = ?
     """;
         return jdbcTemplate.query(sql, new VacancyMapper(), applicantId);
+    }
+
+    public Vacancy getVacancyById(Long id) {
+        String sql = "SELECT * FROM vacancies WHERE id = ?";
+        return jdbcTemplate.queryForObject(sql, new VacancyMapper(), id);
     }
 
 }
