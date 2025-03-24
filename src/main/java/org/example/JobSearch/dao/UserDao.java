@@ -69,6 +69,21 @@ public class UserDao {
         return jdbcTemplate.query(sql, new UserMapper(), vacancyId);
     }
 
+    public void save(User user) {
+        String sql = "INSERT INTO users (email, name, surname, age, password, phone_number, avatar, account_type) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        jdbcTemplate.update(sql, user.getEmail(), user.getName(), user.getSurname(),
+                user.getAge(), user.getPassword(), user.getPhoneNumber(),
+                user.getAvatar(), user.getAccountType());
+    }
+
+
+    public Optional<User> findByEmail(String email) {
+        String sql = "SELECT * FROM users WHERE email = ?";
+        return Optional.ofNullable(
+                DataAccessUtils.singleResult(jdbcTemplate.query(sql, new UserMapper(), email))
+        );
+    }
 }
 
 
