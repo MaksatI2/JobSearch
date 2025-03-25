@@ -8,13 +8,13 @@ databaseChangeLog:
             columns:
               - column:
                   name: id
-                  type: Long
+                  type: BIGINT
                   autoIncrement: true
                   constraints:
                     primaryKey: true
               - column:
                   name: resume_id
-                  type: Long
+                  type: BIGINT
                   constraints:
                     foreignKeyName: fk_education_info_resume
                     referencedTableName: resumes
@@ -23,9 +23,17 @@ databaseChangeLog:
               - column:
                   name: institution_name
                   type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: program
+                  type: VARCHAR(255)
+              - column:
+                  name: start_date
+                  type: DATE
+              - column:
+                  name: end_date
+                  type: DATE
               - column:
                   name: degree
                   type: VARCHAR(255)
-              - column:
-                  name: graduation_year
-                  type: INT

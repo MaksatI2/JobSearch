@@ -27,11 +27,8 @@ databaseChangeLog:
                   name: position
                   type: VARCHAR(255)
               - column:
-                  name: start_date
-                  type: TIMESTAMP
-              - column:
-                  name: end_date
-                  type: TIMESTAMP
+                  name: years
+                  type: INT
               - column:
                   name: responsibilities
                   type: TEXT
