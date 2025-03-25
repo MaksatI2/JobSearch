@@ -40,24 +40,7 @@ public class ResumeServiceImpl implements ResumeService {
             resumeDto.setApplicantId(1L);
         }
 
-        KeyHolder keyHolder = new GeneratedKeyHolder();
-        String sql = """
-    INSERT INTO resumes (applicant_id, category_id, name, salary, is_active, update_time)
-    VALUES (?, ?, ?, ?, ?, ?)
-    """;
-
-        jdbcTemplate.update(connection -> {
-            PreparedStatement ps = connection.prepareStatement(sql, new String[]{"id"});
-            ps.setLong(1, resumeDto.getApplicantId());
-            ps.setLong(2, resumeDto.getCategoryId());
-            ps.setString(3, resumeDto.getName());
-            ps.setFloat(4, resumeDto.getSalary());
-            ps.setBoolean(5, resumeDto.getIsActive());
-            ps.setTimestamp(6, resumeDto.getUpdateTime());
-            return ps;
-        }, keyHolder);
-
-        Long resumeId = keyHolder.getKey().longValue();
+        Long resumeId = resumeDao.createResume(resumeDto);
 
         if (resumeDto.getEducationInfos() != null) {
             for (EducationInfoDTO eduDto : resumeDto.getEducationInfos()) {
