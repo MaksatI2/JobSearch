@@ -22,6 +22,32 @@ public class UserController {
     private final UserService userService;
     private final EditUserService editUserService;
 
+    @PutMapping("/{email}")
+    public ResponseEntity<?> updateUserByEmail(@PathVariable String email, @RequestBody EditUserDTO editUserDTO) {
+        try {
+            editUserService.updateUserByEmail(email, editUserDTO);
+            return ResponseEntity.ok("User updated successfully");
+        } catch (UserNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error updating user: " + e.getMessage());
+        }
+    }
+
+    @DeleteMapping("/{email}")
+    public ResponseEntity<?> deleteUserByEmail(@PathVariable String email) {
+        try {
+            editUserService.deleteUserByEmail(email);
+            return ResponseEntity.ok("User deleted successfully");
+        } catch (UserNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error deleting user: " + e.getMessage());
+        }
+    }
+
     @PostMapping("/{userId}/avatar")
     public ResponseEntity<?> uploadUserAvatar(@PathVariable Long userId, @RequestParam MultipartFile file) {
         try {
