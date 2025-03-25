@@ -1,0 +1,46 @@
+databaseChangeLog:
+  - changeSet:
+      id: 003
+      author: I.Maksat
+      changes:
+        - createTable:
+            tableName: resumes
+            columns:
+              - column:
+                  name: id
+                  type: Long
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: applicant_id
+                  type: Long
+                  constraints:
+                    foreignKeyName: fk_resumes_applicant
+                    referencedTableName: users
+                    referencedColumnNames: id
+              - column:
+                  name: category_id
+                  type: Long
+                  constraints:
+                    foreignKeyName: fk_resumes_category
+                    referencedTableName: categories
+                    referencedColumnNames: id
+              - column:
+                  name: name
+                  type: VARCHAR(255)
+              - column:
+                  name: salary
+                  type: FLOAT
+              - column:
+                  name: create_date
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+              - column:
+                  name: is_active
+                  type: BOOLEAN
+                  defaultValueBoolean: true
+              - column:
+                  name: update_time
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
