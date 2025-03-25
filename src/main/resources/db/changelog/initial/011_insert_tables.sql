@@ -32,3 +32,18 @@ VALUES ((SELECT id FROM resumes WHERE name = 'Junior Developer' AND applicant_id
         (SELECT id FROM vacancies WHERE name = 'Project Manager'), FALSE),
        ((SELECT id FROM resumes WHERE name = 'Frontend Developer' AND applicant_id = (SELECT id FROM users WHERE email = 'Islam@example.com')),
         (SELECT id FROM vacancies WHERE name = 'Frontend Developer'), FALSE);
+
+INSERT INTO education_info (resume_id, institution_name, degree, graduation_year)
+VALUES
+    ((SELECT id FROM resumes WHERE name = 'Junior Developer' AND applicant_id = (SELECT id FROM users WHERE email = 'Mark@example.com')), 'Tech University', 'Bachelor of Computer Science', 2020),
+    ((SELECT id FROM resumes WHERE name = 'Project Assistant' AND applicant_id = (SELECT id FROM users WHERE email = 'Mark@example.com')), 'Business School', 'Bachelor of Business Administration', 2019),
+    ((SELECT id FROM resumes WHERE name = 'Frontend Developer' AND applicant_id = (SELECT id FROM users WHERE email = 'Islam@example.com')), 'Creative Arts College', 'Bachelor of Design', 2021),
+    ((SELECT id FROM resumes WHERE name = 'Backend Developer' AND applicant_id = (SELECT id FROM users WHERE email = 'Islam@example.com')), 'Tech Institute', 'Master of Software Engineering', 2020);
+
+INSERT INTO work_experience_info (resume_id, company_name, position, start_date, end_date, responsibilities)
+VALUES
+    ((SELECT id FROM resumes WHERE name = 'Junior Developer' AND applicant_id = (SELECT id FROM users WHERE email = 'Mark@example.com')), 'TechCorp', 'Intern', '2020-06-01', '2020-12-01', 'Assisting in software development tasks and testing applications.'),
+    ((SELECT id FROM resumes WHERE name = 'Project Assistant' AND applicant_id = (SELECT id FROM users WHERE email = 'Mark@example.com')), 'ProDev Ltd', 'Assistant Project Manager', '2019-01-01', '2021-05-01', 'Supporting project management and client communications.'),
+    ((SELECT id FROM resumes WHERE name = 'Frontend Developer' AND applicant_id = (SELECT id FROM users WHERE email = 'Islam@example.com')), 'WebDesign Studio', 'Frontend Developer', '2021-03-01', NULL, 'Developing responsive websites and UI/UX design.'),
+    ((SELECT id FROM resumes WHERE name = 'Backend Developer' AND applicant_id = (SELECT id FROM users WHERE email = 'Islam@example.com')), 'CodeWorks', 'Backend Developer', '2020-08-01', '2021-12-01', 'Developing backend logic for web applications and managing databases.');
+
