@@ -27,10 +27,10 @@ databaseChangeLog:
                   type: VARCHAR(255)
               - column:
                   name: start_date
-                  type: DATE
+                  type: TIMESTAMP
               - column:
                   name: end_date
-                  type: DATE
+                  type: TIMESTAMP
               - column:
                   name: responsibilities
                   type: TEXT
