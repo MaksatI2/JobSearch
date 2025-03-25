@@ -1,0 +1,25 @@
+databaseChangeLog:
+  - changeSet:
+      id: 001
+      author: I.Maksat
+      changes:
+        - createTable:
+            tableName: categories
+            columns:
+              - column:
+                  name: id
+                  type: Long
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: name
+                  type: VARCHAR(255)
+              - column:
+                  name: parent_id
+                  type: Long
+                  constraints:
+                    foreignKeyName: fk_categories_parent
+                    referencedTableName: categories
+                    referencedColumnNames: id
+                    onDelete: SET NULL

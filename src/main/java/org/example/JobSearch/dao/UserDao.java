@@ -3,6 +3,7 @@ package org.example.JobSearch.dao;
 import org.example.JobSearch.dao.mapper.UserMapper;
 import org.example.JobSearch.model.User;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.stereotype.Repository;
@@ -14,6 +15,18 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class UserDao {
     private final JdbcTemplate jdbcTemplate;
+
+    public int updateUserAvatar(Long userId, String avatarPath) {
+        String sql = "UPDATE users SET avatar = ? WHERE id = ?";
+        return jdbcTemplate.update(sql, avatarPath, userId);
+    }
+
+    public Optional<User> findById(Long id) {
+        String sql = "SELECT * FROM users WHERE id = ?";
+        return Optional.ofNullable(
+                DataAccessUtils.singleResult(jdbcTemplate.query(sql, new UserMapper(), id))
+        );
+    }
 
     public Optional<User> findEmployer(String email) {
         String sql = "SELECT * FROM users WHERE email = ? AND account_type = 'EMPLOYER'";
@@ -69,6 +82,30 @@ public class UserDao {
         return jdbcTemplate.query(sql, new UserMapper(), vacancyId);
     }
 
+    public void save(User user) {
+        String sql = "INSERT INTO users (email, name, surname, age, password, phone_number, account_type) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?)";
+        jdbcTemplate.update(sql, user.getEmail(), user.getName(), user.getSurname(),
+                user.getAge(), user.getPassword(), user.getPhoneNumber(), user.getAccountType());
+    }
+
+
+    public Optional<User> findByEmail(String email) {
+        String sql = "SELECT * FROM users WHERE email = ?";
+        return Optional.ofNullable(
+                DataAccessUtils.singleResult(jdbcTemplate.query(sql, new UserMapper(), email))
+        );
+    }
+
+    public Optional<String> findAvatarPathById(Long userId) {
+        String sql = "SELECT avatar FROM users WHERE id = ?";
+        try {
+            String avatarPath = jdbcTemplate.queryForObject(sql, String.class, userId);
+            return Optional.ofNullable(avatarPath);
+        } catch (EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
+    }
 }
 
 

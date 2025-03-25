@@ -20,9 +20,9 @@ public interface UserService {
 
     void login(UserDTO userDto);
 
-    String addAvatar(MultipartFile file);
+    void updateUserAvatar(Long userId, MultipartFile file);
 
-    ResponseEntity<?> getAvatarByName(String imageName);
+    ResponseEntity<?> getAvatarByUserId(Long userId);
 
     List<UserDTO> getApplicantsVacancy(Long vacancyId);
 

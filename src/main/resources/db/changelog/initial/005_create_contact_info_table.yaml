@@ -1,0 +1,31 @@
+databaseChangeLog:
+  - changeSet:
+      id: 005
+      author: I.Maksat
+      changes:
+        - createTable:
+            tableName: contact_info
+            columns:
+              - column:
+                  name: id
+                  type: Long
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: resume_id
+                  type: Long
+                  constraints:
+                    foreignKeyName: fk_contact_info_resume
+                    referencedTableName: resumes
+                    referencedColumnNames: id
+              - column:
+                  name: type_id
+                  type: Long
+                  constraints:
+                    foreignKeyName: fk_contact_info_type
+                    referencedTableName: contact_types
+                    referencedColumnNames: id
+              - column:
+                  name: text
+                  type: VARCHAR(255)

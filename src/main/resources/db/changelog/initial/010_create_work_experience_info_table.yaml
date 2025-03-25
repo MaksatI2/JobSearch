@@ -1,0 +1,34 @@
+databaseChangeLog:
+  - changeSet:
+      id: 010
+      author: I.Maksat
+      changes:
+        - createTable:
+            tableName: work_experience_info
+            columns:
+              - column:
+                  name: id
+                  type: Long
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: resume_id
+                  type: Long
+                  constraints:
+                    foreignKeyName: fk_work_experience_resume
+                    referencedTableName: resumes
+                    referencedColumnNames: id
+                    deleteCascade: true
+              - column:
+                  name: company_name
+                  type: VARCHAR(255)
+              - column:
+                  name: position
+                  type: VARCHAR(255)
+              - column:
+                  name: years
+                  type: INT
+              - column:
+                  name: responsibilities
+                  type: TEXT

@@ -5,8 +5,11 @@ import org.example.JobSearch.dao.mapper.ResumeMapper;
 import org.example.JobSearch.dto.ResumeDTO;
 import org.example.JobSearch.model.Resume;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
+import java.sql.PreparedStatement;
 import java.util.List;
 
 @Repository
@@ -14,19 +17,25 @@ import java.util.List;
 public class ResumeDao {
     private final JdbcTemplate jdbcTemplate;
 
-    public void createResume(ResumeDTO resume) {
+    public Long createResume(ResumeDTO resume) {
+        KeyHolder keyHolder = new GeneratedKeyHolder();
         String sql = """
-        INSERT INTO resumes (applicant_id, category_id, name, salary, is_active, update_time)
-        VALUES (?, ?, ?, ?, ?, ?)
-    """;
-        jdbcTemplate.update(sql,
-                resume.getApplicantId(),
-                resume.getCategoryId(),
-                resume.getName(),
-                resume.getSalary(),
-                resume.getIsActive(),
-                resume.getUpdateTime()
-        );
+            INSERT INTO resumes (applicant_id, category_id, name, salary, is_active, update_time)
+            VALUES (?, ?, ?, ?, ?, ?)
+            """;
+
+        jdbcTemplate.update(connection -> {
+            PreparedStatement ps = connection.prepareStatement(sql, new String[]{"id"});
+            ps.setLong(1, resume.getApplicantId());
+            ps.setLong(2, resume.getCategoryId());
+            ps.setString(3, resume.getName());
+            ps.setFloat(4, resume.getSalary());
+            ps.setBoolean(5, resume.getIsActive());
+            ps.setTimestamp(6, resume.getUpdateTime());
+            return ps;
+        }, keyHolder);
+
+        return keyHolder.getKey().longValue();
     }
 
     public void updateResume(Long id, ResumeDTO resume) {

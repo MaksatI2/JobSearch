@@ -86,38 +86,69 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void register(UserDTO userDto) {
-        // TODO: сделать логику для регистрацию пользователя
+        if (userDto.getEmail() == null || userDto.getEmail().isEmpty()) {
+            throw new InvalidUserDataException("Email cannot be empty");
+        }
+        if (userDao.existsByEmail(userDto.getEmail())) {
+            throw new InvalidUserDataException("Email is already in use");
+        }
+        if (userDto.getPassword() == null || userDto.getPassword().isEmpty()) {
+            throw new InvalidUserDataException("Password cannot be empty");
+        }
+        if (userDto.getPassword().length() < 6) {
+            throw new InvalidUserDataException("Password must be at least 6 characters");
+        }
+        if (userDto.getName() == null || userDto.getName().trim().isEmpty()) {
+            throw new InvalidUserDataException("Name cannot be empty");
+        }
+        if (userDto.getSurname() == null || userDto.getSurname().trim().isEmpty()) {
+            throw new InvalidUserDataException("Surname cannot be empty");
+        }
+        if (userDto.getAge() != null && userDto.getAge() < 18) {
+            throw new InvalidUserDataException("Age must be at least 18");
+        }
+        if (userDto.getPhoneNumber() != null && userDto.getPhoneNumber().length() < 10) {
+            throw new InvalidUserDataException("Phone number must contain at least 10 digits");
+        }
+        if (userDto.getAccountType() == null ||
+                (!userDto.getAccountType().equalsIgnoreCase("EMPLOYER") &&
+                        !userDto.getAccountType().equalsIgnoreCase("APPLICANT"))) {
+            throw new InvalidUserDataException("Invalid account type");
+        }
+
+        User user = new User();
+        user.setEmail(userDto.getEmail());
+        user.setPassword(userDto.getPassword());
+        user.setName(userDto.getName());
+        user.setSurname(userDto.getSurname());
+        user.setAge(userDto.getAge());
+        user.setPhoneNumber(userDto.getPhoneNumber());
+        user.setAvatar(userDto.getAvatar());
+        user.setAccountType(userDto.getAccountType());
+
+        userDao.save(user);
+
+        System.out.println("User registered successfully: " + user.getEmail());
     }
 
     @Override
     public void login(UserDTO userDto) {
-        // TODO: сделать логику для авторизации пользователя
-    }
+        if (userDto.getEmail() == null || userDto.getEmail().isEmpty()) {
+            throw new InvalidUserDataException("Email cannot be empty");
+        }
+        if (userDto.getPassword() == null || userDto.getPassword().isEmpty()) {
+            throw new InvalidUserDataException("Password cannot be empty");
+        }
 
-    @Override
-    public String addAvatar(MultipartFile file) {
-        if (file == null || file.isEmpty()) {
-            throw new InvalidUserDataException("File cannot be empty");
-        }
-        try {
-            return FileUtil.saveUploadFile(file, "images/");
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to upload file: " + e.getMessage());
-        }
-    }
+        User user = userDao.findByEmail(userDto.getEmail())
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
 
-    @Override
-    public ResponseEntity<?> getAvatarByName(String imageName) {
-        if (imageName == null || imageName.isEmpty()) {
-            throw new InvalidUserDataException("Image name cannot be empty");
+        if (!userDto.getPassword().equals(user.getPassword())) {
+            throw new InvalidUserDataException("Invalid password");
         }
-        try {
-            return FileUtil.getOutputFile(imageName, "images/", MediaType.IMAGE_JPEG);
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to retrieve file: " + e.getMessage());
-        }
-    }
 
+        System.out.println("User " + user.getEmail() + " logged in successfully");
+    }
     @Override
     public List<UserDTO> getApplicantsVacancy(Long vacancyId) {
         if (vacancyId == null) {
@@ -133,5 +164,49 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean userExists(String email) {
         return userDao.existsByEmail(email);
+    }
+
+    @Override
+    public void updateUserAvatar(Long userId, MultipartFile file) {
+
+        if (file == null || file.isEmpty()) {
+            throw new InvalidUserDataException("File cannot be empty");
+        }
+
+        userDao.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException("User not found with id: " + userId));
+
+        try {
+            String avatarPath = FileUtil.saveUploadFile(file, "images/");
+
+            int updatedRows = userDao.updateUserAvatar(userId, avatarPath);
+
+            if (updatedRows == 0) {
+                throw new RuntimeException("Failed to update avatar for user with id: " + userId);
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to update avatar: " + e.getMessage());
+        }
+    }
+
+    @Override
+    public ResponseEntity<?> getAvatarByUserId(Long userId) {
+        if (userId == null) {
+            throw new InvalidUserDataException("User ID cannot be null");
+        }
+
+        String avatarPath = userDao.findAvatarPathById(userId)
+                .orElseThrow(() -> new UserNotFoundException("User not found or has no avatar"));
+
+        if (avatarPath == null || avatarPath.isEmpty()) {
+            throw new UserNotFoundException("User has no avatar");
+        }
+
+        try {
+            String imageName = avatarPath.substring(avatarPath.lastIndexOf('/') + 1);
+            return FileUtil.getOutputFile(imageName, "images/", MediaType.IMAGE_JPEG);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to retrieve avatar: " + e.getMessage());
+        }
     }
 }

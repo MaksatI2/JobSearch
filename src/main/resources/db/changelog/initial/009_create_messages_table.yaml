@@ -1,0 +1,28 @@
+databaseChangeLog:
+  - changeSet:
+      id: 009
+      author: I.Maksat
+      changes:
+        - createTable:
+            tableName: messages
+            columns:
+              - column:
+                  name: id
+                  type: Long
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: responded_applicants
+                  type: Long
+                  constraints:
+                    foreignKeyName: fk_responded_applicants
+                    referencedTableName: responded_applicants
+                    referencedColumnNames: id
+              - column:
+                  name: description
+                  type: TEXT
+              - column:
+                  name: send_time
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP

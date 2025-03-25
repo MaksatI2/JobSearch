@@ -1,13 +1,23 @@
 package org.example.JobSearch.service.impl;
 
+import lombok.RequiredArgsConstructor;
 import org.example.JobSearch.dao.ResumeDao;
+import org.example.JobSearch.dto.EducationInfoDTO;
 import org.example.JobSearch.dto.ResumeDTO;
+import org.example.JobSearch.dto.WorkExperienceDTO;
 import org.example.JobSearch.exceptions.ResumeNotFoundException;
 import org.example.JobSearch.model.Resume;
+import org.example.JobSearch.service.EducationInfoService;
 import org.example.JobSearch.service.ResumeService;
-import lombok.RequiredArgsConstructor;
+import org.example.JobSearch.service.WorkExperienceService;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.PreparedStatement;
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -15,10 +25,36 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ResumeServiceImpl implements ResumeService {
     private final ResumeDao resumeDao;
+    private final JdbcTemplate jdbcTemplate;
+    private final EducationInfoService educationInfoService;
+    private final WorkExperienceService workExperienceService;
 
     @Override
+    @Transactional
     public void createResume(ResumeDTO resumeDto) {
-        resumeDao.createResume(resumeDto);
+        if (resumeDto.getUpdateTime() == null) {
+            resumeDto.setUpdateTime(new Timestamp(System.currentTimeMillis()));
+        }
+
+        if (resumeDto.getApplicantId() == null) {
+            resumeDto.setApplicantId(1L);
+        }
+
+        Long resumeId = resumeDao.createResume(resumeDto);
+
+        if (resumeDto.getEducationInfos() != null) {
+            for (EducationInfoDTO eduDto : resumeDto.getEducationInfos()) {
+                eduDto.setResumeId(resumeId);
+                educationInfoService.createEducationInfo(resumeId, eduDto);
+            }
+        }
+
+        if (resumeDto.getWorkExperiences() != null) {
+            for (WorkExperienceDTO expDto : resumeDto.getWorkExperiences()) {
+                expDto.setResumeId(resumeId);
+                workExperienceService.createWorkExperience(resumeId, expDto);
+            }
+        }
     }
 
     @Override
@@ -39,33 +75,42 @@ public class ResumeServiceImpl implements ResumeService {
 
     @Override
     public List<ResumeDTO> getAllResumes() {
-        List<ResumeDTO> resumes = resumeDao.getAllActiveResumes().stream().map(this::toDTO).collect(Collectors.toList());
+        List<Resume> resumes = resumeDao.getAllActiveResumes();
         if (resumes.isEmpty()) {
             throw new ResumeNotFoundException("No active resumes found");
         }
-        return resumes;
+
+        return resumes.stream()
+                .map(this::toDTO)
+                .collect(Collectors.toList());
     }
 
     @Override
     public List<ResumeDTO> getUserResumes(Long applicantId) {
-        List<ResumeDTO> resumes = resumeDao.getUserResumes(applicantId).stream().map(this::toDTO).collect(Collectors.toList());
+        List<Resume> resumes = resumeDao.getUserResumes(applicantId);
         if (resumes.isEmpty()) {
             throw new ResumeNotFoundException("No resumes found for applicant ID: " + applicantId);
         }
-        return resumes;
+
+        return resumes.stream()
+                .map(this::toDTO)
+                .collect(Collectors.toList());
     }
 
     @Override
     public List<ResumeDTO> getResumesByCategory(Long categoryId) {
-        List<ResumeDTO> resumes = resumeDao.getActiveResumesByCategory(categoryId).stream().map(this::toDTO).collect(Collectors.toList());
+        List<Resume> resumes = resumeDao.getActiveResumesByCategory(categoryId);
         if (resumes.isEmpty()) {
             throw new ResumeNotFoundException("No resumes found for category ID: " + categoryId);
         }
-        return resumes;
+
+        return resumes.stream()
+                .map(this::toDTO)
+                .collect(Collectors.toList());
     }
 
     private ResumeDTO toDTO(Resume resume) {
-        return ResumeDTO.builder()
+        ResumeDTO dto = ResumeDTO.builder()
                 .id(resume.getId())
                 .applicantId(resume.getApplicantId())
                 .categoryId(resume.getCategoryId())
@@ -74,5 +119,11 @@ public class ResumeServiceImpl implements ResumeService {
                 .isActive(resume.getIsActive())
                 .updateTime(resume.getUpdateTime())
                 .build();
+
+        dto.setEducationInfos(educationInfoService.getEducationInfoByResumeId(resume.getId()));
+
+        dto.setWorkExperiences(workExperienceService.getWorkExperienceByResumeId(resume.getId()));
+
+        return dto;
     }
 }

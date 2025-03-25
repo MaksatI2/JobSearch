@@ -1,0 +1,39 @@
+databaseChangeLog:
+  - changeSet:
+      id: 006
+      author: I.Maksat
+      changes:
+        - createTable:
+            tableName: education_info
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: resume_id
+                  type: BIGINT
+                  constraints:
+                    foreignKeyName: fk_education_info_resume
+                    referencedTableName: resumes
+                    referencedColumnNames: id
+                    deleteCascade: true
+              - column:
+                  name: institution_name
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: program
+                  type: VARCHAR(255)
+              - column:
+                  name: start_date
+                  type: DATE
+              - column:
+                  name: end_date
+                  type: DATE
+              - column:
+                  name: degree
+                  type: VARCHAR(255)

@@ -1,113 +1,3 @@
-CREATE TABLE IF NOT EXISTS categories
-(
-    id        LONG AUTO_INCREMENT PRIMARY KEY,
-    name      VARCHAR(255),
-    parent_id LONG,
-    FOREIGN KEY (parent_id) REFERENCES categories (id) ON DELETE SET NULL
-);
-
-CREATE TABLE IF NOT EXISTS users
-(
-    id           LONG AUTO_INCREMENT PRIMARY KEY,
-    email        VARCHAR(255) NOT NULL UNIQUE,
-    name         VARCHAR(255) NOT NULL,
-    surname      VARCHAR(255) NOT NULL,
-    age          INT,
-    password     VARCHAR(255) NOT NULL,
-    phone_number VARCHAR(20),
-    avatar       VARCHAR(255),
-    account_type VARCHAR(255) NOT NULL
-);
-
-CREATE TABLE IF NOT EXISTS resumes
-(
-    id           LONG AUTO_INCREMENT PRIMARY KEY,
-    applicant_id LONG,
-    category_id  LONG,
-    name         VARCHAR(255),
-    salary       FLOAT,
-    create_date  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    is_active    BOOLEAN   DEFAULT TRUE,
-    update_time  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (applicant_id) REFERENCES users (id),
-    FOREIGN KEY (category_id) REFERENCES categories (id)
-);
-
-CREATE TABLE IF NOT EXISTS contact_types
-(
-    id   LONG AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(255)
-);
-
-CREATE TABLE IF NOT EXISTS contact_info
-(
-    id        LONG AUTO_INCREMENT PRIMARY KEY,
-    resume_id LONG,
-    type_id   LONG,
-    Text      VARCHAR(255),
-    FOREIGN KEY (resume_id) REFERENCES resumes (id),
-    FOREIGN KEY (type_id) REFERENCES contact_types (id)
-);
-
-CREATE TABLE IF NOT EXISTS education_info
-(
-    id          LONG AUTO_INCREMENT PRIMARY KEY,
-    resume_id   LONG,
-    institution VARCHAR(255),
-    program     VARCHAR(255),
-    start_date  DATE,
-    end_date    DATE,
-    degree      VARCHAR(255),
-    FOREIGN KEY (resume_id) REFERENCES resumes (id)
-);
-
-CREATE TABLE IF NOT EXISTS vacancies
-(
-    id           LONG AUTO_INCREMENT PRIMARY KEY,
-    author_id    LONG,
-    category_id  LONG,
-    name         VARCHAR(255),
-    description  TEXT,
-    salary       FLOAT,
-    exp_from     INT,
-    exp_to       INT,
-    is_active    BOOLEAN   DEFAULT TRUE,
-    created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    update_time  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (author_id) REFERENCES users (id),
-    FOREIGN KEY (category_id) REFERENCES categories (id)
-);
-
-CREATE TABLE IF NOT EXISTS responded_applicants
-(
-    id           LONG AUTO_INCREMENT PRIMARY KEY,
-    resume_id    LONG,
-    vacancy_id   LONG,
-    confirmation BOOLEAN,
-    FOREIGN KEY (resume_id) REFERENCES resumes (id),
-    FOREIGN KEY (vacancy_id) REFERENCES vacancies (id)
-);
-
-CREATE TABLE IF NOT EXISTS messages
-(
-    id                   LONG AUTO_INCREMENT PRIMARY KEY,
-    responded_applicants LONG,
-    description          VARCHAR(255),
-    send_time            TIMESTAMP,
-    FOREIGN KEY (responded_applicants) REFERENCES responded_applicants (id)
-);
-
-CREATE TABLE IF NOT EXISTS work_experience_info
-(
-    id               LONG AUTO_INCREMENT PRIMARY KEY,
-    resume_id        LONG,
-    year_work        LONG,
-    company_name     VARCHAR(255),
-    position         VARCHAR(255),
-    responsibilities VARCHAR(255),
-    FOREIGN KEY (resume_id) REFERENCES resumes (id)
-);
-
 INSERT INTO categories (name, parent_id)
 VALUES ('Software development', NULL),
        ('Project management', NULL),
@@ -142,3 +32,18 @@ VALUES ((SELECT id FROM resumes WHERE name = 'Junior Developer' AND applicant_id
         (SELECT id FROM vacancies WHERE name = 'Project Manager'), FALSE),
        ((SELECT id FROM resumes WHERE name = 'Frontend Developer' AND applicant_id = (SELECT id FROM users WHERE email = 'Islam@example.com')),
         (SELECT id FROM vacancies WHERE name = 'Frontend Developer'), FALSE);
+
+INSERT INTO education_info (resume_id, institution_name, program, start_date, end_date, degree)
+VALUES
+    ((SELECT id FROM resumes WHERE name = 'Junior Developer' AND applicant_id = (SELECT id FROM users WHERE email = 'Mark@example.com')), 'Tech University', 'Computer Science Program', '2016-09-01', '2020-06-01', 'Bachelor of Computer Science'),
+    ((SELECT id FROM resumes WHERE name = 'Project Assistant' AND applicant_id = (SELECT id FROM users WHERE email = 'Mark@example.com')), 'Business School', 'Business Administration Program', '2015-09-01', '2019-06-01', 'Bachelor of Business Administration'),
+    ((SELECT id FROM resumes WHERE name = 'Frontend Developer' AND applicant_id = (SELECT id FROM users WHERE email = 'Islam@example.com')), 'Creative Arts College', 'Design Program', '2017-09-01', '2021-06-01', 'Bachelor of Design'),
+    ((SELECT id FROM resumes WHERE name = 'Backend Developer' AND applicant_id = (SELECT id FROM users WHERE email = 'Islam@example.com')), 'Tech Institute', 'Software Engineering Program', '2016-09-01', '2020-06-01', 'Master of Software Engineering');
+
+INSERT INTO work_experience_info (resume_id, company_name, position, years, responsibilities)
+VALUES
+    ((SELECT id FROM resumes WHERE name = 'Junior Developer' AND applicant_id = (SELECT id FROM users WHERE email = 'Mark@example.com')), 'TechCorp', 'Intern', 3, 'Assisting in software development tasks and testing applications.'),
+    ((SELECT id FROM resumes WHERE name = 'Project Assistant' AND applicant_id = (SELECT id FROM users WHERE email = 'Mark@example.com')), 'ProDev Ltd', 'Assistant Project Manager', 2, 'Supporting project management and client communications.'),
+    ((SELECT id FROM resumes WHERE name = 'Frontend Developer' AND applicant_id = (SELECT id FROM users WHERE email = 'Islam@example.com')), 'WebDesign Studio', 'Frontend Developer', 1, 'Developing responsive websites and UI/UX design.'),
+    ((SELECT id FROM resumes WHERE name = 'Backend Developer' AND applicant_id = (SELECT id FROM users WHERE email = 'Islam@example.com')), 'CodeWorks', 'Backend Developer', 2, 'Developing backend logic for web applications and managing databases.');
+

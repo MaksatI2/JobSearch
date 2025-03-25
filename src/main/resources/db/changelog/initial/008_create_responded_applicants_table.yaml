@@ -1,0 +1,33 @@
+databaseChangeLog:
+  - changeSet:
+      id: 008
+      author: I.Maksat
+      changes:
+        - createTable:
+            tableName: responded_applicants
+            columns:
+              - column:
+                  name: id
+                  type: Long
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: vacancy_id
+                  type: Long
+                  constraints:
+                    foreignKeyName: fk_responded_vacancy
+                    referencedTableName: vacancies
+                    referencedColumnNames: id
+              - column:
+                  name: resume_id
+                  type: Long
+                  constraints:
+                    foreignKeyName: fk_responded_resume
+                    referencedTableName: resumes
+                    referencedColumnNames: id
+              - column:
+                  name: confirmation
+                  type: BOOLEAN
+                  defaultValueBoolean: false
+
