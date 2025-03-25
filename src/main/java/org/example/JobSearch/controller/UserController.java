@@ -1,8 +1,12 @@
 package org.example.JobSearch.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.example.JobSearch.dao.mapper.EditUserMapper;
+import org.example.JobSearch.dto.EditUserDTO;
 import org.example.JobSearch.dto.UserDTO;
+import org.example.JobSearch.exceptions.InvalidUserDataException;
 import org.example.JobSearch.exceptions.UserNotFoundException;
+import org.example.JobSearch.service.EditUserService;
 import org.example.JobSearch.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,15 +20,35 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
+    private final EditUserService editUserService;
 
-    @PostMapping("/uploadAvatar")
-    public String uploadAvatar(MultipartFile file) {
-        return userService.addAvatar(file);
+    @PostMapping("/{userId}/avatar")
+    public ResponseEntity<?> uploadUserAvatar(@PathVariable Long userId, @RequestParam MultipartFile file) {
+        try {
+            userService.updateUserAvatar(userId, file);
+            return ResponseEntity.ok("Avatar updated successfully");
+        } catch (UserNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (InvalidUserDataException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error updating avatar: " + e.getMessage());
+        }
     }
 
-    @GetMapping("avatar/{imageName}")
-    public ResponseEntity<?> getImage(@PathVariable String imageName) {
-        return userService.getAvatarByName(imageName);
+    @GetMapping("/{userId}/avatar")
+    public ResponseEntity<?> getUserAvatar(@PathVariable Long userId) {
+        try {
+            return userService.getAvatarByUserId(userId);
+        } catch (UserNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (InvalidUserDataException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error retrieving avatar: " + e.getMessage());
+        }
     }
 
     @GetMapping("/findApplicant/email/{email}")

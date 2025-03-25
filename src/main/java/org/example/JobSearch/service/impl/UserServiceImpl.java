@@ -149,31 +149,6 @@ public class UserServiceImpl implements UserService {
 
         System.out.println("User " + user.getEmail() + " logged in successfully");
     }
-
-    @Override
-    public String addAvatar(MultipartFile file) {
-        if (file == null || file.isEmpty()) {
-            throw new InvalidUserDataException("File cannot be empty");
-        }
-        try {
-            return FileUtil.saveUploadFile(file, "images/");
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to upload file: " + e.getMessage());
-        }
-    }
-
-    @Override
-    public ResponseEntity<?> getAvatarByName(String imageName) {
-        if (imageName == null || imageName.isEmpty()) {
-            throw new InvalidUserDataException("Image name cannot be empty");
-        }
-        try {
-            return FileUtil.getOutputFile(imageName, "images/", MediaType.IMAGE_JPEG);
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to retrieve file: " + e.getMessage());
-        }
-    }
-
     @Override
     public List<UserDTO> getApplicantsVacancy(Long vacancyId) {
         if (vacancyId == null) {
@@ -189,5 +164,49 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean userExists(String email) {
         return userDao.existsByEmail(email);
+    }
+
+    @Override
+    public void updateUserAvatar(Long userId, MultipartFile file) {
+
+        if (file == null || file.isEmpty()) {
+            throw new InvalidUserDataException("File cannot be empty");
+        }
+
+        userDao.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException("User not found with id: " + userId));
+
+        try {
+            String avatarPath = FileUtil.saveUploadFile(file, "images/");
+
+            int updatedRows = userDao.updateUserAvatar(userId, avatarPath);
+
+            if (updatedRows == 0) {
+                throw new RuntimeException("Failed to update avatar for user with id: " + userId);
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to update avatar: " + e.getMessage());
+        }
+    }
+
+    @Override
+    public ResponseEntity<?> getAvatarByUserId(Long userId) {
+        if (userId == null) {
+            throw new InvalidUserDataException("User ID cannot be null");
+        }
+
+        String avatarPath = userDao.findAvatarPathById(userId)
+                .orElseThrow(() -> new UserNotFoundException("User not found or has no avatar"));
+
+        if (avatarPath == null || avatarPath.isEmpty()) {
+            throw new UserNotFoundException("User has no avatar");
+        }
+
+        try {
+            String imageName = avatarPath.substring(avatarPath.lastIndexOf('/') + 1);
+            return FileUtil.getOutputFile(imageName, "images/", MediaType.IMAGE_JPEG);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to retrieve avatar: " + e.getMessage());
+        }
     }
 }
