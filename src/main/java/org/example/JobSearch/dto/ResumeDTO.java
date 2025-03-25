@@ -3,6 +3,8 @@ package org.example.JobSearch.dto;
 import lombok.*;
 
 import java.sql.Timestamp;
+import java.util.List;
+
 @Getter
 @Setter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
@@ -16,4 +18,6 @@ public class ResumeDTO {
     private Float salary;
     private Boolean isActive;
     private Timestamp updateTime;
+    private List<EducationInfoDTO> educationInfos;
+    private List<WorkExperienceDTO> workExperiences;
 }
