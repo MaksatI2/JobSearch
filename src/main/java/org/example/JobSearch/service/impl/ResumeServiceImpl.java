@@ -10,13 +10,9 @@ import org.example.JobSearch.model.Resume;
 import org.example.JobSearch.service.EducationInfoService;
 import org.example.JobSearch.service.ResumeService;
 import org.example.JobSearch.service.WorkExperienceService;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.PreparedStatement;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -25,7 +21,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ResumeServiceImpl implements ResumeService {
     private final ResumeDao resumeDao;
-    private final JdbcTemplate jdbcTemplate;
     private final EducationInfoService educationInfoService;
     private final WorkExperienceService workExperienceService;
 
