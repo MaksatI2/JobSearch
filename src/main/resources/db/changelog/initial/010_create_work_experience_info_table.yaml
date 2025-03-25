@@ -19,6 +19,7 @@ databaseChangeLog:
                     foreignKeyName: fk_work_experience_resume
                     referencedTableName: resumes
                     referencedColumnNames: id
+                    deleteCascade: true
               - column:
                   name: company_name
                   type: VARCHAR(255)

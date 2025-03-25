@@ -19,6 +19,7 @@ databaseChangeLog:
                     foreignKeyName: fk_education_info_resume
                     referencedTableName: resumes
                     referencedColumnNames: id
+                    deleteCascade: true
               - column:
                   name: institution_name
                   type: VARCHAR(255)

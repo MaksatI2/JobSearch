@@ -83,11 +83,10 @@ public class UserDao {
     }
 
     public void save(User user) {
-        String sql = "INSERT INTO users (email, name, surname, age, password, phone_number, avatar, account_type) " +
-                "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO users (email, name, surname, age, password, phone_number, account_type) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?)";
         jdbcTemplate.update(sql, user.getEmail(), user.getName(), user.getSurname(),
-                user.getAge(), user.getPassword(), user.getPhoneNumber(),
-                user.getAvatar(), user.getAccountType());
+                user.getAge(), user.getPassword(), user.getPhoneNumber(), user.getAccountType());
     }
 
 
