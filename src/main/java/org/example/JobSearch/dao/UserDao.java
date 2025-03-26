@@ -106,6 +106,12 @@ public class UserDao {
             return Optional.empty();
         }
     }
+
+    public boolean isUserEmployer(Long userId) {
+        String sql = "SELECT COUNT(*) FROM users WHERE id = ? AND account_type = 'EMPLOYER'";
+        Integer count = jdbcTemplate.queryForObject(sql, Integer.class, userId);
+        return count != null && count > 0;
+    }
 }
 
 

@@ -1,7 +1,9 @@
 package org.example.JobSearch.service.impl;
 
+import org.example.JobSearch.dao.UserDao;
 import org.example.JobSearch.dao.VacancyDao;
 import org.example.JobSearch.dto.VacancyDTO;
+import org.example.JobSearch.exceptions.InvalidUserDataException;
 import org.example.JobSearch.exceptions.VacancyNotFoundException;
 import org.example.JobSearch.model.Vacancy;
 import org.example.JobSearch.service.VacancyService;
@@ -15,6 +17,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class VacancyServiceImpl implements VacancyService {
     private final VacancyDao vacancyDao;
+    private final UserDao userDao;
 
     @Override
     public List<VacancyDTO> getVacanciesByCategory(Long categoryId) {
@@ -27,14 +30,23 @@ public class VacancyServiceImpl implements VacancyService {
 
     @Override
     public void createVacancy(VacancyDTO vacancyDto) {
+        if (!userDao.isUserEmployer(vacancyDto.getAuthorId())) {
+            throw new InvalidUserDataException("Only employers can create vacancies");
+        }
         vacancyDao.createVacancy(vacancyDto);
     }
 
     @Override
     public void updateVacancy(Long vacancyId, VacancyDTO vacancyDto) {
-        if (vacancyDao.getVacancyById(vacancyId) == null) {
+        Vacancy existingVacancy = vacancyDao.getVacancyById(vacancyId);
+        if (existingVacancy == null) {
             throw new VacancyNotFoundException("Vacancy not found with ID: " + vacancyId);
         }
+
+        if (!userDao.isUserEmployer(vacancyDto.getAuthorId())) {
+            throw new InvalidUserDataException("Only employers can update vacancies");
+        }
+
         vacancyDao.updateVacancy(vacancyId, vacancyDto);
     }
 
