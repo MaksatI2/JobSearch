@@ -2,9 +2,11 @@ package org.example.JobSearch.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.example.JobSearch.dao.ResumeDao;
+import org.example.JobSearch.dao.UserDao;
 import org.example.JobSearch.dto.EducationInfoDTO;
 import org.example.JobSearch.dto.ResumeDTO;
 import org.example.JobSearch.dto.WorkExperienceDTO;
+import org.example.JobSearch.exceptions.InvalidUserDataException;
 import org.example.JobSearch.exceptions.ResumeNotFoundException;
 import org.example.JobSearch.model.Resume;
 import org.example.JobSearch.service.EducationInfoService;
@@ -21,18 +23,23 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ResumeServiceImpl implements ResumeService {
     private final ResumeDao resumeDao;
+    private final UserDao userDao;
     private final EducationInfoService educationInfoService;
     private final WorkExperienceService workExperienceService;
 
     @Override
     @Transactional
     public void createResume(ResumeDTO resumeDto) {
-        if (resumeDto.getUpdateTime() == null) {
-            resumeDto.setUpdateTime(new Timestamp(System.currentTimeMillis()));
+        if (resumeDto.getApplicantId() == null) {
+            throw new InvalidUserDataException("Applicant ID cannot be null");
         }
 
-        if (resumeDto.getApplicantId() == null) {
-            resumeDto.setApplicantId(1L);
+        if (!userDao.isUserApplicant(resumeDto.getApplicantId())) {
+            throw new InvalidUserDataException("Only applicants can create resumes");
+        }
+
+        if (resumeDto.getUpdateTime() == null) {
+            resumeDto.setUpdateTime(new Timestamp(System.currentTimeMillis()));
         }
 
         Long resumeId = resumeDao.createResume(resumeDto);
@@ -54,15 +61,30 @@ public class ResumeServiceImpl implements ResumeService {
 
     @Override
     public void updateResume(Long resumeId, ResumeDTO resumeDto) {
-        if (resumeDao.getResumeById(resumeId) == null) {
+        Resume existingResume = resumeDao.getResumeById(resumeId);
+        if (existingResume == null) {
             throw new ResumeNotFoundException("Resume not found with ID: " + resumeId);
         }
+
+        if (resumeDto.getApplicantId() == null) {
+            throw new InvalidUserDataException("Applicant ID cannot be null");
+        }
+
+        if (!userDao.isUserApplicant(resumeDto.getApplicantId())) {
+            throw new InvalidUserDataException("Only applicants can update resumes");
+        }
+
+        if (!existingResume.getApplicantId().equals(resumeDto.getApplicantId())) {
+            throw new InvalidUserDataException("You can only update your own resumes");
+        }
+
         resumeDao.updateResume(resumeId, resumeDto);
     }
 
     @Override
     public void deleteResume(Long resumeId) {
-        if (resumeDao.getResumeById(resumeId) == null) {
+        Resume resume = resumeDao.getResumeById(resumeId);
+        if (resume == null) {
             throw new ResumeNotFoundException("Resume not found with ID: " + resumeId);
         }
         resumeDao.deleteResume(resumeId);

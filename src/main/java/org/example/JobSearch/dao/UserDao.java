@@ -89,7 +89,6 @@ public class UserDao {
                 user.getAge(), user.getPassword(), user.getPhoneNumber(), user.getAccountType());
     }
 
-
     public Optional<User> findByEmail(String email) {
         String sql = "SELECT * FROM users WHERE email = ?";
         return Optional.ofNullable(
@@ -109,6 +108,12 @@ public class UserDao {
 
     public boolean isUserEmployer(Long userId) {
         String sql = "SELECT COUNT(*) FROM users WHERE id = ? AND account_type = 'EMPLOYER'";
+        Integer count = jdbcTemplate.queryForObject(sql, Integer.class, userId);
+        return count != null && count > 0;
+    }
+
+    public boolean isUserApplicant(Long userId) {
+        String sql = "SELECT COUNT(*) FROM users WHERE id = ? AND account_type = 'APPLICANT'";
         Integer count = jdbcTemplate.queryForObject(sql, Integer.class, userId);
         return count != null && count > 0;
     }
