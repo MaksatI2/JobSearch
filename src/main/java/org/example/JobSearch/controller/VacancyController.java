@@ -1,5 +1,6 @@
 package org.example.JobSearch.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.example.JobSearch.dto.VacancyDTO;
 import org.example.JobSearch.exceptions.VacancyNotFoundException;
@@ -16,51 +17,39 @@ import java.util.List;
 public class VacancyController {
     private final VacancyService vacancyService;
 
-    @PostMapping
-    public ResponseEntity<String> createVacancy(@RequestBody VacancyDTO vacancyDTO) {
+    @PostMapping("/")
+    public ResponseEntity<String> createVacancy(@RequestBody @Valid VacancyDTO vacancyDTO) {
         vacancyService.createVacancy(vacancyDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body("Vacancy created successfully");
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<String> updateVacancy(@PathVariable Long id, @RequestBody VacancyDTO vacancyDTO) {
+    public ResponseEntity<String> updateVacancy(@PathVariable Long id, @RequestBody @Valid VacancyDTO vacancyDTO) {
         vacancyService.updateVacancy(id, vacancyDTO);
         return ResponseEntity.ok("Vacancy updated successfully");
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteVacancy(@PathVariable Long id) {
+    public ResponseEntity<String> deleteVacancy(@PathVariable @Valid Long id) {
         vacancyService.deleteVacancy(id);
         return ResponseEntity.ok("Vacancy deleted successfully");
     }
 
     @GetMapping("/allVacancies")
     public ResponseEntity<?> getAllVacancies() {
-        try {
             List<VacancyDTO> vacancies = vacancyService.getAllVacancies();
             return ResponseEntity.ok(vacancies);
-        } catch (VacancyNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
     }
 
     @GetMapping("/vacancies/category/{categoryId}")
-    public ResponseEntity<?> getVacanciesByCategory(@PathVariable Long categoryId) {
-        try {
+    public ResponseEntity<?> getVacanciesByCategory(@PathVariable @Valid Long categoryId) {
             List<VacancyDTO> vacancies = vacancyService.getVacanciesByCategory(categoryId);
             return ResponseEntity.ok(vacancies);
-        } catch (VacancyNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
     }
 
     @GetMapping("/respApplToVacancy/{id}")
-    public ResponseEntity<?> getRespApplToVacancy(@PathVariable Long id) {
-        try {
+    public ResponseEntity<?> getRespApplToVacancy(@PathVariable @Valid Long id) {
             List<VacancyDTO> vacancies = vacancyService.getRespApplToVacancy(id);
             return ResponseEntity.ok(vacancies);
-        } catch (VacancyNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
     }
 }
