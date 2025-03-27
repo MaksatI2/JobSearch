@@ -5,6 +5,7 @@ import org.example.JobSearch.dao.CategoryDao;
 import org.example.JobSearch.dao.UserDao;
 import org.example.JobSearch.dao.VacancyDao;
 import org.example.JobSearch.dto.VacancyDTO;
+import org.example.JobSearch.exceptions.CategoryNotFoundException;
 import org.example.JobSearch.exceptions.VacancyNotFoundException;
 import org.example.JobSearch.model.Vacancy;
 import org.example.JobSearch.service.VacancyService;
@@ -25,7 +26,7 @@ public class VacancyServiceImpl implements VacancyService {
         List<VacancyDTO> vacancies = vacancyDao.getVacanciesByCategory(categoryId)
                 .stream().map(this::toDTO).collect(Collectors.toList());
         if (vacancies.isEmpty()) {
-            throw new VacancyNotFoundException("Вакансий по категории ID не найдено: " + categoryId);
+            throw new CategoryNotFoundException("Вакансий по категории ID не найдено: " + categoryId);
         }
         return vacancies;
     }
@@ -100,14 +101,13 @@ public class VacancyServiceImpl implements VacancyService {
                 .map(this::toDTO)
                 .collect(Collectors.toList());
         if (vacancies.isEmpty()) {
-            throw new VacancyNotFoundException("Не найдено ни одной вакансии, на которую был бы дан ответ по ID: " + applicantId);
+            throw new VacancyNotFoundException("Не найдено ни одной вакансии, на которую был отклик по ID: " + applicantId);
         }
         return vacancies;
     }
 
     private VacancyDTO toDTO(Vacancy vacancy) {
         return VacancyDTO.builder()
-                .id(vacancy.getId())
                 .authorId(String.valueOf(vacancy.getAuthorId()))
                 .categoryId(String.valueOf(vacancy.getCategoryId()))
                 .name(vacancy.getName())
@@ -116,7 +116,6 @@ public class VacancyServiceImpl implements VacancyService {
                 .expFrom(vacancy.getExpFrom())
                 .expTo(vacancy.getExpTo())
                 .isActive(vacancy.getIsActive())
-                .createdDate(vacancy.getCreatedDate())
                 .updateTime(vacancy.getUpdateTime())
                 .build();
     }

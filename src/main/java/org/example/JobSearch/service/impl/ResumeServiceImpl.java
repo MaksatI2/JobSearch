@@ -6,6 +6,7 @@ import org.example.JobSearch.dao.UserDao;
 import org.example.JobSearch.dto.EducationInfoDTO;
 import org.example.JobSearch.dto.ResumeDTO;
 import org.example.JobSearch.dto.WorkExperienceDTO;
+import org.example.JobSearch.exceptions.CategoryNotFoundException;
 import org.example.JobSearch.exceptions.InvalidUserDataException;
 import org.example.JobSearch.exceptions.ResumeNotFoundException;
 import org.example.JobSearch.model.Resume;
@@ -118,7 +119,7 @@ public class ResumeServiceImpl implements ResumeService {
     public List<ResumeDTO> getResumesByCategory(Long categoryId) {
         List<Resume> resumes = resumeDao.getActiveResumesByCategory(categoryId);
         if (resumes.isEmpty()) {
-            throw new ResumeNotFoundException("No resumes found for category ID: " + categoryId);
+            throw new CategoryNotFoundException("Резюме по категории ID не найдено: " + categoryId);
         }
 
         return resumes.stream()
