@@ -12,9 +12,6 @@ import java.time.LocalDate;
 @Builder
 public class VacancyDTO {
 
-    @NotNull
-    private Long id;
-
     @NotBlank(message = "ID автора вакансии не может быть пустым")
     @Pattern(regexp = "^[1-9]\\d*$", message = "ID автора должен содержать только положительные цифры")
     private String authorId;
@@ -46,9 +43,6 @@ public class VacancyDTO {
 
     @NotNull
     private Boolean isActive;
-
-    @NotNull(message = "Дата создания не может быть пустой")
-    private LocalDate createdDate;
 
     @NotNull(message = "Дата обновления не может быть пустой")
     private LocalDate updateTime;

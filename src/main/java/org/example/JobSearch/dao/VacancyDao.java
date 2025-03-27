@@ -16,12 +16,12 @@ public class VacancyDao {
 
     public void createVacancy(VacancyDTO vacancy) {
         String sql = """
-            INSERT INTO vacancies (author_id, category_id, name, description, salary, exp_from, exp_to, is_active, created_date, update_time)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            INSERT INTO vacancies (author_id, category_id, name, description, salary, exp_from, exp_to, is_active, update_time)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
         """;
         jdbcTemplate.update(sql, vacancy.getAuthorId(), vacancy.getCategoryId(), vacancy.getName(),
                 vacancy.getDescription(), vacancy.getSalary(), vacancy.getExpFrom(), vacancy.getExpTo(),
-                vacancy.getIsActive(), vacancy.getCreatedDate(), vacancy.getUpdateTime());
+                vacancy.getIsActive(), vacancy.getUpdateTime());
     }
 
     public void updateVacancy(Long id, VacancyDTO vacancy) {
