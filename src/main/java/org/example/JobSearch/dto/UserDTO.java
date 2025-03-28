@@ -5,42 +5,39 @@ import lombok.*;
 
 @Getter
 @Setter
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@AllArgsConstructor
+@NoArgsConstructor
 @Builder
 public class UserDTO {
 
-    @NotNull
-    private Long id;
-
-    @NotBlank
-    @Email(message = "Некорректный email")
+    @NotBlank(message = "Email cannot be empty")
+    @Email(message = "Invalid email format")
     private String email;
 
-    @NotBlank
-    @Size(min = 2, max = 50, message = "Имя должно быть от 2 до 50 символов")
+    @NotBlank(message = "Name cannot be empty")
+    @Size(min = 2, max = 50, message = "Name must be between 2 and 50 characters")
     private String name;
 
-    @NotBlank
-    @Size(min = 2, max = 50, message = "Фамилия должна быть от 2 до 50 символов")
+    @NotBlank(message = "Surname cannot be empty")
+    @Size(min = 2, max = 50, message = "Surname must be between 2 and 50 characters")
     private String surname;
 
-    @NotNull
-    @Min(value = 18, message = "Возраст должен быть не менее 18 лет")
-    @Max(value = 60, message = "Возраст должен быть не более 60 лет")
+    @Min(value = 18, message = "Age must be at least 18")
+    @Max(value = 60, message = "Age must be at most 60")
+    @NotNull(message = "Age is required")
     private Integer age;
 
-    @NotBlank
-    @Size(min = 8, message = "Пароль должен содержать минимум 8 символов")
+    @NotBlank(message = "Password cannot be empty")
+    @Size(min = 8, message = "Password must be at least 8 characters long")
     private String password;
 
-    @NotBlank
-    @Pattern(regexp = "^\\+?[0-9]{10,15}$", message = "Некорректный номер телефона")
+    @NotBlank(message = "Phone number cannot be empty")
+    @Pattern(regexp = "^\\+?[0-9]{10,15}$", message = "Invalid phone number format")
     private String phoneNumber;
 
     private String avatar;
 
-    @NotBlank
-    @Pattern(regexp = "^(APPLICANT|EMPLOYER)$", message = "Некорректный тип аккаунта")
+    @NotBlank(message = "Account type is required")
+    @Pattern(regexp = "^(APPLICANT|EMPLOYER)$", message = "Invalid account type")
     private String accountType;
 }

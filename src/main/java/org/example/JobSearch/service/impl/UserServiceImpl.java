@@ -73,7 +73,6 @@ public class UserServiceImpl implements UserService {
 
     private UserDTO convertToUserDTO(User user) {
         return UserDTO.builder()
-                .id(user.getId())
                 .email(user.getEmail())
                 .name(user.getName())
                 .surname(user.getSurname())
@@ -86,35 +85,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void register(UserDTO userDto) {
-        if (userDto.getEmail() == null || userDto.getEmail().isEmpty()) {
-            throw new InvalidUserDataException("Email cannot be empty");
-        }
-        if (userDao.existsByEmail(userDto.getEmail())) {
-            throw new InvalidUserDataException("Email is already in use");
-        }
-        if (userDto.getPassword() == null || userDto.getPassword().isEmpty()) {
-            throw new InvalidUserDataException("Password cannot be empty");
-        }
-        if (userDto.getPassword().length() < 6) {
-            throw new InvalidUserDataException("Password must be at least 6 characters");
-        }
-        if (userDto.getName() == null || userDto.getName().trim().isEmpty()) {
-            throw new InvalidUserDataException("Name cannot be empty");
-        }
-        if (userDto.getSurname() == null || userDto.getSurname().trim().isEmpty()) {
-            throw new InvalidUserDataException("Surname cannot be empty");
-        }
-        if (userDto.getAge() != null && userDto.getAge() < 18) {
-            throw new InvalidUserDataException("Age must be at least 18");
-        }
-        if (userDto.getPhoneNumber() != null && userDto.getPhoneNumber().length() < 10) {
-            throw new InvalidUserDataException("Phone number must contain at least 10 digits");
-        }
-        if (userDto.getAccountType() == null ||
-                (!userDto.getAccountType().equalsIgnoreCase("EMPLOYER") &&
-                        !userDto.getAccountType().equalsIgnoreCase("APPLICANT"))) {
-            throw new InvalidUserDataException("Invalid account type");
-        }
 
         User user = new User();
         user.setEmail(userDto.getEmail());
@@ -126,9 +96,9 @@ public class UserServiceImpl implements UserService {
         user.setAvatar(userDto.getAvatar());
         user.setAccountType(userDto.getAccountType());
 
-        userDao.save(user);
+        validateUser(userDto);
 
-        System.out.println("User registered successfully: " + user.getEmail());
+        userDao.save(user);
     }
 
     @Override
@@ -146,8 +116,6 @@ public class UserServiceImpl implements UserService {
         if (!userDto.getPassword().equals(user.getPassword())) {
             throw new InvalidUserDataException("Invalid password");
         }
-
-        System.out.println("User " + user.getEmail() + " logged in successfully");
     }
     @Override
     public List<UserDTO> getApplicantsVacancy(Long vacancyId) {
@@ -209,4 +177,46 @@ public class UserServiceImpl implements UserService {
             throw new RuntimeException("Failed to retrieve avatar: " + e.getMessage());
         }
     }
+
+    private void validateUser(UserDTO userDto) {
+        if (userDto.getEmail() == null || userDto.getEmail().isEmpty()) {
+            throw new InvalidUserDataException("Email cannot be empty");
+        }
+        if (userDao.existsByEmail(userDto.getEmail())) {
+            throw new InvalidUserDataException("Email is already in use");
+        }
+        if (userDto.getPassword() == null || userDto.getPassword().isEmpty()) {
+            throw new InvalidUserDataException("Password cannot be empty");
+        }
+        if (userDto.getPassword().length() < 6) {
+            throw new InvalidUserDataException("Password must be at least 6 characters");
+        }
+        if (userDto.getName() == null || userDto.getName().trim().isEmpty()) {
+            throw new InvalidUserDataException("Name cannot be empty");
+        }
+        if (userDto.getSurname() == null || userDto.getSurname().trim().isEmpty()) {
+            throw new InvalidUserDataException("Surname cannot be empty");
+        }
+        if (userDto.getAge() == null) {
+            throw new InvalidUserDataException("Age cannot be null");
+        }
+        if (userDto.getAge() < 18 || userDto.getAge() > 60) {
+            throw new InvalidUserDataException("Age must be between 18 and 60");
+        }
+        if (userDto.getPhoneNumber() != null && !userDto.getPhoneNumber().matches("^\\d{10,15}$")) {
+            throw new InvalidUserDataException("Phone number must contain only digits and be at least 10 characters long");
+        }
+        if (userDto.getAccountType() == null ||
+                (!userDto.getAccountType().equalsIgnoreCase("EMPLOYER") &&
+                        !userDto.getAccountType().equalsIgnoreCase("APPLICANT"))) {
+            throw new InvalidUserDataException("Invalid account type");
+        }
+        if (!userDto.getName().matches("^[a-zA-Zа-яА-Я]+$")) {
+            throw new InvalidUserDataException("Name cannot contain numbers or special characters");
+        }
+        if (!userDto.getSurname().matches("^[a-zA-Zа-яА-Я]+$")) {
+            throw new InvalidUserDataException("Surname cannot contain numbers or special characters");
+        }
+    }
+
 }
