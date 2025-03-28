@@ -1,5 +1,6 @@
 package org.example.JobSearch.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.example.JobSearch.dto.ResumeDTO;
 import org.example.JobSearch.exceptions.ResumeNotFoundException;
@@ -23,13 +24,13 @@ public class ResumeController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<String> updateResume(@PathVariable Long id, @RequestBody ResumeDTO resumeDTO) {
+    public ResponseEntity<String> updateResume(@PathVariable @Valid Long id, @RequestBody ResumeDTO resumeDTO) {
         resumeService.updateResume(id, resumeDTO);
         return ResponseEntity.ok("Resume updated successfully");
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteResume(@PathVariable Long id) {
+    public ResponseEntity<String> deleteResume(@PathVariable @Valid Long id) {
         resumeService.deleteResume(id);
         return ResponseEntity.ok("Resume deleted successfully");
     }
@@ -41,22 +42,14 @@ public class ResumeController {
     }
 
     @GetMapping("/getUserResumes/{applicantId}")
-    public ResponseEntity<?> getUserResumes(@PathVariable Long applicantId) {
-        try {
+    public ResponseEntity<?> getUserResumes(@PathVariable @Valid Long applicantId) {
             List<ResumeDTO> resumes = resumeService.getUserResumes(applicantId);
             return ResponseEntity.ok(resumes);
-        } catch (ResumeNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
     }
 
     @GetMapping("/resumes/category/{categoryId}")
-    public ResponseEntity<?> getResumesByCategory(@PathVariable Long categoryId) {
-        try {
+    public ResponseEntity<?> getResumesByCategory(@PathVariable @Valid Long categoryId) {
             List<ResumeDTO> resumes = resumeService.getResumesByCategory(categoryId);
             return ResponseEntity.ok(resumes);
-        } catch (ResumeNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
     }
 }

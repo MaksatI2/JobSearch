@@ -12,5 +12,7 @@ import java.util.Map;
 @AllArgsConstructor
 public class ErrorResponseBody {
     private String title;
+    private String detail;
     private Map<String, List> reasons;
+    private String timestamp;
 }

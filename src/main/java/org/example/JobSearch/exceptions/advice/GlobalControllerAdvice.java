@@ -3,6 +3,7 @@ package org.example.JobSearch.exceptions.advice;
 import lombok.RequiredArgsConstructor;
 import org.example.JobSearch.exceptions.ErrorResponseBody;
 import org.example.JobSearch.service.ErrorService;
+import org.springframework.beans.TypeMismatchException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -44,6 +45,14 @@ public class GlobalControllerAdvice {
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<ErrorResponseBody> handleJsonParseException(HttpMessageNotReadableException e) {
         ErrorResponseBody errorResponse = errorService.makeResponse(e);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+    }
+
+    @ExceptionHandler(TypeMismatchException.class)
+    public ResponseEntity<ErrorResponseBody> handleTypeMismatch(TypeMismatchException ex) {
+        ErrorResponseBody errorResponse = errorService.makeResponse(
+                new IllegalArgumentException("ID must be a number")
+        );
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
     }
 

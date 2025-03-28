@@ -3,6 +3,7 @@ package org.example.JobSearch.service.impl;
 import lombok.RequiredArgsConstructor;
 import org.example.JobSearch.dao.EducationInfoDao;
 import org.example.JobSearch.dto.EducationInfoDTO;
+import org.example.JobSearch.exceptions.InvalidUserDataException;
 import org.example.JobSearch.model.EducationInfo;
 import org.example.JobSearch.service.EducationInfoService;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,10 @@ public class EducationInfoServiceImpl implements EducationInfoService {
 
     @Override
     public void createEducationInfo(Long resumeId, EducationInfoDTO educationInfoDto) {
+        if (educationInfoDto.getId() != null) {
+            throw new InvalidUserDataException("ID не должен быть указан при создании");
+        }
+
         EducationInfo educationInfo = new EducationInfo();
         educationInfo.setInstitution(educationInfoDto.getInstitution());
         educationInfo.setProgram(educationInfoDto.getProgram());

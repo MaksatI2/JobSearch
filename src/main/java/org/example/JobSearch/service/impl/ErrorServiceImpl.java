@@ -5,6 +5,7 @@ import org.example.JobSearch.service.ErrorService;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -19,8 +20,10 @@ public class ErrorServiceImpl implements ErrorService {
         reasons.put("errors", List.of(ex.getMessage()));
 
         return ErrorResponseBody.builder()
-                .title("Error occurred")
+                .title("Invalid request")
+                .detail(ex.getClass().getSimpleName())
                 .reasons(reasons)
+                .timestamp(Instant.now().toString())
                 .build();
     }
 

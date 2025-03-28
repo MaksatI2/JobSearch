@@ -3,7 +3,10 @@ package org.example.JobSearch.dao;
 import lombok.RequiredArgsConstructor;
 import org.example.JobSearch.dao.mapper.VacancyMapper;
 import org.example.JobSearch.dto.VacancyDTO;
+import org.example.JobSearch.exceptions.ResumeNotFoundException;
 import org.example.JobSearch.model.Vacancy;
+import org.springframework.dao.DataAccessException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -72,7 +75,11 @@ public class VacancyDao {
 
     public Vacancy getVacancyById(Long id) {
         String sql = "SELECT * FROM vacancies WHERE id = ?";
-        return jdbcTemplate.queryForObject(sql, new VacancyMapper(), id);
+        try {
+            return jdbcTemplate.queryForObject(sql, new VacancyMapper(), id);
+        } catch (EmptyResultDataAccessException e) {
+            throw new ResumeNotFoundException("Resume not found with ID: " + id);
+        }
     }
 
 }
