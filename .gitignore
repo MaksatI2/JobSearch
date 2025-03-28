@@ -34,3 +34,4 @@ build/
 .gitattributes
 git rm -rf --cached "git"
 /db/
+/logs/
