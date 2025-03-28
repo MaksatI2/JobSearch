@@ -75,7 +75,7 @@ public class ResumeServiceImpl implements ResumeService {
     public void updateResume(Long resumeId, ResumeDTO resumeDto) {
         log.info("Обновление резюме ID: {}", resumeId);
         Resume existingResume = resumeDao.getResumeById(resumeId);
-        if (existingResume == null) {
+        if (resumeDao.existsResume(resumeId).equals(false)) {
             log.error("Резюме с ID {} не найдено", resumeId);
             throw new ResumeNotFoundException("Резюме с ID не найдено: " + resumeId);
         }
@@ -96,15 +96,12 @@ public class ResumeServiceImpl implements ResumeService {
             throw new InvalidUserDataException("Вы можете обновлять только свои резюме");
         }
 
-        // Обновляем основную информацию резюме
         resumeDao.updateResume(resumeId, resumeDto);
         log.info("Основная информация резюме ID {} успешно обновлена", resumeId);
 
-        // Обработка информации об образовании
         if (resumeDto.getEducationInfos() != null) {
             log.debug("Обновление информации об образовании для резюме ID: {}", resumeId);
             for (EducationInfoDTO eduDto : resumeDto.getEducationInfos()) {
-                // Запрещаем указывать ID, чтобы нельзя было создать новые записи
                 if (eduDto.getId() != null) {
                     log.error("Попытка указать ID для образования в обновлении резюме");
                     throw new InvalidUserDataException("Нельзя указывать ID для образования при обновлении резюме");
@@ -115,11 +112,9 @@ public class ResumeServiceImpl implements ResumeService {
             log.info("Обновлено {} записей об образовании", resumeDto.getEducationInfos().size());
         }
 
-        // Обработка информации об опыте работы
         if (resumeDto.getWorkExperiences() != null) {
             log.debug("Обновление информации об опыте работы для резюме ID: {}", resumeId);
             for (WorkExperienceDTO expDto : resumeDto.getWorkExperiences()) {
-                // Запрещаем указывать ID, чтобы нельзя было создать новые записи
                 if (expDto.getId() != null) {
                     log.error("Попытка указать ID для опыта работы в обновлении резюме");
                     throw new InvalidUserDataException("Нельзя указывать ID для опыта работы при обновлении резюме");
@@ -135,8 +130,7 @@ public class ResumeServiceImpl implements ResumeService {
     @Transactional
     public void deleteResume(Long resumeId) {
         log.info("Удаление резюме ID: {}", resumeId);
-        Resume existingResume = resumeDao.getResumeById(resumeId);
-        if (existingResume == null) {
+        if (resumeDao.existsResume(resumeId).equals(false)) {
             log.error("Резюме с ID {} не найдено", resumeId);
             throw new ResumeNotFoundException("Резюме с ID не найдено: " + resumeId);
         }

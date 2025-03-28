@@ -73,13 +73,9 @@ public class VacancyDao {
         return jdbcTemplate.query(sql, new VacancyMapper(), applicantId);
     }
 
-    public Vacancy getVacancyById(Long id) {
-        String sql = "SELECT * FROM vacancies WHERE id = ?";
-        try {
-            return jdbcTemplate.queryForObject(sql, new VacancyMapper(), id);
-        } catch (EmptyResultDataAccessException e) {
-            throw new ResumeNotFoundException("Resume not found with ID: " + id);
-        }
+    public Boolean existsVacancy(Long id) {
+        String sql = "select count(*) from vacancies where ID = ?";
+        Long count = jdbcTemplate.queryForObject(sql, Long.class, id);
+        return count != null && count > 0;
     }
-
 }

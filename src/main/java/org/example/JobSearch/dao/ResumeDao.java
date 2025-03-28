@@ -86,6 +86,12 @@ public class ResumeDao {
         }
     }
 
+    public Boolean existsResume(Long id) {
+        String sql = "select count(*) from resumes where ID = ?";
+        Long count = jdbcTemplate.queryForObject(sql, Long.class, id);
+        return count != null && count > 0;
+    }
+
     public List<Resume> getUserResumes(Long applicant_id) {
         String sql = "SELECT * FROM resumes WHERE applicant_id = ?";
         return jdbcTemplate.query(sql, new ResumeMapper(), applicant_id);

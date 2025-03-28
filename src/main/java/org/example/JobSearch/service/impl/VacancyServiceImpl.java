@@ -7,7 +7,6 @@ import org.example.JobSearch.dao.UserDao;
 import org.example.JobSearch.dao.VacancyDao;
 import org.example.JobSearch.dto.VacancyDTO;
 import org.example.JobSearch.exceptions.CategoryNotFoundException;
-import org.example.JobSearch.exceptions.InvalidUserDataException;
 import org.example.JobSearch.exceptions.VacancyNotFoundException;
 import org.example.JobSearch.model.Vacancy;
 import org.example.JobSearch.service.VacancyService;
@@ -66,10 +65,9 @@ public class VacancyServiceImpl implements VacancyService {
     @Override
     public void updateVacancy(Long vacancyId, VacancyDTO vacancyDto) {
         log.info("Обновление вакансии ID: {}", vacancyId);
-        Vacancy existingVacancy = vacancyDao.getVacancyById(vacancyId);
-        if (existingVacancy == null) {
-            log.error("Вакансия для обновления не найдена ID: {}", vacancyId);
-            throw new VacancyNotFoundException("Вакансия с ID: " + vacancyId + " не найдена");
+        if (vacancyDao.existsVacancy(vacancyId).equals(false)) {
+            log.error("Вакансия для удаления не найдена ID: {}", vacancyId);
+            throw new VacancyNotFoundException("Вакансия не найдена по ID: " + vacancyId);
         }
 
         Long authorId = parseAndValidateId(vacancyDto.getAuthorId(), "ID автора");
@@ -98,7 +96,7 @@ public class VacancyServiceImpl implements VacancyService {
     @Override
     public void deleteVacancy(Long vacancyId) {
         log.info("Удаление вакансии ID: {}", vacancyId);
-        if (vacancyDao.getVacancyById(vacancyId) == null) {
+        if (vacancyDao.existsVacancy(vacancyId).equals(false)) {
             log.error("Вакансия для удаления не найдена ID: {}", vacancyId);
             throw new VacancyNotFoundException("Вакансия не найдена по ID: " + vacancyId);
         }
