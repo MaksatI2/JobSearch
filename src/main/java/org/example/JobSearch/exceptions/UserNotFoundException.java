@@ -1,8 +1,10 @@
 package org.example.JobSearch.exceptions;
 
-public class UserNotFoundException extends RuntimeException {
+import java.util.NoSuchElementException;
+
+public class UserNotFoundException extends NoSuchElementException {
     public UserNotFoundException() {
-        super("User not found");
+
     }
 
     public UserNotFoundException(String message) {

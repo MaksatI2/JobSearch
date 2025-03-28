@@ -46,7 +46,7 @@ public class EditUserServiceImpl implements EditUserService {
 
         int deletedRows = editUserDao.deleteUserByEmail(email);
         if (deletedRows == 0) {
-            throw new RuntimeException("Failed to delete user with email: " + email);
+            throw new UserNotFoundException("Failed to delete user with email: " + email);
         }
     }
 }

@@ -22,14 +22,14 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDTO findApplicant(String email) {
         User user = userDao.findApplicant(email)
-                .orElseThrow(UserNotFoundException::new);
+                .orElseThrow(() -> new UserNotFoundException("Applicant not found with email: " + email));
         return convertToUserDTO(user);
     }
 
     @Override
     public UserDTO findApplicantByPhone(String phoneNumber) {
         User user = userDao.findApplicantByPhone(phoneNumber)
-                .orElseThrow(UserNotFoundException::new);
+                .orElseThrow(() -> new UserNotFoundException("Applicant not found with phone: " + phoneNumber));
         return convertToUserDTO(user);
     }
 
@@ -48,14 +48,14 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDTO findEmployer(String email) {
         User user = userDao.findEmployer(email)
-                .orElseThrow(UserNotFoundException::new);
+                .orElseThrow(() -> new UserNotFoundException("Employer not found with email: " + email));
         return convertToUserDTO(user);
     }
 
     @Override
     public UserDTO findEmployerByPhone(String phoneNumber) {
         User user = userDao.findEmployerByPhone(phoneNumber)
-                .orElseThrow(UserNotFoundException::new);
+                .orElseThrow(() -> new UserNotFoundException("Employer not found with phone: " + phoneNumber));
         return convertToUserDTO(user);
     }
 
@@ -66,7 +66,7 @@ public class UserServiceImpl implements UserService {
         }
         List<User> users = userDao.findEmployersByName(name);
         if (users.isEmpty()) {
-            throw new UserNotFoundException();
+            throw new UserNotFoundException("No employers found with name: " + name);
         }
         return users.stream().map(this::convertToUserDTO).toList();
     }
