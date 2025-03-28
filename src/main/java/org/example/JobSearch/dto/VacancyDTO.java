@@ -3,6 +3,7 @@ package org.example.JobSearch.dto;
 import jakarta.validation.constraints.*;
 import lombok.*;
 
+import java.sql.Timestamp;
 import java.time.LocalDate;
 
 @Getter
@@ -44,6 +45,8 @@ public class VacancyDTO {
     @NotNull
     private Boolean isActive;
 
+    private Timestamp createDate;
+
     @NotNull(message = "Дата обновления не может быть пустой")
-    private LocalDate updateTime;
+    private Timestamp updateTime;
 }

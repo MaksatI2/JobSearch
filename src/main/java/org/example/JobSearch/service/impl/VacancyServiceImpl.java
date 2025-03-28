@@ -116,6 +116,7 @@ public class VacancyServiceImpl implements VacancyService {
                 .expFrom(vacancy.getExpFrom())
                 .expTo(vacancy.getExpTo())
                 .isActive(vacancy.getIsActive())
+                .createDate(vacancy.getCreatedDate())
                 .updateTime(vacancy.getUpdateTime())
                 .build();
     }

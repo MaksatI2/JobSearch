@@ -2,6 +2,7 @@ package org.example.JobSearch.model;
 
 import lombok.*;
 
+import java.sql.Timestamp;
 import java.time.LocalDate;
 
 @Getter
@@ -17,7 +18,7 @@ public class Vacancy {
     private Integer expFrom;
     private Integer expTo;
     private Boolean isActive;
-    private LocalDate createdDate;
-    private LocalDate updateTime;
+    private Timestamp createdDate;
+    private Timestamp updateTime;
 }
 

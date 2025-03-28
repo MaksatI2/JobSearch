@@ -129,12 +129,12 @@ public class ResumeServiceImpl implements ResumeService {
 
     private ResumeDTO toDTO(Resume resume) {
         ResumeDTO dto = ResumeDTO.builder()
-                .id(resume.getId())
                 .applicantId(resume.getApplicantId())
                 .categoryId(resume.getCategoryId())
                 .name(resume.getName())
                 .salary(resume.getSalary())
                 .isActive(resume.getIsActive())
+                .createDate(resume.getCreateDate())
                 .updateTime(resume.getUpdateTime())
                 .build();
 

@@ -19,7 +19,8 @@ public class VacancyMapper implements RowMapper<Vacancy> {
                 .expFrom(rs.getInt("exp_from"))
                 .expTo(rs.getInt("exp_to"))
                 .isActive(rs.getBoolean("is_active"))
-                .updateTime(rs.getDate("update_time").toLocalDate())
+                .createdDate(rs.getTimestamp("created_date"))
+                .updateTime(rs.getTimestamp("update_time"))
                 .build();
     }
 }
