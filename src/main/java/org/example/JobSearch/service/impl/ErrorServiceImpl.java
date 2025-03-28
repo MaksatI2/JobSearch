@@ -17,10 +17,10 @@ public class ErrorServiceImpl implements ErrorService {
     @Override
     public ErrorResponseBody makeResponse(Exception ex) {
         Map<String, List> reasons = new HashMap<>();
-        reasons.put("errors", List.of(ex.getMessage()));
+        reasons.put("ошибки", List.of(ex.getMessage()));
 
         return ErrorResponseBody.builder()
-                .title("Invalid request")
+                .title("Неверный запрос")
                 .detail(ex.getClass().getSimpleName())
                 .reasons(reasons)
                 .timestamp(Instant.now().toString())
@@ -41,7 +41,7 @@ public class ErrorServiceImpl implements ErrorService {
                     }
                 });
         return ErrorResponseBody.builder()
-                .title("Validation Error")
+                .title("Ошибка проверки")
                 .reasons(reasons)
                 .build();
 

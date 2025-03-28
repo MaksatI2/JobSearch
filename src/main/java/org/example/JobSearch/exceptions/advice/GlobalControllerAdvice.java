@@ -45,7 +45,7 @@ public class GlobalControllerAdvice {
     @ExceptionHandler(TypeMismatchException.class)
     public ResponseEntity<ErrorResponseBody> handleTypeMismatch(TypeMismatchException ex) {
         ErrorResponseBody errorResponse = errorService.makeResponse(
-                new IllegalArgumentException("ID must be a number")
+                new IllegalArgumentException("Id должен быть числом")
         );
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
     }
