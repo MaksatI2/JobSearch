@@ -30,12 +30,6 @@ public class GlobalControllerAdvice {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
     }
 
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponseBody> handleGenericException(Exception e) {
-        ErrorResponseBody errorResponse = errorService.makeResponse(e);
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
-    }
-
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<ErrorResponseBody> handleIllegalArgumentException(IllegalArgumentException e) {
         ErrorResponseBody errorResponse = errorService.makeResponse(e);
@@ -52,6 +46,14 @@ public class GlobalControllerAdvice {
     public ResponseEntity<ErrorResponseBody> handleTypeMismatch(TypeMismatchException ex) {
         ErrorResponseBody errorResponse = errorService.makeResponse(
                 new IllegalArgumentException("ID must be a number")
+        );
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErrorResponseBody> handleAllOtherExceptions(Exception e) {
+        ErrorResponseBody errorResponse = errorService.makeResponse(
+                new IllegalArgumentException("Произошла ошибка при обработке запроса. Проверьте входные данные.")
         );
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
     }
