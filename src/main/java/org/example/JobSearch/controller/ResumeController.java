@@ -36,12 +36,8 @@ public class ResumeController {
 
     @GetMapping("/allResumes")
     public ResponseEntity<?> getAllResumes() {
-        try {
             List<ResumeDTO> resumes = resumeService.getAllResumes();
             return ResponseEntity.ok(resumes);
-        } catch (ResumeNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
     }
 
     @GetMapping("/getUserResumes/{applicantId}")

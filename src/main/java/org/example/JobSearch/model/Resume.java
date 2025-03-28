@@ -14,5 +14,6 @@ public class Resume {
     private String name;
     private Float salary;
     private Boolean isActive;
+    private Timestamp createDate;
     private Timestamp updateTime;
 }

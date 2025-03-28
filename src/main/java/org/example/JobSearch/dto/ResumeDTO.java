@@ -15,29 +15,34 @@ import java.util.List;
 public class ResumeDTO {
 
     @NotNull
-    private Long id;
-
     @NotNull(message = "ID соискателя не может быть пустым")
+    @Positive(message = "ID соискателя должен быть положительным числом")
     private Long applicantId;
 
     @NotNull(message = "ID категории не может быть пустым")
+    @Positive(message = "ID категории должен быть положительным числом")
     private Long categoryId;
 
-    @NotBlank
+    @NotBlank(message = "Название резюме не может быть пустым")
     @Size(min = 2, max = 100, message = "Название резюме должно быть от 2 до 100 символов")
     private String name;
 
-    @NotNull
+    @NotNull(message = "Зарплата не может быть пустой")
     @Min(value = 0, message = "Зарплата не может быть отрицательной")
     private Float salary;
 
-    @NotNull
+    @NotNull(message = "Статус активности не может быть пустым")
     private Boolean isActive;
+
+    @NotNull(message = "Время создания не может быть пустым")
+    private Timestamp createDate;
 
     @NotNull(message = "Время обновления не может быть пустым")
     private Timestamp updateTime;
 
-    private List<@Valid EducationInfoDTO> educationInfos;
+    @Valid
+    private List<EducationInfoDTO> educationInfos;
 
-    private List<@Valid WorkExperienceDTO> workExperiences;
+    @Valid
+    private List<WorkExperienceDTO> workExperiences;
 }

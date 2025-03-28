@@ -10,6 +10,7 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import java.sql.PreparedStatement;
+import java.sql.Timestamp;
 import java.util.List;
 
 @Repository
@@ -20,9 +21,9 @@ public class ResumeDao {
     public Long createResume(ResumeDTO resume) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
         String sql = """
-            INSERT INTO resumes (applicant_id, category_id, name, salary, is_active, update_time)
-            VALUES (?, ?, ?, ?, ?, ?)
-            """;
+                    INSERT INTO resumes (applicant_id, category_id, name, salary, is_active, update_time, create_date)
+                    VALUES (?, ?, ?, ?, ?, ?, ?)
+                """;
 
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(sql, new String[]{"id"});
@@ -32,6 +33,7 @@ public class ResumeDao {
             ps.setFloat(4, resume.getSalary());
             ps.setBoolean(5, resume.getIsActive());
             ps.setTimestamp(6, resume.getUpdateTime());
+            ps.setTimestamp(7, new Timestamp(System.currentTimeMillis()));
             return ps;
         }, keyHolder);
 
@@ -40,10 +42,10 @@ public class ResumeDao {
 
     public void updateResume(Long id, ResumeDTO resume) {
         String sql = """
-            UPDATE resumes 
-            SET applicant_id = ?, category_id = ?, name = ?, salary = ?, is_active = ?, update_time = ?
-            WHERE id = ?
-        """;
+                    UPDATE resumes 
+                    SET applicant_id = ?, category_id = ?, name = ?, salary = ?, is_active = ?, update_time = ?
+                    WHERE id = ?
+                """;
         jdbcTemplate.update(sql, resume.getApplicantId(), resume.getCategoryId(), resume.getName(),
                 resume.getSalary(), resume.getIsActive(), resume.getUpdateTime(), id);
     }
@@ -60,16 +62,16 @@ public class ResumeDao {
 
     public List<Resume> getActiveResumesByCategory(Long categoryId) {
         String sql = """
-        WITH RECURSIVE category_tree(id) AS (
-            SELECT id FROM categories WHERE id = ?
-            UNION ALL
-            SELECT c.id FROM categories c
-            JOIN category_tree ct ON c.parent_id = ct.id
-        )
-        SELECT * FROM resumes WHERE category_id IN 
-        (SELECT id FROM category_tree)
-        AND is_active = TRUE;
-    """;
+                    WITH RECURSIVE category_tree(id) AS (
+                        SELECT id FROM categories WHERE id = ?
+                        UNION ALL
+                        SELECT c.id FROM categories c
+                        JOIN category_tree ct ON c.parent_id = ct.id
+                    )
+                    SELECT * FROM resumes WHERE category_id IN 
+                    (SELECT id FROM category_tree)
+                    AND is_active = TRUE;
+                """;
         return jdbcTemplate.query(sql, new ResumeMapper(), categoryId);
     }
 
