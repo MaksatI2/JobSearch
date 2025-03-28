@@ -1,5 +1,7 @@
 package org.example.JobSearch.service.impl;
 
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.example.JobSearch.exceptions.InvalidUserDataException;
 import org.example.JobSearch.model.User;
 import org.example.JobSearch.dao.UserDao;
@@ -7,7 +9,6 @@ import org.example.JobSearch.util.FileUtil;
 import org.example.JobSearch.dto.UserDTO;
 import org.example.JobSearch.service.UserService;
 import org.example.JobSearch.exceptions.UserNotFoundException;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -15,65 +16,95 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
     private final UserDao userDao;
+
     @Override
     public UserDTO findApplicant(String email) {
+        log.info("Поиск соискателя по email: {}", email);
         User user = userDao.findApplicant(email)
-                .orElseThrow(UserNotFoundException::new);
+                .orElseThrow(() -> {
+                    log.error("Соискатель с email {} не найден", email);
+                    return new UserNotFoundException("Соискатель с email не найден: " + email);
+                });
+        log.debug("Соискатель с email {} найден", email);
         return convertToUserDTO(user);
     }
 
     @Override
     public UserDTO findApplicantByPhone(String phoneNumber) {
+        log.info("Поиск соискателя по телефону: {}", phoneNumber);
         User user = userDao.findApplicantByPhone(phoneNumber)
-                .orElseThrow(UserNotFoundException::new);
+                .orElseThrow(() -> {
+                    log.error("Соискатель с телефоном {} не найден", phoneNumber);
+                    return new UserNotFoundException("Соискатель с телефоном не найден: " + phoneNumber);
+                });
+        log.debug("Соискатель с телефоном {} найден", phoneNumber);
         return convertToUserDTO(user);
     }
 
     @Override
     public List<UserDTO> findApplicantsByName(String name) {
+        log.info("Поиск соискателей по имени: {}", name);
         if (name == null || name.isEmpty()) {
-            throw new InvalidUserDataException("Name cannot be empty");
+            log.error("Имя для поиска не может быть пустым");
+            throw new InvalidUserDataException("Имя не может быть пустым");
         }
         List<User> users = userDao.findApplicantsByName(name);
         if (users.isEmpty()) {
-            throw new UserNotFoundException("No applicants found with name: " + name);
+            log.warn("Соискатели с именем {} не найдены", name);
+            throw new UserNotFoundException("Соискатели с именем не найдены: " + name);
         }
+        log.debug("Найдено {} соискателей с именем {}", users.size(), name);
         return users.stream().map(this::convertToUserDTO).toList();
     }
 
     @Override
     public UserDTO findEmployer(String email) {
+        log.info("Поиск работодателя по email: {}", email);
         User user = userDao.findEmployer(email)
-                .orElseThrow(UserNotFoundException::new);
+                .orElseThrow(() -> {
+                    log.error("Работодатель с email {} не найден", email);
+                    return new UserNotFoundException("Работодатель с email не найден: " + email);
+                });
+        log.debug("Работодатель с email {} найден", email);
         return convertToUserDTO(user);
     }
 
     @Override
     public UserDTO findEmployerByPhone(String phoneNumber) {
+        log.info("Поиск работодателя по телефону: {}", phoneNumber);
         User user = userDao.findEmployerByPhone(phoneNumber)
-                .orElseThrow(UserNotFoundException::new);
+                .orElseThrow(() -> {
+                    log.error("Работодатель с телефоном {} не найден", phoneNumber);
+                    return new UserNotFoundException("Работодатель с телефоном не найден: " + phoneNumber);
+                });
+        log.debug("Работодатель с телефоном {} найден", phoneNumber);
         return convertToUserDTO(user);
     }
 
     @Override
     public List<UserDTO> findEmployersByName(String name) {
+        log.info("Поиск работодателей по имени: {}", name);
         if (name == null || name.isEmpty()) {
-            throw new InvalidUserDataException("Name cannot be empty");
+            log.error("Имя для поиска не может быть пустым");
+            throw new InvalidUserDataException("Имя не может быть пустым");
         }
         List<User> users = userDao.findEmployersByName(name);
         if (users.isEmpty()) {
-            throw new UserNotFoundException();
+            log.warn("Работодатели с именем {} не найдены", name);
+            throw new UserNotFoundException("Работодатели с именем не найдены: " + name);
         }
+        log.debug("Найдено {} работодателей с именем {}", users.size(), name);
         return users.stream().map(this::convertToUserDTO).toList();
     }
 
     private UserDTO convertToUserDTO(User user) {
+        log.trace("Конвертация User в UserDTO для пользователя ID: {}", user.getId());
         return UserDTO.builder()
-                .id(user.getId())
                 .email(user.getEmail())
                 .name(user.getName())
                 .surname(user.getSurname())
@@ -86,36 +117,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void register(UserDTO userDto) {
-        if (userDto.getEmail() == null || userDto.getEmail().isEmpty()) {
-            throw new InvalidUserDataException("Email cannot be empty");
-        }
-        if (userDao.existsByEmail(userDto.getEmail())) {
-            throw new InvalidUserDataException("Email is already in use");
-        }
-        if (userDto.getPassword() == null || userDto.getPassword().isEmpty()) {
-            throw new InvalidUserDataException("Password cannot be empty");
-        }
-        if (userDto.getPassword().length() < 6) {
-            throw new InvalidUserDataException("Password must be at least 6 characters");
-        }
-        if (userDto.getName() == null || userDto.getName().trim().isEmpty()) {
-            throw new InvalidUserDataException("Name cannot be empty");
-        }
-        if (userDto.getSurname() == null || userDto.getSurname().trim().isEmpty()) {
-            throw new InvalidUserDataException("Surname cannot be empty");
-        }
-        if (userDto.getAge() != null && userDto.getAge() < 18) {
-            throw new InvalidUserDataException("Age must be at least 18");
-        }
-        if (userDto.getPhoneNumber() != null && userDto.getPhoneNumber().length() < 10) {
-            throw new InvalidUserDataException("Phone number must contain at least 10 digits");
-        }
-        if (userDto.getAccountType() == null ||
-                (!userDto.getAccountType().equalsIgnoreCase("EMPLOYER") &&
-                        !userDto.getAccountType().equalsIgnoreCase("APPLICANT"))) {
-            throw new InvalidUserDataException("Invalid account type");
-        }
-
+        log.info("Регистрация нового пользователя: {}", userDto.getEmail());
         User user = new User();
         user.setEmail(userDto.getEmail());
         user.setPassword(userDto.getPassword());
@@ -126,87 +128,174 @@ public class UserServiceImpl implements UserService {
         user.setAvatar(userDto.getAvatar());
         user.setAccountType(userDto.getAccountType());
 
-        userDao.save(user);
+        validateUser(userDto);
 
-        System.out.println("User registered successfully: " + user.getEmail());
+        userDao.save(user);
+        log.info("Пользователь {} успешно зарегистрирован", userDto.getEmail());
     }
 
     @Override
     public void login(UserDTO userDto) {
+        log.info("Попытка входа пользователя: {}", userDto.getEmail());
         if (userDto.getEmail() == null || userDto.getEmail().isEmpty()) {
-            throw new InvalidUserDataException("Email cannot be empty");
+            log.error("Email для входа не может быть пустым");
+            throw new InvalidUserDataException("Email не может быть пустым");
         }
         if (userDto.getPassword() == null || userDto.getPassword().isEmpty()) {
-            throw new InvalidUserDataException("Password cannot be empty");
+            log.error("Пароль для входа не может быть пустым");
+            throw new InvalidUserDataException("Пароль не может быть пустым");
         }
 
         User user = userDao.findByEmail(userDto.getEmail())
-                .orElseThrow(() -> new UserNotFoundException("User not found"));
+                .orElseThrow(() -> {
+                    log.error("Пользователь с email {} не найден", userDto.getEmail());
+                    return new UserNotFoundException("Пользователь не найден");
+                });
 
         if (!userDto.getPassword().equals(user.getPassword())) {
-            throw new InvalidUserDataException("Invalid password");
+            log.error("Неверный пароль для пользователя {}", userDto.getEmail());
+            throw new InvalidUserDataException("Неверный пароль");
         }
-
-        System.out.println("User " + user.getEmail() + " logged in successfully");
+        log.info("Пользователь {} успешно вошел в систему", userDto.getEmail());
     }
+
     @Override
     public List<UserDTO> getApplicantsVacancy(Long vacancyId) {
+        log.info("Получение соискателей для вакансии ID: {}", vacancyId);
         if (vacancyId == null) {
-            throw new InvalidUserDataException("Vacancy ID cannot be null");
+            log.error("ID вакансии не может быть null");
+            throw new InvalidUserDataException("ID вакансии не может быть null");
         }
         List<User> applicants = userDao.findApplicantsByVacancyId(vacancyId);
         if (applicants.isEmpty()) {
-            throw new UserNotFoundException("No applicants found for vacancy ID: " + vacancyId);
+            log.warn("Не найдено соискателей для вакансии ID: {}", vacancyId);
+            throw new UserNotFoundException("Не найдено соискателей для вакансии ID: " + vacancyId);
         }
+        log.debug("Найдено {} соискателей для вакансии ID: {}", applicants.size(), vacancyId);
         return applicants.stream().map(this::convertToUserDTO).toList();
     }
 
     @Override
     public boolean userExists(String email) {
-        return userDao.existsByEmail(email);
+        log.debug("Проверка существования пользователя с email: {}", email);
+        boolean exists = userDao.existsByEmail(email);
+        log.trace("Результат проверки пользователя {}: {}", email, exists);
+        return exists;
     }
 
     @Override
     public void updateUserAvatar(Long userId, MultipartFile file) {
-
+        log.info("Обновление аватара для пользователя ID: {}", userId);
         if (file == null || file.isEmpty()) {
-            throw new InvalidUserDataException("File cannot be empty");
+            log.error("Файл для обновления аватара не может быть пустым");
+            throw new InvalidUserDataException("Файл не может быть пустым");
         }
 
         userDao.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException("User not found with id: " + userId));
+                .orElseThrow(() -> {
+                    log.error("Пользователь с ID {} не найден", userId);
+                    return new UserNotFoundException("Пользователь с ID не найден: " + userId);
+                });
 
         try {
             String avatarPath = FileUtil.saveUploadFile(file, "images/");
+            log.debug("Аватар сохранен по пути: {}", avatarPath);
 
             int updatedRows = userDao.updateUserAvatar(userId, avatarPath);
 
             if (updatedRows == 0) {
-                throw new RuntimeException("Failed to update avatar for user with id: " + userId);
+                log.error("Не удалось обновить аватар для пользователя ID: {}", userId);
+                throw new RuntimeException("Не удалось обновить аватар для пользователя ID: " + userId);
             }
+            log.info("Аватар пользователя ID {} успешно обновлен", userId);
         } catch (Exception e) {
-            throw new RuntimeException("Failed to update avatar: " + e.getMessage());
+            log.error("Ошибка при обновлении аватара: {}", e.getMessage());
+            throw new RuntimeException("Ошибка при обновлении аватара: " + e.getMessage());
         }
     }
 
     @Override
     public ResponseEntity<?> getAvatarByUserId(Long userId) {
+        log.info("Получение аватара пользователя ID: {}", userId);
         if (userId == null) {
-            throw new InvalidUserDataException("User ID cannot be null");
+            log.error("ID пользователя не может быть null");
+            throw new InvalidUserDataException("ID пользователя не может быть null");
         }
 
         String avatarPath = userDao.findAvatarPathById(userId)
-                .orElseThrow(() -> new UserNotFoundException("User not found or has no avatar"));
+                .orElseThrow(() -> {
+                    log.error("Пользователь с ID {} не найден или не имеет аватара", userId);
+                    return new UserNotFoundException("Пользователь не найден или не имеет аватара");
+                });
 
         if (avatarPath == null || avatarPath.isEmpty()) {
-            throw new UserNotFoundException("User has no avatar");
+            log.error("Пользователь с ID {} не имеет аватара", userId);
+            throw new UserNotFoundException("Пользователь не имеет аватара");
         }
 
         try {
             String imageName = avatarPath.substring(avatarPath.lastIndexOf('/') + 1);
+            log.debug("Получение файла аватара: {}", imageName);
             return FileUtil.getOutputFile(imageName, "images/", MediaType.IMAGE_JPEG);
         } catch (Exception e) {
-            throw new RuntimeException("Failed to retrieve avatar: " + e.getMessage());
+            log.error("Ошибка при получении аватара: {}", e.getMessage());
+            throw new RuntimeException("Ошибка при получении аватара: " + e.getMessage());
         }
     }
+
+    private void validateUser(UserDTO userDto) {
+        log.debug("Валидация данных пользователя: {}", userDto.getEmail());
+        if (userDto.getEmail() == null || userDto.getEmail().isEmpty()) {
+            log.error("Email не может быть пустым");
+            throw new InvalidUserDataException("Email не может быть пустым");
+        }
+        if (userDao.existsByEmail(userDto.getEmail())) {
+            log.error("Email {} уже используется", userDto.getEmail());
+            throw new InvalidUserDataException("Email уже используется");
+        }
+        if (userDto.getPassword() == null || userDto.getPassword().isEmpty()) {
+            log.error("Пароль не может быть пустым");
+            throw new InvalidUserDataException("Пароль не может быть пустым");
+        }
+        if (userDto.getPassword().length() < 6) {
+            log.error("Пароль должен содержать минимум 6 символов");
+            throw new InvalidUserDataException("Пароль должен содержать минимум 6 символов");
+        }
+        if (userDto.getName() == null || userDto.getName().trim().isEmpty()) {
+            log.error("Имя не может быть пустым");
+            throw new InvalidUserDataException("Имя не может быть пустым");
+        }
+        if (userDto.getSurname() == null || userDto.getSurname().trim().isEmpty()) {
+            log.error("Фамилия не может быть пустым");
+            throw new InvalidUserDataException("Фамилия не может быть пустым");
+        }
+        if (userDto.getAge() == null) {
+            log.error("Возраст не может быть null");
+            throw new InvalidUserDataException("Возраст не может быть null");
+        }
+        if (userDto.getAge() < 18 || userDto.getAge() > 60) {
+            log.error("Возраст должен быть между 18 и 60");
+            throw new InvalidUserDataException("Возраст должен быть между 18 и 60");
+        }
+        if (userDto.getPhoneNumber() != null && !userDto.getPhoneNumber().matches("^\\d{10,15}$")) {
+            log.error("Некорректный номер телефона: {}", userDto.getPhoneNumber());
+            throw new InvalidUserDataException("Номер телефона должен содержать только цифры и быть длиной 10-15 символов");
+        }
+        if (userDto.getAccountType() == null ||
+                (!userDto.getAccountType().equalsIgnoreCase("EMPLOYER") &&
+                        !userDto.getAccountType().equalsIgnoreCase("APPLICANT"))) {
+            log.error("Некорректный тип аккаунта: {}", userDto.getAccountType());
+            throw new InvalidUserDataException("Некорректный тип аккаунта");
+        }
+        if (!userDto.getName().matches("^[a-zA-Zа-яА-Я]+$")) {
+            log.error("Имя содержит недопустимые символы: {}", userDto.getName());
+            throw new InvalidUserDataException("Имя не может содержать цифры или специальные символы");
+        }
+        if (!userDto.getSurname().matches("^[a-zA-Zа-яА-Я]+$")) {
+            log.error("Фамилия содержит недопустимые символы: {}", userDto.getSurname());
+            throw new InvalidUserDataException("Фамилия не может содержать цифры или специальные символы");
+        }
+        log.debug("Валидация пользователя {} прошла успешно", userDto.getEmail());
+    }
+
 }

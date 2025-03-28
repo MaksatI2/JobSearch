@@ -3,6 +3,7 @@ package org.example.JobSearch.service.impl;
 import lombok.RequiredArgsConstructor;
 import org.example.JobSearch.dao.WorkExperienceDao;
 import org.example.JobSearch.dto.WorkExperienceDTO;
+import org.example.JobSearch.exceptions.InvalidUserDataException;
 import org.example.JobSearch.model.WorkExperience;
 import org.example.JobSearch.service.WorkExperienceService;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,10 @@ public class WorkExperienceServiceImpl implements WorkExperienceService {
 
     @Override
     public void createWorkExperience(Long resumeId, WorkExperienceDTO workExperienceDto) {
+        if (workExperienceDto.getId() != null) {
+            throw new InvalidUserDataException("ID не должен быть указан при создании");
+        }
+
         WorkExperience workExperience = new WorkExperience();
         workExperience.setYears(workExperienceDto.getYears());
         workExperience.setCompanyName(workExperienceDto.getCompanyName());

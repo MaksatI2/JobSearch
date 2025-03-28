@@ -1,6 +1,8 @@
 package org.example.JobSearch.exceptions;
 
-public class InvalidUserDataException extends RuntimeException {
+import java.util.NoSuchElementException;
+
+public class InvalidUserDataException extends NoSuchElementException {
     public InvalidUserDataException(String message) {
         super(message);
     }

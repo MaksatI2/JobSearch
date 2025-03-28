@@ -22,7 +22,7 @@ public class EditUserServiceImpl implements EditUserService {
     @Transactional
     public void updateUserByEmail(String email, EditUserDTO editUserDTO) {
         User existingUser = userDao.findByEmail(email)
-                .orElseThrow(() -> new UserNotFoundException("User not found with email: " + email));
+                .orElseThrow(() -> new UserNotFoundException("Пользователь не найден: " + email));
 
         User userToUpdate = editUserMapper.toUser(editUserDTO);
         userToUpdate.setEmail(email);
@@ -31,9 +31,8 @@ public class EditUserServiceImpl implements EditUserService {
         userToUpdate.setAvatar(existingUser.getAvatar());
 
         int updatedRows = editUserDao.updateUserByEmail(email, userToUpdate);
-
         if (updatedRows == 0) {
-            throw new RuntimeException("Failed to update user with email: " + email);
+            throw new RuntimeException("Ошибка обновления: " + email);
         }
     }
 
@@ -41,12 +40,12 @@ public class EditUserServiceImpl implements EditUserService {
     @Transactional
     public void deleteUserByEmail(String email) {
         if (!userDao.existsByEmail(email)) {
-            throw new UserNotFoundException("User not found with email: " + email);
+            throw new UserNotFoundException("Пользователь не найден: " + email);
         }
 
         int deletedRows = editUserDao.deleteUserByEmail(email);
         if (deletedRows == 0) {
-            throw new RuntimeException("Failed to delete user with email: " + email);
+            throw new UserNotFoundException("Ошибка удаления: " + email);
         }
     }
 }

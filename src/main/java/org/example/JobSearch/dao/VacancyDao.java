@@ -3,7 +3,10 @@ package org.example.JobSearch.dao;
 import lombok.RequiredArgsConstructor;
 import org.example.JobSearch.dao.mapper.VacancyMapper;
 import org.example.JobSearch.dto.VacancyDTO;
+import org.example.JobSearch.exceptions.ResumeNotFoundException;
 import org.example.JobSearch.model.Vacancy;
+import org.springframework.dao.DataAccessException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -16,12 +19,12 @@ public class VacancyDao {
 
     public void createVacancy(VacancyDTO vacancy) {
         String sql = """
-            INSERT INTO vacancies (author_id, category_id, name, description, salary, exp_from, exp_to, is_active, created_date, update_time)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            INSERT INTO vacancies (author_id, category_id, name, description, salary, exp_from, exp_to, is_active, update_time)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
         """;
         jdbcTemplate.update(sql, vacancy.getAuthorId(), vacancy.getCategoryId(), vacancy.getName(),
                 vacancy.getDescription(), vacancy.getSalary(), vacancy.getExpFrom(), vacancy.getExpTo(),
-                vacancy.getIsActive(), vacancy.getCreatedDate(), vacancy.getUpdateTime());
+                vacancy.getIsActive(), vacancy.getUpdateTime());
     }
 
     public void updateVacancy(Long id, VacancyDTO vacancy) {
@@ -70,9 +73,9 @@ public class VacancyDao {
         return jdbcTemplate.query(sql, new VacancyMapper(), applicantId);
     }
 
-    public Vacancy getVacancyById(Long id) {
-        String sql = "SELECT * FROM vacancies WHERE id = ?";
-        return jdbcTemplate.queryForObject(sql, new VacancyMapper(), id);
+    public Boolean existsVacancy(Long id) {
+        String sql = "select count(*) from vacancies where ID = ?";
+        Long count = jdbcTemplate.queryForObject(sql, Long.class, id);
+        return count != null && count > 0;
     }
-
 }

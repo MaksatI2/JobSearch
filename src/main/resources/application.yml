@@ -10,3 +10,19 @@ spring:
     driver-class-name: org.h2.Driver
   liquibase:
     change-log: classpath:/db/changelog/master.yml
+  output:
+    ansi:
+      enabled: always
+logging:
+  level:
+    root: info
+  file:
+    path: logs
+
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} %-5level %logger{36} - %msg%n"
+  logback:
+    rollingpolicy:
+      max-file-size: 10MB
+      max-history: 5
+

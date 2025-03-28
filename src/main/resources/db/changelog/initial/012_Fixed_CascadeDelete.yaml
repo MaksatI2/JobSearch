@@ -1,0 +1,25 @@
+databaseChangeLog:
+  - changeSet:
+      id: 012
+      author: I.Maksat
+      changes:
+        - dropForeignKeyConstraint:
+            baseTableName: responded_applicants
+            constraintName: fk_responded_resume
+        - dropForeignKeyConstraint:
+            baseTableName: responded_applicants
+            constraintName: fk_responded_vacancy
+        - addForeignKeyConstraint:
+            baseTableName: responded_applicants
+            baseColumnNames: resume_id
+            constraintName: fk_responded_resume
+            referencedTableName: resumes
+            referencedColumnNames: id
+            deleteCascade: true
+        - addForeignKeyConstraint:
+            baseTableName: responded_applicants
+            baseColumnNames: vacancy_id
+            constraintName: fk_responded_vacancy
+            referencedTableName: vacancies
+            referencedColumnNames: id
+            deleteCascade: true
