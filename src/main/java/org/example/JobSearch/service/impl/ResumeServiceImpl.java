@@ -74,26 +74,9 @@ public class ResumeServiceImpl implements ResumeService {
 
     public void updateResume(Long resumeId, ResumeDTO resumeDto) {
         log.info("Обновление резюме ID: {}", resumeId);
-        Resume existingResume = resumeDao.getResumeById(resumeId);
         if (resumeDao.existsResume(resumeId).equals(false)) {
             log.error("Резюме с ID {} не найдено", resumeId);
             throw new ResumeNotFoundException("Резюме с ID не найдено: " + resumeId);
-        }
-
-        if (resumeDto.getApplicantId() == null) {
-            log.error("ID соискателя не может быть null");
-            throw new InvalidUserDataException("ID соискателя не может быть null");
-        }
-
-        if (!userDao.isUserApplicant(resumeDto.getApplicantId())) {
-            log.error("Попытка обновления резюме пользователем, не являющимся соискателем: {}", resumeDto.getApplicantId());
-            throw new InvalidUserDataException("Только соискатели могут обновлять резюме");
-        }
-
-        if (!existingResume.getApplicantId().equals(resumeDto.getApplicantId())) {
-            log.error("Попытка обновления чужого резюме. Ожидался соискатель ID: {}, фактический ID: {}",
-                    existingResume.getApplicantId(), resumeDto.getApplicantId());
-            throw new InvalidUserDataException("Вы можете обновлять только свои резюме");
         }
 
         resumeDao.updateResume(resumeId, resumeDto);
