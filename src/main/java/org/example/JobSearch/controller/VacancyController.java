@@ -12,12 +12,12 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/vacancy")
+@RequestMapping("/vacancies")
 @RequiredArgsConstructor
 public class VacancyController {
     private final VacancyService vacancyService;
 
-    @PostMapping("/")
+    @PostMapping
     public ResponseEntity<String> createVacancy(@RequestBody @Valid VacancyDTO vacancyDTO) {
         vacancyService.createVacancy(vacancyDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body("Vacancy created successfully");
@@ -41,13 +41,13 @@ public class VacancyController {
             return ResponseEntity.ok(vacancies);
     }
 
-    @GetMapping("/vacancies/category/{categoryId}")
+    @GetMapping("/category/{categoryId}")
     public ResponseEntity<?> getVacanciesByCategory(@PathVariable @Valid Long categoryId) {
             List<VacancyDTO> vacancies = vacancyService.getVacanciesByCategory(categoryId);
             return ResponseEntity.ok(vacancies);
     }
 
-    @GetMapping("/respApplToVacancy/{id}")
+    @GetMapping("/ApplToVacancy/{id}")
     public ResponseEntity<?> getRespApplToVacancy(@PathVariable @Valid Long id) {
             List<VacancyDTO> vacancies = vacancyService.getRespApplToVacancy(id);
             return ResponseEntity.ok(vacancies);

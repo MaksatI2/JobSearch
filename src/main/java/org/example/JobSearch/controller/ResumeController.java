@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/resume")
+@RequestMapping("/resumes")
 @RequiredArgsConstructor
 public class ResumeController {
     private final ResumeService resumeService;
@@ -41,13 +41,13 @@ public class ResumeController {
             return ResponseEntity.ok(resumes);
     }
 
-    @GetMapping("/getUserResumes/{applicantId}")
+    @GetMapping("/UserResumes/{applicantId}")
     public ResponseEntity<?> getUserResumes(@PathVariable @Valid Long applicantId) {
             List<ResumeDTO> resumes = resumeService.getUserResumes(applicantId);
             return ResponseEntity.ok(resumes);
     }
 
-    @GetMapping("/resumes/category/{categoryId}")
+    @GetMapping("/category/{categoryId}")
     public ResponseEntity<?> getResumesByCategory(@PathVariable @Valid Long categoryId) {
             List<ResumeDTO> resumes = resumeService.getResumesByCategory(categoryId);
             return ResponseEntity.ok(resumes);

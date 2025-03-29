@@ -30,10 +30,10 @@ public class VacancyDao {
     public void updateVacancy(Long id, VacancyDTO vacancy) {
         String sql = """
             UPDATE vacancies 
-            SET author_id = ?, category_id = ?, name = ?, description = ?, salary = ?, exp_from = ?, exp_to = ?, is_active = ?, update_time = ?
+            SET category_id = ?, name = ?, description = ?, salary = ?, exp_from = ?, exp_to = ?, is_active = ?, update_time = ?
             WHERE id = ?
         """;
-        jdbcTemplate.update(sql, vacancy.getAuthorId(), vacancy.getCategoryId(), vacancy.getName(),
+        jdbcTemplate.update(sql, vacancy.getCategoryId(), vacancy.getName(),
                 vacancy.getDescription(), vacancy.getSalary(), vacancy.getExpFrom(), vacancy.getExpTo(),
                 vacancy.getIsActive(), vacancy.getUpdateTime(), id);
     }

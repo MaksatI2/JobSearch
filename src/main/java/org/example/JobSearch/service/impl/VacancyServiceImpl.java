@@ -65,18 +65,12 @@ public class VacancyServiceImpl implements VacancyService {
     @Override
     public void updateVacancy(Long vacancyId, VacancyDTO vacancyDto) {
         log.info("Обновление вакансии ID: {}", vacancyId);
-        if (vacancyDao.existsVacancy(vacancyId).equals(false)) {
-            log.error("Вакансия для удаления не найдена ID: {}", vacancyId);
+        if (!vacancyDao.existsVacancy(vacancyId)) {
+            log.error("Вакансия для обновления не найдена ID: {}", vacancyId);
             throw new VacancyNotFoundException("Вакансия не найдена по ID: " + vacancyId);
         }
 
-        Long authorId = parseAndValidateId(vacancyDto.getAuthorId(), "ID автора");
         Long categoryId = parseAndValidateId(vacancyDto.getCategoryId(), "ID категории");
-
-        if (!userDao.isUserEmployer(authorId)) {
-            log.error("Попытка обновления вакансии пользователем, не являющимся работодателем: {}", authorId);
-            throw new VacancyNotFoundException("Только работодатели могут обновлять вакансии");
-        }
 
         if (!categoryDao.existsById(categoryId)) {
             log.error("Попытка обновления вакансии с несуществующей категорией ID: {}", categoryId);
