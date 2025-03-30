@@ -48,4 +48,25 @@ public class WorkExperienceServiceImpl implements WorkExperienceService {
                 .responsibilities(workExperience.getResponsibilities())
                 .build();
     }
+
+    @Override
+    public void updateWorkExperience(Long id, WorkExperienceDTO workExperienceDto) {
+        if (id == null) {
+            throw new InvalidUserDataException("ID опыта работы не может быть null");
+        }
+
+        WorkExperience workExperience = new WorkExperience();
+        workExperience.setId(id);
+        workExperience.setYears(workExperienceDto.getYears());
+        workExperience.setCompanyName(workExperienceDto.getCompanyName());
+        workExperience.setPosition(workExperienceDto.getPosition());
+        workExperience.setResponsibilities(workExperienceDto.getResponsibilities());
+
+        workExperienceDao.updateWorkExperience(id, workExperience);
+    }
+
+    @Override
+    public void deleteWorkExperience(Long id) {
+        workExperienceDao.deleteWorkExperience(id);
+    }
 }
