@@ -1,6 +1,6 @@
 package org.example.JobSearch.service;
 
-import org.example.JobSearch.dto.EditUserDTO;
+import org.example.JobSearch.dto.EditDTO.EditUserDTO;
 
 public interface EditUserService {
     void updateUserByEmail(String email, EditUserDTO editUserDTO);

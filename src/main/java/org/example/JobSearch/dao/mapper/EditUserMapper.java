@@ -1,6 +1,6 @@
 package org.example.JobSearch.dao.mapper;
 
-import org.example.JobSearch.dto.EditUserDTO;
+import org.example.JobSearch.dto.EditDTO.EditUserDTO;
 import org.example.JobSearch.model.User;
 import org.springframework.stereotype.Component;
 
