@@ -9,4 +9,8 @@ public interface EducationInfoService {
     void createEducationInfo(Long resumeId, EducationInfoDTO educationInfoDto);
 
     List<EducationInfoDTO> getEducationInfoByResumeId(Long resumeId);
+
+    void updateEducationInfo(Long id, EducationInfoDTO educationInfoDto);
+
+    void deleteEducationInfo(Long id);
 }

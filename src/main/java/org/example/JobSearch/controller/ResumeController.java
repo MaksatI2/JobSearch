@@ -2,6 +2,7 @@ package org.example.JobSearch.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.example.JobSearch.dto.EditDTO.EditResumeDTO;
 import org.example.JobSearch.dto.ResumeDTO;
 import org.example.JobSearch.exceptions.ResumeNotFoundException;
 import org.example.JobSearch.service.ResumeService;
@@ -24,8 +25,8 @@ public class ResumeController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<String> updateResume(@PathVariable @Valid Long id, @RequestBody ResumeDTO resumeDTO) {
-        resumeService.updateResume(id, resumeDTO);
+    public ResponseEntity<String> updateResume(@PathVariable @Valid Long id, @RequestBody EditResumeDTO editresumeDTO) {
+        resumeService.updateResume(id, editresumeDTO);
         return ResponseEntity.ok("Resume updated successfully");
     }
 

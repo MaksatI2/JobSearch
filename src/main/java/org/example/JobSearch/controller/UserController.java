@@ -2,7 +2,7 @@ package org.example.JobSearch.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.example.JobSearch.dto.EditUserDTO;
+import org.example.JobSearch.dto.EditDTO.EditUserDTO;
 import org.example.JobSearch.dto.UserDTO;
 import org.example.JobSearch.service.EditUserService;
 import org.example.JobSearch.service.UserService;

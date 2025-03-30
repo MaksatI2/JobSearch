@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.example.JobSearch.dao.EditUserDao;
 import org.example.JobSearch.dao.UserDao;
 import org.example.JobSearch.dao.mapper.EditUserMapper;
-import org.example.JobSearch.dto.EditUserDTO;
+import org.example.JobSearch.dto.EditDTO.EditUserDTO;
 import org.example.JobSearch.exceptions.UserNotFoundException;
 import org.example.JobSearch.model.User;
 import org.example.JobSearch.service.EditUserService;

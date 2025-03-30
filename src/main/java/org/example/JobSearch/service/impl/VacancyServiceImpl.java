@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.example.JobSearch.dao.CategoryDao;
 import org.example.JobSearch.dao.UserDao;
 import org.example.JobSearch.dao.VacancyDao;
+import org.example.JobSearch.dto.EditDTO.EditVacancyDTO;
 import org.example.JobSearch.dto.VacancyDTO;
 import org.example.JobSearch.exceptions.CategoryNotFoundException;
 import org.example.JobSearch.exceptions.VacancyNotFoundException;
@@ -63,27 +64,27 @@ public class VacancyServiceImpl implements VacancyService {
     }
 
     @Override
-    public void updateVacancy(Long vacancyId, VacancyDTO vacancyDto) {
+    public void updateVacancy(Long vacancyId, EditVacancyDTO editvacancyDto) {
         log.info("Обновление вакансии ID: {}", vacancyId);
         if (!vacancyDao.existsVacancy(vacancyId)) {
             log.error("Вакансия для обновления не найдена ID: {}", vacancyId);
             throw new VacancyNotFoundException("Вакансия не найдена по ID: " + vacancyId);
         }
 
-        Long categoryId = parseAndValidateId(vacancyDto.getCategoryId(), "ID категории");
+        Long categoryId = parseAndValidateId(editvacancyDto.getCategoryId(), "ID категории");
 
         if (!categoryDao.existsById(categoryId)) {
             log.error("Попытка обновления вакансии с несуществующей категорией ID: {}", categoryId);
             throw new VacancyNotFoundException("Категория с ID: " + categoryId + " не существует");
         }
 
-        if (vacancyDto.getExpFrom() > vacancyDto.getExpTo()) {
-            log.error("Некорректный диапазон опыта: от {} до {}", vacancyDto.getExpFrom(), vacancyDto.getExpTo());
+        if (editvacancyDto.getExpFrom() > editvacancyDto.getExpTo()) {
+            log.error("Некорректный диапазон опыта: от {} до {}", editvacancyDto.getExpFrom(), editvacancyDto.getExpTo());
             throw new IllegalArgumentException("Минимальный опыт не может быть больше максимального");
         }
 
-        validateVacancy(vacancyDto);
-        vacancyDao.updateVacancy(vacancyId, vacancyDto);
+        validateEditVacancy(editvacancyDto);
+        vacancyDao.updateVacancy(vacancyId, editvacancyDto);
         log.info("Вакансия ID {} успешно обновлена", vacancyId);
     }
 
@@ -161,6 +162,31 @@ public class VacancyServiceImpl implements VacancyService {
         }
         if (vacancyDto.getExpTo() < 0 || vacancyDto.getExpTo() > 50) {
             log.error("Некорректный максимальный опыт в вакансии: {}", vacancyDto.getExpTo());
+            throw new IllegalArgumentException("Максимальный опыт не может быть отрицательным и не должен превышать 50 лет");
+        }
+    }
+
+    private void validateEditVacancy(EditVacancyDTO editVacancyDto) {
+        log.debug("Валидация обновляемой вакансии: {}", editVacancyDto.getName());
+
+        if (!editVacancyDto.getName().matches("^[a-zA-Zа-яА-ЯёЁ\\s]+$") || editVacancyDto.getName().length() < 2) {
+            log.error("Некорректное название вакансии: {}", editVacancyDto.getName());
+            throw new IllegalArgumentException("Название должно содержать только буквы и быть не короче 2 символов");
+        }
+        if (editVacancyDto.getDescription().length() < 10) {
+            log.error("Слишком короткое описание вакансии: {}", editVacancyDto.getName());
+            throw new IllegalArgumentException("Описание вакансии должно содержать не менее 10 символов");
+        }
+        if (editVacancyDto.getSalary() < 0) {
+            log.error("Отрицательная зарплата в вакансии: {}", editVacancyDto.getName());
+            throw new IllegalArgumentException("Зарплата не может быть отрицательной");
+        }
+        if (editVacancyDto.getExpFrom() < 0) {
+            log.error("Отрицательный минимальный опыт в вакансии: {}", editVacancyDto.getName());
+            throw new IllegalArgumentException("Минимальный опыт не может быть отрицательным");
+        }
+        if (editVacancyDto.getExpTo() < 0 || editVacancyDto.getExpTo() > 50) {
+            log.error("Некорректный максимальный опыт в вакансии: {}", editVacancyDto.getExpTo());
             throw new IllegalArgumentException("Максимальный опыт не может быть отрицательным и не должен превышать 50 лет");
         }
     }

@@ -9,4 +9,8 @@ public interface WorkExperienceService {
     void createWorkExperience(Long resumeId, WorkExperienceDTO workExperienceDto);
 
     List<WorkExperienceDTO> getWorkExperienceByResumeId(Long resumeId);
+
+    void updateWorkExperience(Long id, WorkExperienceDTO workExperienceDto);
+
+    void deleteWorkExperience(Long id);
 }

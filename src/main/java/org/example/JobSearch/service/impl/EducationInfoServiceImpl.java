@@ -18,9 +18,6 @@ public class EducationInfoServiceImpl implements EducationInfoService {
 
     @Override
     public void createEducationInfo(Long resumeId, EducationInfoDTO educationInfoDto) {
-        if (educationInfoDto.getId() != null) {
-            throw new InvalidUserDataException("ID не должен быть указан при создании");
-        }
 
         EducationInfo educationInfo = new EducationInfo();
         educationInfo.setInstitution(educationInfoDto.getInstitution());
@@ -49,5 +46,27 @@ public class EducationInfoServiceImpl implements EducationInfoService {
                 .endDate(educationInfo.getEndDate())
                 .degree(educationInfo.getDegree())
                 .build();
+    }
+
+    @Override
+    public void updateEducationInfo(Long id, EducationInfoDTO educationInfoDto) {
+        if (id == null) {
+            throw new InvalidUserDataException("ID информации об образовании не может быть null");
+        }
+
+        EducationInfo educationInfo = new EducationInfo();
+        educationInfo.setId(id);
+        educationInfo.setInstitution(educationInfoDto.getInstitution());
+        educationInfo.setProgram(educationInfoDto.getProgram());
+        educationInfo.setStartDate(educationInfoDto.getStartDate());
+        educationInfo.setEndDate(educationInfoDto.getEndDate());
+        educationInfo.setDegree(educationInfoDto.getDegree());
+
+        educationInfoDao.updateEducationInfo(id, educationInfo);
+    }
+
+    @Override
+    public void deleteEducationInfo(Long id) {
+        educationInfoDao.deleteEducationInfo(id);
     }
 }

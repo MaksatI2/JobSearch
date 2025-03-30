@@ -2,6 +2,7 @@ package org.example.JobSearch.dao;
 
 import lombok.RequiredArgsConstructor;
 import org.example.JobSearch.dao.mapper.ResumeMapper;
+import org.example.JobSearch.dto.EditDTO.EditResumeDTO;
 import org.example.JobSearch.dto.ResumeDTO;
 import org.example.JobSearch.exceptions.ResumeNotFoundException;
 import org.example.JobSearch.model.Resume;
@@ -42,13 +43,13 @@ public class ResumeDao {
         return keyHolder.getKey().longValue();
     }
 
-    public void updateResume(Long id, ResumeDTO resume) {
+    public void updateResume(Long id, EditResumeDTO resume) {
         String sql = """
                     UPDATE resumes 
-                    SET applicant_id = ?, category_id = ?, name = ?, salary = ?, is_active = ?, update_time = ?
+                    SET category_id = ?, name = ?, salary = ?, is_active = ?, update_time = ?
                     WHERE id = ?
                 """;
-        jdbcTemplate.update(sql, resume.getApplicantId(), resume.getCategoryId(), resume.getName(),
+        jdbcTemplate.update(sql, resume.getCategoryId(), resume.getName(),
                 resume.getSalary(), resume.getIsActive(), resume.getUpdateTime(), id);
     }
 
