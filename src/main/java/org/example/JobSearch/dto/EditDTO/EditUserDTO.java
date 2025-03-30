@@ -1,4 +1,4 @@
-package org.example.JobSearch.dto;
+package org.example.JobSearch.dto.EditDTO;
 
 import jakarta.validation.constraints.*;
 import lombok.*;
