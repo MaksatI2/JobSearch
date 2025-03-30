@@ -31,4 +31,25 @@ public class WorkExperienceDao {
         String sql = "SELECT * FROM work_experience_info WHERE resume_id = ?";
         return jdbcTemplate.query(sql, new WorkExperienceMapper(), resumeId);
     }
+
+    public void updateWorkExperience(Long workExperienceId, WorkExperience workExperience) {
+        String sql = """
+    INSERT work_experience_info
+    SET years = ?, company_name = ?, position = ?, responsibilities = ?
+    WHERE id = ?
+    """;
+        jdbcTemplate.update(sql,
+                workExperience.getYears(),
+                workExperience.getCompanyName(),
+                workExperience.getPosition(),
+                workExperience.getResponsibilities(),
+                workExperienceId
+        );
+    }
+
+    public void deleteWorkExperience(Long id) {
+        String sql = "DELETE FROM work_experience_info WHERE id = ?";
+        jdbcTemplate.update(sql, id);
+    }
+
 }

@@ -2,6 +2,7 @@ package org.example.JobSearch.dao;
 
 import lombok.RequiredArgsConstructor;
 import org.example.JobSearch.dao.mapper.VacancyMapper;
+import org.example.JobSearch.dto.EditDTO.EditVacancyDTO;
 import org.example.JobSearch.dto.VacancyDTO;
 import org.example.JobSearch.exceptions.ResumeNotFoundException;
 import org.example.JobSearch.model.Vacancy;
@@ -27,7 +28,7 @@ public class VacancyDao {
                 vacancy.getIsActive(), vacancy.getUpdateTime());
     }
 
-    public void updateVacancy(Long id, VacancyDTO vacancy) {
+    public void updateVacancy(Long id, EditVacancyDTO vacancy) {
         String sql = """
             UPDATE vacancies 
             SET category_id = ?, name = ?, description = ?, salary = ?, exp_from = ?, exp_to = ?, is_active = ?, update_time = ?
