@@ -137,31 +137,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void login(UserDTO userDto) {
-        log.info("Попытка входа пользователя: {}", userDto.getEmail());
-        if (userDto.getEmail() == null || userDto.getEmail().isEmpty()) {
-            log.error("Email для входа не может быть пустым");
-            throw new InvalidUserDataException("Email не может быть пустым");
-        }
-        if (userDto.getPassword() == null || userDto.getPassword().isEmpty()) {
-            log.error("Пароль для входа не может быть пустым");
-            throw new InvalidUserDataException("Пароль не может быть пустым");
-        }
-
-        User user = userDao.findByEmail(userDto.getEmail())
-                .orElseThrow(() -> {
-                    log.error("Пользователь с email {} не найден", userDto.getEmail());
-                    return new UserNotFoundException("Пользователь не найден");
-                });
-
-        if (!userDto.getPassword().equals(user.getPassword())) {
-            log.error("Неверный пароль для пользователя {}", userDto.getEmail());
-            throw new InvalidUserDataException("Неверный пароль");
-        }
-        log.info("Пользователь {} успешно вошел в систему", userDto.getEmail());
-    }
-
-    @Override
     public List<UserDTO> getApplicantsVacancy(Long vacancyId) {
         log.info("Получение соискателей для вакансии ID: {}", vacancyId);
         if (vacancyId == null) {

@@ -18,8 +18,6 @@ public interface UserService {
 
     void register(UserDTO userDto);
 
-    void login(UserDTO userDto);
-
     void updateUserAvatar(Long userId, MultipartFile file);
 
     ResponseEntity<?> getAvatarByUserId(Long userId);
