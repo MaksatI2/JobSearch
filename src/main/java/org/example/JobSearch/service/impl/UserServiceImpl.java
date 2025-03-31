@@ -11,6 +11,7 @@ import org.example.JobSearch.service.UserService;
 import org.example.JobSearch.exceptions.UserNotFoundException;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -21,6 +22,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
     private final UserDao userDao;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public UserDTO findApplicant(String email) {
@@ -120,7 +122,7 @@ public class UserServiceImpl implements UserService {
         log.info("Регистрация нового пользователя: {}", userDto.getEmail());
         User user = new User();
         user.setEmail(userDto.getEmail());
-        user.setPassword(userDto.getPassword());
+        user.setPassword(passwordEncoder.encode(userDto.getPassword()));
         user.setName(userDto.getName());
         user.setSurname(userDto.getSurname());
         user.setAge(userDto.getAge());
