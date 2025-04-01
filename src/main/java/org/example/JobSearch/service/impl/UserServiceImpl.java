@@ -2,14 +2,14 @@ package org.example.JobSearch.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.example.JobSearch.dao.UserDao;
+import org.example.JobSearch.dto.UserDTO;
 import org.example.JobSearch.exceptions.InvalidUserDataException;
+import org.example.JobSearch.exceptions.UserNotFoundException;
 import org.example.JobSearch.model.AccountType;
 import org.example.JobSearch.model.User;
-import org.example.JobSearch.dao.UserDao;
-import org.example.JobSearch.util.FileUtil;
-import org.example.JobSearch.dto.UserDTO;
 import org.example.JobSearch.service.UserService;
-import org.example.JobSearch.exceptions.UserNotFoundException;
+import org.example.JobSearch.util.FileUtil;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -128,7 +128,11 @@ public class UserServiceImpl implements UserService {
         user.setSurname(userDto.getSurname());
         user.setAge(userDto.getAge());
         user.setPhoneNumber(userDto.getPhoneNumber());
-        user.setAvatar(userDto.getAvatar());
+        if (userDto.getAccountType() == AccountType.APPLICANT) {
+            user.setAvatar(FileUtil.DEFAULT_APPLICANT_AVATAR);
+        } else {
+            user.setAvatar(FileUtil.DEFAULT_EMPLOYER_AVATAR);
+        }
         user.setAccountType(userDto.getAccountType());
 
         validateUser(userDto);
@@ -194,31 +198,16 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ResponseEntity<?> getAvatarByUserId(Long userId) {
-        log.info("Получение аватара пользователя ID: {}", userId);
-        if (userId == null) {
-            log.error("ID пользователя не может быть null");
-            throw new InvalidUserDataException("ID пользователя не может быть null");
-        }
-
-        String avatarPath = userDao.findAvatarPathById(userId)
-                .orElseThrow(() -> {
-                    log.error("Пользователь с ID {} не найден или не имеет аватара", userId);
-                    return new UserNotFoundException("Пользователь не найден или не имеет аватара");
+        String avatarFilename = userDao.findAvatarPathById(userId)
+                .orElseGet(() -> {
+                    User user = userDao.findById(userId)
+                            .orElseThrow(() -> new UserNotFoundException("Пользователь не найден"));
+                    return user.getAccountType() == AccountType.APPLICANT
+                            ? FileUtil.DEFAULT_APPLICANT_AVATAR
+                            : FileUtil.DEFAULT_EMPLOYER_AVATAR;
                 });
 
-        if (avatarPath == null || avatarPath.isEmpty()) {
-            log.error("Пользователь с ID {} не имеет аватара", userId);
-            throw new UserNotFoundException("Пользователь не имеет аватара");
-        }
-
-        try {
-            String imageName = avatarPath.substring(avatarPath.lastIndexOf('/') + 1);
-            log.debug("Получение файла аватара: {}", imageName);
-            return FileUtil.getOutputFile(imageName, "images/", MediaType.IMAGE_JPEG);
-        } catch (Exception e) {
-            log.error("Ошибка при получении аватара: {}", e.getMessage());
-            throw new RuntimeException("Ошибка при получении аватара: " + e.getMessage());
-        }
+        return FileUtil.getOutputFile(avatarFilename, FileUtil.IMAGES_SUBDIR, MediaType.IMAGE_JPEG);
     }
 
     private void validateUser(UserDTO userDto) {

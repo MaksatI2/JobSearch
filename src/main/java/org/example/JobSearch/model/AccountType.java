@@ -21,6 +21,6 @@ public enum AccountType {
                 return type;
             }
         }
-        throw new IllegalArgumentException("No AccountType with id " + id);
+        throw new IllegalArgumentException("Нет AccountType с ID" + id);
     }
 }

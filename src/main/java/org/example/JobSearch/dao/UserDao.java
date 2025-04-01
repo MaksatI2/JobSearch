@@ -89,11 +89,11 @@ public class UserDao {
     }
 
     public void save(User user) {
-        String sql = "INSERT INTO users (email, name, surname, age, password, phone_number, account_type) " +
+        String sql = "INSERT INTO users (email, name, surname, age, password, phone_number, avatar,  account_type) " +
                 "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         jdbcTemplate.update(sql, user.getEmail(), user.getName(), user.getSurname(),
-                user.getAge(), user.getPassword(), user.getPhoneNumber(),
-                user.getAccountType());
+                user.getAge(), user.getPassword(), user.getPhoneNumber(), user.getAvatar(),
+                user.getAccountType().getId());
     }
 
     public Optional<User> findByEmail(String email) {
