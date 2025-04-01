@@ -1,5 +1,6 @@
 package org.example.JobSearch.dao.mapper;
 
+import org.example.JobSearch.model.AccountType;
 import org.example.JobSearch.model.User;
 import org.springframework.jdbc.core.RowMapper;
 import java.sql.ResultSet;
@@ -17,7 +18,7 @@ public class UserMapper implements RowMapper<User> {
         user.setPassword(rs.getString("password"));
         user.setPhoneNumber(rs.getString("phone_number"));
         user.setAvatar(rs.getString("avatar"));
-        user.setAccountType(rs.getString("account_type"));
+        user.setAccountType(AccountType.getById(rs.getLong("account_type")));
         return user;
     }
 }

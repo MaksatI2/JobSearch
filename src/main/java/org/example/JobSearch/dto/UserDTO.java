@@ -2,6 +2,7 @@ package org.example.JobSearch.dto;
 
 import jakarta.validation.constraints.*;
 import lombok.*;
+import org.example.JobSearch.model.AccountType;
 
 @Getter
 @Setter
@@ -37,7 +38,6 @@ public class UserDTO {
 
     private String avatar;
 
-    @NotBlank(message = "Account type is required")
-    @Pattern(regexp = "^(APPLICANT|EMPLOYER)$", message = "Invalid account type")
-    private String accountType;
+    @NotNull(message = "Account type is required")
+    private AccountType accountType;
 }

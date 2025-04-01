@@ -3,6 +3,7 @@ package org.example.JobSearch.service.impl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.JobSearch.exceptions.InvalidUserDataException;
+import org.example.JobSearch.model.AccountType;
 import org.example.JobSearch.model.User;
 import org.example.JobSearch.dao.UserDao;
 import org.example.JobSearch.util.FileUtil;
@@ -258,11 +259,9 @@ public class UserServiceImpl implements UserService {
             log.error("Некорректный номер телефона: {}", userDto.getPhoneNumber());
             throw new InvalidUserDataException("Номер телефона должен содержать только цифры и быть длиной 10-15 символов");
         }
-        if (userDto.getAccountType() == null ||
-                (!userDto.getAccountType().equalsIgnoreCase("EMPLOYER") &&
-                        !userDto.getAccountType().equalsIgnoreCase("APPLICANT"))) {
-            log.error("Некорректный тип аккаунта: {}", userDto.getAccountType());
-            throw new InvalidUserDataException("Некорректный тип аккаунта");
+        if (userDto.getAccountType() == null) {
+            log.error("Тип аккаунта не может быть null");
+            throw new InvalidUserDataException("Тип аккаунта не может быть null");
         }
         if (!userDto.getName().matches("^[a-zA-Zа-яА-Я]+$")) {
             log.error("Имя содержит недопустимые символы: {}", userDto.getName());
