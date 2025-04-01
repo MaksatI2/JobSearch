@@ -3,6 +3,9 @@ databaseChangeLog:
       id: modify-user-table
       author: admin
       changes:
+        - dropColumn:
+            tableName: users
+            columnName: account_type
         - addColumn:
             tableName: users
             columns:
