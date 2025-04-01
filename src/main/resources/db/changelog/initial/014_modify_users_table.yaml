@@ -1,0 +1,26 @@
+databaseChangeLog:
+  - changeSet:
+      id: modify-user-table
+      author: admin
+      changes:
+        - dropColumn:
+            tableName: users
+            columnName: account_type
+        - dropColumn:
+            tableName: users
+            columnName: enabled
+        - addColumn:
+            tableName: users
+            columns:
+              - column:
+                  name: enabled
+                  type: boolean
+                  defaultValueBoolean: true
+                  constraints:
+                    nullable: false
+              - column:
+                  name: account_type
+                  type: long
+                  constraints:
+                    foreignKeyName: fk_authority_id
+                    references: authorities(id)

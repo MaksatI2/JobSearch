@@ -1,0 +1,77 @@
+package org.example.JobSearch.config;
+
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
+
+import javax.sql.DataSource;
+
+@Configuration
+@EnableWebSecurity
+@RequiredArgsConstructor
+public class SecurityConfig {
+
+    private final DataSource dataSource;
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
+    @Autowired
+    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+        String fetchUser = "SELECT email, password, enabled " +
+                "FROM users " +
+                "WHERE email = ?";
+
+        String fetchRoles = "SELECT u.email, a.authority " +
+                "FROM users u " +
+                "JOIN authorities a ON u.account_type = a.id " +
+                "WHERE u.email = ?";
+
+        auth.jdbcAuthentication()
+                .dataSource(dataSource)
+                .usersByUsernameQuery(fetchUser)
+                .authoritiesByUsernameQuery(fetchRoles);
+    }
+
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .formLogin(AbstractHttpConfigurer::disable)
+                .logout(AbstractHttpConfigurer::disable)
+                .csrf(AbstractHttpConfigurer::disable)
+                .httpBasic(Customizer.withDefaults())
+                .authorizeHttpRequests(authorizeRequests -> authorizeRequests
+
+                        .requestMatchers("/auth/register").permitAll()
+                        .requestMatchers("/vacancies/allVacancies").permitAll()
+                        .requestMatchers("/vacancies/category/**").permitAll()
+                        .requestMatchers("/resumes/allResumes").permitAll()
+                        .requestMatchers("/resumes/category/**").permitAll()
+
+                        .requestMatchers("/resumes/**").hasAuthority("APPLICANT")
+                        .requestMatchers("/users/applicants/**").hasAuthority("APPLICANT")
+
+                        .requestMatchers("/vacancies/**").hasAuthority("EMPLOYER")
+                        .requestMatchers("/users/employers/**").hasAuthority("EMPLOYER")
+                        .requestMatchers("/users/vacancies/**").hasAuthority("EMPLOYER")
+
+                        .requestMatchers("/users/**").authenticated()
+
+                        .anyRequest().denyAll());
+
+        return http.build();
+    }
+}

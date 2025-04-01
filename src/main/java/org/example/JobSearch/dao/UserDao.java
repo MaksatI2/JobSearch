@@ -29,40 +29,46 @@ public class UserDao {
     }
 
     public Optional<User> findEmployer(String email) {
-        String sql = "SELECT * FROM users WHERE email = ? AND account_type = 'EMPLOYER'";
+        String sql = "SELECT u.* FROM users u JOIN authorities a ON u.account_type = a.id " +
+                "WHERE u.email = ? AND a.authority = 'EMPLOYER'";
         return Optional.ofNullable(
                 DataAccessUtils.singleResult(jdbcTemplate.query(sql, new UserMapper(), email))
         );
     }
 
     public Optional<User> findEmployerByPhone(String phoneNumber) {
-        String sql = "SELECT * FROM users WHERE phone_number = ? AND account_type = 'EMPLOYER'";
+        String sql = "SELECT u.* FROM users u JOIN authorities a ON u.account_type = a.id " +
+                "WHERE u.phone_number = ? AND a.authority = 'EMPLOYER'";
         return Optional.ofNullable(
                 DataAccessUtils.singleResult(jdbcTemplate.query(sql, new UserMapper(), phoneNumber))
         );
     }
 
     public List<User> findEmployersByName(String name) {
-        String sql = "SELECT * FROM users WHERE name = ? AND account_type = 'EMPLOYER'";
+        String sql = "SELECT u.* FROM users u JOIN authorities a ON u.account_type = a.id " +
+                "WHERE u.name = ? AND a.authority = 'EMPLOYER'";
         return jdbcTemplate.query(sql, new UserMapper(), name);
     }
 
     public Optional<User> findApplicant(String email) {
-        String sql = "SELECT * FROM users WHERE email = ? AND account_type = 'APPLICANT'";
+        String sql = "SELECT u.* FROM users u JOIN authorities a ON u.account_type = a.id " +
+                "WHERE u.email = ? AND a.authority = 'APPLICANT'";
         return Optional.ofNullable(
                 DataAccessUtils.singleResult(jdbcTemplate.query(sql, new UserMapper(), email))
         );
     }
 
     public Optional<User> findApplicantByPhone(String phoneNumber) {
-        String sql = "SELECT * FROM users WHERE phone_number = ? AND account_type = 'APPLICANT'";
+        String sql = "SELECT u.* FROM users u JOIN authorities a ON u.account_type = a.id " +
+                "WHERE u.phone_number = ? AND a.authority = 'APPLICANT'";
         return Optional.ofNullable(
                 DataAccessUtils.singleResult(jdbcTemplate.query(sql, new UserMapper(), phoneNumber))
         );
     }
 
     public List<User> findApplicantsByName(String name) {
-        String sql = "SELECT * FROM users WHERE name = ? AND account_type = 'APPLICANT'";
+        String sql = "SELECT u.* FROM users u JOIN authorities a ON u.account_type = a.id " +
+                "WHERE u.name = ? AND a.authority = 'APPLICANT'";
         return jdbcTemplate.query(sql, new UserMapper(), name);
     }
 
@@ -83,10 +89,11 @@ public class UserDao {
     }
 
     public void save(User user) {
-        String sql = "INSERT INTO users (email, name, surname, age, password, phone_number, account_type) " +
-                "VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO users (email, name, surname, age, password, phone_number, avatar,  account_type) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         jdbcTemplate.update(sql, user.getEmail(), user.getName(), user.getSurname(),
-                user.getAge(), user.getPassword(), user.getPhoneNumber(), user.getAccountType());
+                user.getAge(), user.getPassword(), user.getPhoneNumber(), user.getAvatar(),
+                user.getAccountType().getId());
     }
 
     public Optional<User> findByEmail(String email) {
@@ -107,13 +114,15 @@ public class UserDao {
     }
 
     public boolean isUserEmployer(Long userId) {
-        String sql = "SELECT COUNT(*) FROM users WHERE id = ? AND account_type = 'EMPLOYER'";
+        String sql = "SELECT COUNT(*) FROM users u JOIN authorities a ON u.account_type = a.id " +
+                "WHERE u.id = ? AND a.authority = 'EMPLOYER'";
         Integer count = jdbcTemplate.queryForObject(sql, Integer.class, userId);
         return count != null && count > 0;
     }
 
     public boolean isUserApplicant(Long userId) {
-        String sql = "SELECT COUNT(*) FROM users WHERE id = ? AND account_type = 'APPLICANT'";
+        String sql = "SELECT COUNT(*) FROM users u JOIN authorities a ON u.account_type = a.id " +
+                "WHERE u.id = ? AND a.authority = 'APPLICANT'";
         Integer count = jdbcTemplate.queryForObject(sql, Integer.class, userId);
         return count != null && count > 0;
     }

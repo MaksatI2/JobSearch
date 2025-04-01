@@ -25,12 +25,6 @@ public class UserController {
             return ResponseEntity.ok("User updated successfully");
     }
 
-    @DeleteMapping("/{email}")
-    public ResponseEntity<?> deleteUserByEmail(@PathVariable @Valid String email) {
-            editUserService.deleteUserByEmail(email);
-            return ResponseEntity.ok("User deleted successfully");
-    }
-
     @PostMapping("/{userId}/avatar")
     public ResponseEntity<?> uploadUserAvatar(@PathVariable @Valid Long userId, @RequestParam MultipartFile file) {
             userService.updateUserAvatar(userId, file);

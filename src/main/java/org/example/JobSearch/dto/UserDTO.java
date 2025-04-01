@@ -2,6 +2,7 @@ package org.example.JobSearch.dto;
 
 import jakarta.validation.constraints.*;
 import lombok.*;
+import org.example.JobSearch.model.AccountType;
 
 @Getter
 @Setter
@@ -10,34 +11,34 @@ import lombok.*;
 @Builder
 public class UserDTO {
 
-    @NotBlank(message = "Email cannot be empty")
-    @Email(message = "Invalid email format")
+    @NotBlank(message = "Email не может быть пустым")
+    @Email(message = "Неверный формат email")
     private String email;
 
-    @NotBlank(message = "Name cannot be empty")
-    @Size(min = 2, max = 50, message = "Name must be between 2 and 50 characters")
+    @NotBlank(message = "Имя не может быть пустым")
+    @Size(min = 2, max = 50, message = "Имя должно быть от 2 до 50 символов")
     private String name;
 
-    @NotBlank(message = "Surname cannot be empty")
-    @Size(min = 2, max = 50, message = "Surname must be between 2 and 50 characters")
+    @NotBlank(message = "Фамилия не может быть пустым")
+    @Size(min = 2, max = 50, message = "Фамилия должна быть от 2 до 50 символов")
     private String surname;
 
-    @Min(value = 18, message = "Age must be at least 18")
-    @Max(value = 60, message = "Age must be at most 60")
-    @NotNull(message = "Age is required")
+    @Min(value = 18, message = "Возраст должен быть не менее 18 лет")
+    @Max(value = 60, message = "Возраст должен быть не более 60 лет")
+    @NotNull(message = "Возраст обязателен для заполнения")
     private Integer age;
 
-    @NotBlank(message = "Password cannot be empty")
-    @Size(min = 8, message = "Password must be at least 8 characters long")
+    @NotBlank(message = "Пароль не может быть пустым")
+    @Size(min = 8, message = "Пароль должен содержать минимум 8 символов")
     private String password;
 
-    @NotBlank(message = "Phone number cannot be empty")
-    @Pattern(regexp = "^\\+?[0-9]{10,15}$", message = "Invalid phone number format")
+    @NotBlank(message = "Номер телефона не может быть пустым")
+    @Pattern(regexp = "^\\+?[0-9]{10,15}$", message = "Неверный формат номера телефона")
     private String phoneNumber;
 
     private String avatar;
 
-    @NotBlank(message = "Account type is required")
-    @Pattern(regexp = "^(APPLICANT|EMPLOYER)$", message = "Invalid account type")
-    private String accountType;
+    @NotNull(message = "Тип аккаунта обязателен для заполнения")
+    @Pattern(regexp = "APPLICANT|EMPLOYER", message = "Тип аккаунта должен быть либо APPLICANT, либо EMPLOYER")
+    private AccountType accountType;
 }

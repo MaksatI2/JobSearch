@@ -1,0 +1,15 @@
+databaseChangeLog:
+  - changeSet:
+      id: 020
+      author: I.Maksat
+      changes:
+        - dropForeignKeyConstraint:
+            baseTableName: contact_info
+            constraintName: fk_contact_info_resume
+        - addForeignKeyConstraint:
+            baseTableName: contact_info
+            baseColumnNames: resume_id
+            constraintName: fk_contact_info_resume
+            referencedTableName: resumes
+            referencedColumnNames: id
+            deleteCascade: true

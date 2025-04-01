@@ -35,17 +35,4 @@ public class EditUserServiceImpl implements EditUserService {
             throw new RuntimeException("Ошибка обновления: " + email);
         }
     }
-
-    @Override
-    @Transactional
-    public void deleteUserByEmail(String email) {
-        if (!userDao.existsByEmail(email)) {
-            throw new UserNotFoundException("Пользователь не найден: " + email);
-        }
-
-        int deletedRows = editUserDao.deleteUserByEmail(email);
-        if (deletedRows == 0) {
-            throw new UserNotFoundException("Ошибка удаления: " + email);
-        }
-    }
 }
