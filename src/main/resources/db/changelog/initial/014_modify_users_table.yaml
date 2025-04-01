@@ -1,14 +1,32 @@
 databaseChangeLog:
   - changeSet:
-      id: modify-user-table
+      id: modify-account-constrains-users
       author: admin
       changes:
-        - dropColumn:
+        - dropNotNullConstraint:
             tableName: users
             columnName: account_type
-        - dropColumn:
+  - changeSet:
+      id: delete-data
+      author: admin
+      changes:
+        - sql:
+            sql: |
+              UPDATE users
+              SET account_type = NULL;
+  - changeSet:
+      id: modifyDataType-users
+      author: admin
+      changes:
+        - modifyDataType:
+            columnName: account_type
+            newDataType: int
             tableName: users
-            columnName: enabled
+
+  - changeSet:
+      id: add_column
+      author: admin
+      changes:
         - addColumn:
             tableName: users
             columns:
@@ -16,11 +34,15 @@ databaseChangeLog:
                   name: enabled
                   type: boolean
                   defaultValueBoolean: true
-                  constraints:
-                    nullable: false
-              - column:
-                  name: account_type
-                  type: long
-                  constraints:
-                    foreignKeyName: fk_authority_id
-                    references: authorities(id)
+
+  - changeSet:
+      id: add_foreign_key_role
+      author: admin
+      changes:
+        - addForeignKeyConstraint:
+            baseTableName: users
+            baseColumnNames: account_type
+            referencedTableName: authorities
+            referencedColumnNames: id
+            constraintName: fk_users_account_type
+            onDelete: cascade
