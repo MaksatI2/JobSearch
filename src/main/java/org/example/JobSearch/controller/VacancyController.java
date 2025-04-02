@@ -31,7 +31,7 @@ public class VacancyController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteVacancy(@PathVariable @Valid Long id) {
+    public ResponseEntity<String> deleteVacancy(@PathVariable Long id) {
         vacancyService.deleteVacancy(id);
         return ResponseEntity.ok("Vacancy deleted successfully");
     }
@@ -43,13 +43,13 @@ public class VacancyController {
     }
 
     @GetMapping("/category/{categoryId}")
-    public ResponseEntity<?> getVacanciesByCategory(@PathVariable @Valid Long categoryId) {
+    public ResponseEntity<?> getVacanciesByCategory(@PathVariable Long categoryId) {
             List<VacancyDTO> vacancies = vacancyService.getVacanciesByCategory(categoryId);
             return ResponseEntity.ok(vacancies);
     }
 
     @GetMapping("/ApplToVacancy/{id}")
-    public ResponseEntity<?> getRespApplToVacancy(@PathVariable @Valid Long id) {
+    public ResponseEntity<?> getRespApplToVacancy(@PathVariable Long id) {
             List<VacancyDTO> vacancies = vacancyService.getRespApplToVacancy(id);
             return ResponseEntity.ok(vacancies);
     }

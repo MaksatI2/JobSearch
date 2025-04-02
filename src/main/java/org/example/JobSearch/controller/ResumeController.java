@@ -19,19 +19,19 @@ public class ResumeController {
     private final ResumeService resumeService;
 
     @PostMapping
-    public ResponseEntity<String> createResume(@RequestBody ResumeDTO resumeDTO) {
+    public ResponseEntity<String> createResume(@Valid @RequestBody ResumeDTO resumeDTO) {
         resumeService.createResume(resumeDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body("Resume created successfully");
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<String> updateResume(@PathVariable @Valid Long id, @RequestBody EditResumeDTO editresumeDTO) {
+    public ResponseEntity<String> updateResume(@Valid @PathVariable Long id, @RequestBody EditResumeDTO editresumeDTO) {
         resumeService.updateResume(id, editresumeDTO);
         return ResponseEntity.ok("Resume updated successfully");
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteResume(@PathVariable @Valid Long id) {
+    public ResponseEntity<String> deleteResume(@PathVariable Long id) {
         resumeService.deleteResume(id);
         return ResponseEntity.ok("Resume deleted successfully");
     }
@@ -43,13 +43,13 @@ public class ResumeController {
     }
 
     @GetMapping("/UserResumes/{applicantId}")
-    public ResponseEntity<?> getUserResumes(@PathVariable @Valid Long applicantId) {
+    public ResponseEntity<?> getUserResumes(@PathVariable Long applicantId) {
             List<ResumeDTO> resumes = resumeService.getUserResumes(applicantId);
             return ResponseEntity.ok(resumes);
     }
 
     @GetMapping("/category/{categoryId}")
-    public ResponseEntity<?> getResumesByCategory(@PathVariable @Valid Long categoryId) {
+    public ResponseEntity<?> getResumesByCategory(@PathVariable Long categoryId) {
             List<ResumeDTO> resumes = resumeService.getResumesByCategory(categoryId);
             return ResponseEntity.ok(resumes);
     }
