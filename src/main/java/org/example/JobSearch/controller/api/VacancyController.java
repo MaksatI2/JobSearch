@@ -1,10 +1,9 @@
-package org.example.JobSearch.controller;
+package org.example.JobSearch.controller.api;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.example.JobSearch.dto.EditDTO.EditVacancyDTO;
 import org.example.JobSearch.dto.VacancyDTO;
-import org.example.JobSearch.exceptions.VacancyNotFoundException;
 import org.example.JobSearch.service.VacancyService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/vacancies")
+@RequestMapping("api/vacancies")
 @RequiredArgsConstructor
 public class VacancyController {
     private final VacancyService vacancyService;
@@ -36,11 +35,6 @@ public class VacancyController {
         return ResponseEntity.ok("Vacancy deleted successfully");
     }
 
-    @GetMapping("/allVacancies")
-    public ResponseEntity<?> getAllVacancies() {
-            List<VacancyDTO> vacancies = vacancyService.getAllVacancies();
-            return ResponseEntity.ok(vacancies);
-    }
 
     @GetMapping("/category/{categoryId}")
     public ResponseEntity<?> getVacanciesByCategory(@PathVariable @Valid Long categoryId) {
