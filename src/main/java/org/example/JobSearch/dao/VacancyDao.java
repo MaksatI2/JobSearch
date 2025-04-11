@@ -79,4 +79,9 @@ public class VacancyDao {
         Long count = jdbcTemplate.queryForObject(sql, Long.class, id);
         return count != null && count > 0;
     }
+
+    public List<Vacancy> getVacanciesByEmployer(Long employerId) {
+        String sql = "SELECT * FROM vacancies WHERE author_id = ?";
+        return jdbcTemplate.query(sql, new VacancyMapper(), employerId);
+    }
 }
