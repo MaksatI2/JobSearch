@@ -38,8 +38,7 @@ public class FileUtil {
         try (OutputStream os = Files.newOutputStream(filePath)) {
             os.write(file.getBytes());
         }
-
-        return Paths.get(subDir).resolve(resultFileName).toString();
+        return resultFileName;
     }
 
     @SneakyThrows
