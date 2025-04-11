@@ -6,6 +6,8 @@ import org.example.JobSearch.dto.VacancyDTO;
 import java.util.List;
 
 public interface VacancyService {
+    List<VacancyDTO> getVacanciesByEmployer(Long employerId);
+
     List<VacancyDTO> getVacanciesByCategory(Long categoryId);
 
     void createVacancy(VacancyDTO vacancyDto);

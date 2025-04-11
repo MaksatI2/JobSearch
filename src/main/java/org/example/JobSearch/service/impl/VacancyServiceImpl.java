@@ -25,6 +25,12 @@ public class VacancyServiceImpl implements VacancyService {
     private final CategoryDao categoryDao;
 
     @Override
+    public List<VacancyDTO> getVacanciesByEmployer(Long employerId) {
+        List<Vacancy> vacancies = vacancyDao.getVacanciesByEmployer(employerId);
+        return vacancies.stream().map(this::toDTO).toList();
+    }
+
+    @Override
     public List<VacancyDTO> getVacanciesByCategory(Long categoryId) {
         log.info("Поиск вакансий по категории ID: {}", categoryId);
         List<VacancyDTO> vacancies = vacancyDao.getVacanciesByCategory(categoryId)
