@@ -12,27 +12,24 @@
             <a href="/">JobSearch</a>
         </div>
 
-        <input type="checkbox" id="navbar-toggle" class="navbar-toggle">
-        <label for="navbar-toggle" class="navbar-toggle-label">
-            <span></span>
-        </label>
-
         <div class="navbar-menu">
-            <ul class="navbar-nav">
-                <li class="nav-item"><a href="/" class="nav-link">Главная</a></li>
-                <li class="nav-item"><a href="/vacancies/allVacancies" class="nav-link">Вакансии</a></li>
-                <li class="nav-item"><a href="/resumes/allResumes" class="nav-link">Резюме</a></li>
+            <ul>
+                <li><a href="/">Главная</a></li>
+                <li><a href="/">Вакансии</a></li>
+                <#if Session.SPRING_SECURITY_CONTEXT?? && Session.SPRING_SECURITY_CONTEXT.authentication.authorities?seq_contains('EMPLOYER')>
+                    <li><a href="/resumes/allResumes">Резюме</a></li>
+                </#if>
 
                 <#if Session.SPRING_SECURITY_CONTEXT??>
-                    <li class="nav-item"><a href="/profile" class="nav-link">Профиль</a></li>
-                    <li class="nav-item logout">
-                        <form action="/logout" method="post" class="logout-form">
+                    <li><a href="/profile">Профиль</a></li>
+                    <li>
+                        <form action="/logout" method="post" style="display: inline;">
                             <button type="submit" class="logout-button">Выйти</button>
                         </form>
                     </li>
                 <#else>
-                    <li class="nav-item"><a href="/auth/login" class="nav-link">Войти</a></li>
-                    <li class="nav-item"><a href="/auth/register" class="nav-link">Регистрация</a></li>
+                    <li><a href="/auth/login">Войти</a></li>
+                    <li><a href="/auth/register">Регистрация</a></li>
                 </#if>
             </ul>
         </div>
@@ -41,28 +38,45 @@
 <div class="container">
     <h2>Личный кабинет <#if user.accountType == "APPLICANT">Соискателя<#else>Работодателя</#if></h2>
 
+    <#if successMessage??>
+        <div class="alert alert-success">
+            ${successMessage}
+        </div>
+    </#if>
+
+    <#if errorMessage??>
+        <div class="alert alert-danger">
+            ${errorMessage}
+        </div>
+    </#if>
+
     <div class="profile">
         <div class="left-column">
-            <img src="${user.avatar?starts_with('images/')?then('/' + user.avatar, '/static/default-avatar/' + user.avatar)}"
-                 alt="Аватар"
-                 onerror="this.src='/static/default-avatar/default_avatar.jpg'">
+            <div class="avatar-container">
+                <img src="${user.avatar}"
+                     alt="Аватар"
+                     onerror="this.src='/static/default-avatar/default_avatar.jpg'">
+                <a href="/profile/change-avatar" class="change-avatar-button">Изменить аватар</a>
+            </div>
             <p>${user.name} ${user.surname}</p>
 
             <#if user.accountType == "APPLICANT">
                 <p>Возраст: ${user.age}</p>
+                <p>Телефон: ${user.phoneNumber}</p>
             <#else>
                 <p>Компания: ${user.name}</p>
+                <p>Телефон: ${user.phoneNumber}</p>
             </#if>
 
-            <button>Редактировать</button>
+            <a href="/profile/edit" class="edit-button">Редактировать профиль</a>
         </div>
 
         <div class="right-column">
             <#if user.accountType == "APPLICANT">
-                <button>Создать резюме</button>
+                <a href="/resumes/create" class="action-button">Создать резюме</a>
 
                 <div class="responses-card">
-                    Отклики: 2
+                    Отклики: ${responsesCount}
                 </div>
 
                 <h3>Ваши резюме</h3>
@@ -70,22 +84,22 @@
                     <div class="resume-card">
                         <p><strong>${resume.name}</strong></p>
                         <p>Обновлено: ${resume.updateTime}</p>
-                        <button>Обновить</button>
-                        <button>Ред.</button>
+                        <a href="#" class="button-link">Обновить</a>
+                        <a href="#" class="button-link">Ред.</a>
                     </div>
                 <#else>
                     <p>У вас пока нет резюме.</p>
                 </#list>
             <#elseif user.accountType == "EMPLOYER">
-                <button>Создать вакансию</button>
+                <a href="/vacancies/create" class="action-button">Создать вакансию</a>
 
                 <h3>Ваши вакансии</h3>
                 <#list vacancies![] as vacancy>
                     <div class="vacancy-card">
                         <p><strong>${vacancy.name}</strong></p>
                         <p>Обновлено: ${vacancy.updateTime}</p>
-                        <button>Обновить</button>
-                        <button>Ред.</button>
+                        <a href="#" class="button-link">Обновить</a>
+                        <a href="#" class="button-link">Ред.</a>
                     </div>
                 <#else>
                     <p>У вас пока нет вакансий.</p>
