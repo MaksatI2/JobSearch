@@ -4,6 +4,7 @@ import lombok.SneakyThrows;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -21,30 +22,9 @@ import java.util.UUID;
 @UtilityClass
 public class FileUtil {
     private static final String UPLOAD_DIR = "data/";
-    public static final String DEFAULT_APPLICANT_AVATAR = "default_avatar.jpg";
-    public static final String DEFAULT_EMPLOYER_AVATAR = "default_company_logo.jpg";
+    public static final String DEFAULT_AVATAR = "default_avatar.jpg";
     public static final String IMAGES_SUBDIR = "images/";
-
-    static {
-        initDefaultAvatars();
-    }
-
-    @SneakyThrows
-    public static void initDefaultAvatars() {
-        Path dir = Paths.get(UPLOAD_DIR + IMAGES_SUBDIR);
-        Files.createDirectories(dir);
-
-        Path applicantAvatarPath = dir.resolve(DEFAULT_APPLICANT_AVATAR);
-        if (!Files.exists(applicantAvatarPath)) {
-            log.warn("Аватар заявителя по умолчанию не найден по адресу: {}", applicantAvatarPath);
-        }
-
-        Path employerAvatarPath = dir.resolve(DEFAULT_EMPLOYER_AVATAR);
-        if (!Files.exists(employerAvatarPath)) {
-            log.warn("Аватар работодателя по умолчанию не найден по адресу: {}", employerAvatarPath);
-        }
-    }
-
+    public static final String DEFAULT_AVATAR_DIR = "static/default-avatar/";
 
     @SneakyThrows
     public static String saveUploadFile(MultipartFile file, String subDir) {
@@ -59,35 +39,48 @@ public class FileUtil {
             os.write(file.getBytes());
         }
 
-        return resultFileName;
+        return Paths.get(subDir).resolve(resultFileName).toString();
     }
 
     @SneakyThrows
-    public static ResponseEntity<?> getOutputFile(String filename, String subDir, MediaType mediaType) {
-        Path filePath = Paths.get(UPLOAD_DIR + subDir).resolve(filename);
-
-        if (!Files.exists(filePath)) {
-            Path applicantAvatarPath = Paths.get(UPLOAD_DIR + IMAGES_SUBDIR).resolve(DEFAULT_APPLICANT_AVATAR);
-            if (Files.exists(applicantAvatarPath)) {
-                filePath = applicantAvatarPath;
-            } else {
-                Path employerAvatarPath = Paths.get(UPLOAD_DIR + IMAGES_SUBDIR).resolve(DEFAULT_EMPLOYER_AVATAR);
-                if (Files.exists(employerAvatarPath)) {
-                    filePath = employerAvatarPath;
-                } else {
-                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Изображение не найдено");
+    public static ResponseEntity<?> getOutputFile(String avatarPath, MediaType mediaType) {
+        if (avatarPath == null || avatarPath.isEmpty() || avatarPath.equals(DEFAULT_AVATAR)) {
+            try {
+                Resource resource = new ClassPathResource(DEFAULT_AVATAR_DIR + DEFAULT_AVATAR);
+                if (resource.exists()) {
+                    return ResponseEntity.ok()
+                            .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + DEFAULT_AVATAR + "\"")
+                            .contentLength(resource.contentLength())
+                            .contentType(mediaType)
+                            .body(new ByteArrayResource(resource.getInputStream().readAllBytes()));
                 }
+            } catch (Exception e) {
+                log.error("Ошибка загрузки дефолтного аватара", e);
+            }
+        } else {
+            Path filePath = Paths.get(UPLOAD_DIR + IMAGES_SUBDIR).resolve(avatarPath);
+            if (Files.exists(filePath)) {
+                byte[] fileBytes = Files.readAllBytes(filePath);
+                Resource resource = new ByteArrayResource(fileBytes);
+                String filename = filePath.getFileName().toString();
+
+                return ResponseEntity.ok()
+                        .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + filename + "\"")
+                        .contentLength(resource.contentLength())
+                        .contentType(mediaType)
+                        .body(resource);
             }
         }
 
-        byte[] fileBytes = Files.readAllBytes(filePath);
-        Resource resource = new ByteArrayResource(fileBytes);
-
-        return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "встроенный; имя файла=\"" + filename + "\"")
-                .contentLength(resource.contentLength())
-                .contentType(mediaType)
-                .body(resource);
+        try {
+            Resource resource = new ClassPathResource(DEFAULT_AVATAR_DIR + DEFAULT_AVATAR);
+            return ResponseEntity.ok()
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + DEFAULT_AVATAR + "\"")
+                    .contentLength(resource.contentLength())
+                    .contentType(mediaType)
+                    .body(new ByteArrayResource(resource.getInputStream().readAllBytes()));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Изображение не найдено");
+        }
     }
-
 }
