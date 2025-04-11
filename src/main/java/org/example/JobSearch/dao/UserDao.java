@@ -16,18 +16,6 @@ import java.util.Optional;
 public class UserDao {
     private final JdbcTemplate jdbcTemplate;
 
-    public int updateUserAvatar(Long userId, String avatarPath) {
-        String sql = "UPDATE users SET avatar = ? WHERE id = ?";
-        return jdbcTemplate.update(sql, avatarPath, userId);
-    }
-
-    public Optional<User> findById(Long id) {
-        String sql = "SELECT * FROM users WHERE id = ?";
-        return Optional.ofNullable(
-                DataAccessUtils.singleResult(jdbcTemplate.query(sql, new UserMapper(), id))
-        );
-    }
-
     public Optional<User> findEmployer(String email) {
         String sql = "SELECT u.* FROM users u JOIN authorities a ON u.account_type = a.id " +
                 "WHERE u.email = ? AND a.authority = 'EMPLOYER'";
