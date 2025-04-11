@@ -11,6 +11,8 @@ import org.example.JobSearch.model.AccountType;
 @Builder
 public class UserDTO {
 
+    private Long id;
+
     @NotBlank(message = "Email не может быть пустым")
     @Email(message = "Неверный формат email")
     private String email;
