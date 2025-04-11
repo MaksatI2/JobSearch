@@ -17,9 +17,10 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+
+import static org.example.JobSearch.util.FileUtil.DEFAULT_AVATAR;
 
 @Slf4j
 @Service
@@ -122,16 +123,10 @@ public class UserServiceImpl implements UserService {
     private UserDTO convertToUserDTO(User user) {
         log.trace("Конвертация User в UserDTO для пользователя ID: {}", user.getId());
 
-        String avatarPath = user.getAvatar();
-        if (avatarPath == null || avatarPath.isEmpty()) {
-            avatarPath = "/static/default-avatar/" + FileUtil.DEFAULT_AVATAR;
-        }
-        else if (avatarPath.equals(FileUtil.DEFAULT_AVATAR)) {
-            avatarPath = "/static/default-avatar/" + avatarPath;
-        }
-        else {
-            avatarPath = "/" + avatarPath;
-        }
+        String avatarUrl = user.getAvatar() == null || user.getAvatar().isEmpty() ||
+                user.getAvatar().equals(DEFAULT_AVATAR)
+                ? "/api/users/avatar/default"
+                : "/api/users/avatar/" + user.getId();
 
         return UserDTO.builder()
                 .id(user.getId())
@@ -140,7 +135,7 @@ public class UserServiceImpl implements UserService {
                 .surname(user.getSurname())
                 .age(user.getAge())
                 .phoneNumber(user.getPhoneNumber())
-                .avatar(avatarPath)
+                .avatar(avatarUrl)
                 .accountType(user.getAccountType())
                 .build();
     }
@@ -160,7 +155,7 @@ public class UserServiceImpl implements UserService {
         user.setSurname(applicantDto.getSurname());
         user.setAge(applicantDto.getAge());
         user.setPhoneNumber(applicantDto.getPhoneNumber());
-        user.setAvatar(FileUtil.DEFAULT_AVATAR);
+        user.setAvatar(DEFAULT_AVATAR);
         user.setAccountType(AccountType.APPLICANT);
 
         userDao.save(user);
@@ -181,7 +176,7 @@ public class UserServiceImpl implements UserService {
         user.setSurname("");
         user.setAge(0);
         user.setPhoneNumber(employerDto.getPhoneNumber());
-        user.setAvatar(FileUtil.DEFAULT_AVATAR);
+        user.setAvatar(DEFAULT_AVATAR);
         user.setAccountType(AccountType.EMPLOYER);
 
         userDao.save(user);
@@ -254,40 +249,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void updateUserAvatar(Long userId, MultipartFile file) {
-        log.info("Обновление аватара для пользователя ID: {}", userId);
-        if (file == null || file.isEmpty()) {
-            log.error("Файл для обновления аватара не может быть пустым");
-            throw new InvalidUserDataException("Файл не может быть пустым");
-        }
-
-        userDao.findById(userId)
-                .orElseThrow(() -> {
-                    log.error("Пользователь с ID {} не найден", userId);
-                    return new UserNotFoundException("Пользователь с ID не найден: " + userId);
-                });
-
-        try {
-            String avatarPath = FileUtil.saveUploadFile(file, FileUtil.IMAGES_SUBDIR);
-            log.debug("Аватар сохранен по пути: {}", avatarPath);
-
-            int updatedRows = userDao.updateUserAvatar(userId, avatarPath);
-
-            if (updatedRows == 0) {
-                log.error("Не удалось обновить аватар для пользователя ID: {}", userId);
-                throw new RuntimeException("Не удалось обновить аватар для пользователя ID: " + userId);
-            }
-            log.info("Аватар пользователя ID {} успешно обновлен", userId);
-        } catch (Exception e) {
-            log.error("Ошибка при обновлении аватара: {}", e.getMessage());
-            throw new RuntimeException("Ошибка при обновлении аватара: " + e.getMessage());
-        }
-    }
-
-    @Override
     public ResponseEntity<?> getAvatarByUserId(Long userId) {
         String avatarPath = userDao.findAvatarPathById(userId)
-                .orElse(FileUtil.DEFAULT_AVATAR);
+                .orElse(DEFAULT_AVATAR);
 
         return FileUtil.getOutputFile(avatarPath, MediaType.IMAGE_JPEG);
     }
