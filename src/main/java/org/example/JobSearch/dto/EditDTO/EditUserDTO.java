@@ -28,8 +28,4 @@ public class EditUserDTO {
     @NotBlank(message = "Номер телефона обязателен")
     @Pattern(regexp = "^\\+?[0-9]{10,15}$", message = "Номер телефона должен содержать от 10 до 15 цифр")
     private String phoneNumber;
-
-    @Email(message = "Некорректный email-адрес")
-    @Size(max = 100, message = "Email не должен превышать 100 символов")
-    private String email;
 }
