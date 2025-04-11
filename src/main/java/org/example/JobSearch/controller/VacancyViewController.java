@@ -8,12 +8,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-@RequestMapping("/vacancies")
+@RequestMapping("/")
 @RequiredArgsConstructor
 public class VacancyViewController {
     private final VacancyService vacancyService;
 
-    @GetMapping("/allVacancies")
+    @GetMapping("/")
     public String showVacancies(Model model) {
         model.addAttribute("vacancies", vacancyService.getAllVacancies());
         return "vacancies/vacancies";
