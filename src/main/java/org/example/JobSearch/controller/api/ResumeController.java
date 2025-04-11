@@ -1,10 +1,9 @@
-package org.example.JobSearch.controller;
+package org.example.JobSearch.controller.api;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.example.JobSearch.dto.EditDTO.EditResumeDTO;
 import org.example.JobSearch.dto.ResumeDTO;
-import org.example.JobSearch.exceptions.ResumeNotFoundException;
 import org.example.JobSearch.service.ResumeService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/resumes")
+@RequestMapping("api/resumes")
 @RequiredArgsConstructor
 public class ResumeController {
     private final ResumeService resumeService;
