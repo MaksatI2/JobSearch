@@ -50,9 +50,6 @@ public class EducationInfoServiceImpl implements EducationInfoService {
 
     @Override
     public void updateEducationInfo(Long id, EducationInfoDTO educationInfoDto) {
-        if (id == null) {
-            throw new InvalidUserDataException("ID информации об образовании не может быть null");
-        }
 
         EducationInfo educationInfo = new EducationInfo();
         educationInfo.setId(id);

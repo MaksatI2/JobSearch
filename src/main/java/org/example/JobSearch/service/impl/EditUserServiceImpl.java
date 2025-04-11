@@ -25,7 +25,6 @@ public class EditUserServiceImpl implements EditUserService {
                 .orElseThrow(() -> new UserNotFoundException("Пользователь не найден: " + email));
 
         User userToUpdate = editUserMapper.toUser(editUserDTO);
-        userToUpdate.setEmail(email);
         userToUpdate.setPassword(existingUser.getPassword());
         userToUpdate.setAccountType(existingUser.getAccountType());
         userToUpdate.setAvatar(existingUser.getAvatar());
