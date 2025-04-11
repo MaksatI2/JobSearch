@@ -78,12 +78,5 @@
         </div>
     </div>
 </div>
-
-<script>
-    document.getElementById('avatarFile').addEventListener('change', function(e) {
-        const fileName = e.target.files[0] ? e.target.files[0].name : 'Файл не выбран';
-        document.getElementById('file-name').textContent = fileName;
-    });
-</script>
 </body>
 </html>

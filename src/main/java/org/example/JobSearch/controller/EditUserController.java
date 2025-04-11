@@ -37,7 +37,7 @@ public class EditUserController {
         model.addAttribute("editUserDTO", editUserDTO);
         model.addAttribute("userId", user.getId());
 
-        return "editProfile";
+        return "user/editProfile";
     }
 
     @PostMapping("/edit")
