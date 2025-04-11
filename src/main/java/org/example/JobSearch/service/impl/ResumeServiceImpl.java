@@ -37,6 +37,12 @@ public class ResumeServiceImpl implements ResumeService {
     private final CategoryDao categoryDao;
 
     @Override
+    public List<ResumeDTO> getResumesByApplicant(Long applicantId) {
+        List<Resume> resumes = resumeDao.getUserResumes(applicantId);
+        return resumes.stream().map(this::toDTO).toList();
+    }
+
+    @Override
     @Transactional
     public void createResume(ResumeDTO resumeDto) {
         log.info("Создание нового резюме для соискателя ID: {}", resumeDto.getApplicantId());
