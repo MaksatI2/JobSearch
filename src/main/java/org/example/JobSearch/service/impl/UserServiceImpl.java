@@ -4,6 +4,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.JobSearch.dao.UserDao;
 import org.example.JobSearch.dto.UserDTO;
+import org.example.JobSearch.dto.register.ApplicantRegisterDTO;
+import org.example.JobSearch.dto.register.EmployerRegisterDTO;
+import org.example.JobSearch.exceptions.InvalidRegisterException;
 import org.example.JobSearch.exceptions.InvalidUserDataException;
 import org.example.JobSearch.exceptions.UserNotFoundException;
 import org.example.JobSearch.model.AccountType;
@@ -34,6 +37,17 @@ public class UserServiceImpl implements UserService {
                     return new UserNotFoundException("Соискатель с email не найден: " + email);
                 });
         log.debug("Соискатель с email {} найден", email);
+        return convertToUserDTO(user);
+    }
+
+    @Override
+    public UserDTO getUserByEmail(String email) {
+        log.info("Получение пользователя по email: {}", email);
+        User user = userDao.findByEmail(email)
+                .orElseThrow(() -> {
+                    log.error("Пользователь с email {} не найден", email);
+                    return new UserNotFoundException("Пользователь не найден");
+                });
         return convertToUserDTO(user);
     }
 
@@ -107,38 +121,112 @@ public class UserServiceImpl implements UserService {
 
     private UserDTO convertToUserDTO(User user) {
         log.trace("Конвертация User в UserDTO для пользователя ID: {}", user.getId());
+
+        String avatarPath = user.getAvatar();
+        if (avatarPath == null || avatarPath.isEmpty()) {
+            avatarPath = "/static/default-avatar/" + FileUtil.DEFAULT_AVATAR;
+        }
+        else if (avatarPath.equals(FileUtil.DEFAULT_AVATAR)) {
+            avatarPath = "/static/default-avatar/" + avatarPath;
+        }
+        else {
+            avatarPath = "/" + avatarPath;
+        }
+
         return UserDTO.builder()
+                .id(user.getId())
                 .email(user.getEmail())
                 .name(user.getName())
                 .surname(user.getSurname())
                 .age(user.getAge())
                 .phoneNumber(user.getPhoneNumber())
-                .avatar(user.getAvatar())
+                .avatar(avatarPath)
                 .accountType(user.getAccountType())
                 .build();
     }
 
     @Override
-    public void register(UserDTO userDto) {
-        log.info("Регистрация нового пользователя: {}", userDto.getEmail());
-        User user = new User();
-        user.setEmail(userDto.getEmail());
-        user.setPassword(passwordEncoder.encode(userDto.getPassword()));
-        user.setName(userDto.getName());
-        user.setSurname(userDto.getSurname());
-        user.setAge(userDto.getAge());
-        user.setPhoneNumber(userDto.getPhoneNumber());
-        if (userDto.getAccountType() == AccountType.APPLICANT) {
-            user.setAvatar(FileUtil.DEFAULT_APPLICANT_AVATAR);
-        } else {
-            user.setAvatar(FileUtil.DEFAULT_EMPLOYER_AVATAR);
-        }
-        user.setAccountType(userDto.getAccountType());
+    public void registerApplicant(ApplicantRegisterDTO applicantDto) {
+        validateApplicantData(applicantDto);
 
-        validateUser(userDto);
+        if (userDao.existsByEmail(applicantDto.getEmail())) {
+            throw new InvalidRegisterException("email", "Email уже используется");
+        }
+
+        User user = new User();
+        user.setEmail(applicantDto.getEmail());
+        user.setPassword(passwordEncoder.encode(applicantDto.getPassword()));
+        user.setName(applicantDto.getName());
+        user.setSurname(applicantDto.getSurname());
+        user.setAge(applicantDto.getAge());
+        user.setPhoneNumber(applicantDto.getPhoneNumber());
+        user.setAvatar(FileUtil.DEFAULT_AVATAR);
+        user.setAccountType(AccountType.APPLICANT);
 
         userDao.save(user);
-        log.info("Пользователь {} успешно зарегистрирован", userDto.getEmail());
+    }
+
+    @Override
+    public void registerEmployer(EmployerRegisterDTO employerDto) {
+        validateEmployerData(employerDto);
+
+        if (userDao.existsByEmail(employerDto.getEmail())) {
+            throw new InvalidRegisterException("email", "Email уже используется");
+        }
+
+        User user = new User();
+        user.setEmail(employerDto.getEmail());
+        user.setPassword(passwordEncoder.encode(employerDto.getPassword()));
+        user.setName(employerDto.getCompanyName());
+        user.setSurname("");
+        user.setAge(0);
+        user.setPhoneNumber(employerDto.getPhoneNumber());
+        user.setAvatar(FileUtil.DEFAULT_AVATAR);
+        user.setAccountType(AccountType.EMPLOYER);
+
+        userDao.save(user);
+    }
+
+    private void validateApplicantData(ApplicantRegisterDTO dto) {
+        if (dto.getName() == null || dto.getName().trim().isEmpty()) {
+            throw new InvalidRegisterException("name", "Имя обязательно");
+        }
+        if (!dto.getName().matches("^[a-zA-Zа-яА-Я\\s-]+$")) {
+            throw new InvalidRegisterException("name", "Имя содержит недопустимые символы");
+        }
+        if (dto.getSurname() == null || dto.getSurname().trim().isEmpty()) {
+            throw new InvalidRegisterException("surname", "Фамилия обязательна");
+        }
+        if (!dto.getSurname().matches("^[a-zA-Zа-яА-Я\\s-]+$")) {
+            throw new InvalidRegisterException("surname", "Фамилия содержит недопустимые символы");
+        }
+        if (dto.getAge() == null || dto.getAge() < 18 || dto.getAge() > 50) {
+            throw new InvalidRegisterException("age", "Возраст должен быть от 18 до 50 лет");
+        }
+        if (dto.getEmail() == null || !dto.getEmail().matches("^[\\w-.]+@([\\w-]+\\.)+[\\w-]{2,4}$")) {
+            throw new InvalidRegisterException("email", "Неверный формат email");
+        }
+        if (dto.getPassword() == null || dto.getPassword().length() < 6) {
+            throw new InvalidRegisterException("password", "Пароль должен содержать минимум 6 символов");
+        }
+        if (dto.getPhoneNumber() == null || !dto.getPhoneNumber().matches("^\\+?[0-9\\s-]{10,15}$")) {
+            throw new InvalidRegisterException("phoneNumber", "Некорректный номер телефона");
+        }
+    }
+
+    private void validateEmployerData(EmployerRegisterDTO dto) {
+        if (dto.getCompanyName() == null || dto.getCompanyName().trim().isEmpty()) {
+            throw new InvalidRegisterException("companyName", "Название компании обязательно");
+        }
+        if (dto.getEmail() == null || !dto.getEmail().matches("^[\\w-.]+@([\\w-]+\\.)+[\\w-]{2,4}$")) {
+            throw new InvalidRegisterException("email", "Неверный формат email");
+        }
+        if (dto.getPassword() == null || dto.getPassword().length() < 6) {
+            throw new InvalidRegisterException("password", "Пароль должен содержать минимум 6 символов");
+        }
+        if (dto.getPhoneNumber() == null || !dto.getPhoneNumber().matches("^\\+?[0-9\\s-]{10,15}$")) {
+            throw new InvalidRegisterException("phoneNumber", "Некорректный номер телефона");
+        }
     }
 
     @Override
@@ -180,7 +268,7 @@ public class UserServiceImpl implements UserService {
                 });
 
         try {
-            String avatarPath = FileUtil.saveUploadFile(file, "images/");
+            String avatarPath = FileUtil.saveUploadFile(file, FileUtil.IMAGES_SUBDIR);
             log.debug("Аватар сохранен по пути: {}", avatarPath);
 
             int updatedRows = userDao.updateUserAvatar(userId, avatarPath);
@@ -198,69 +286,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ResponseEntity<?> getAvatarByUserId(Long userId) {
-        String avatarFilename = userDao.findAvatarPathById(userId)
-                .orElseGet(() -> {
-                    User user = userDao.findById(userId)
-                            .orElseThrow(() -> new UserNotFoundException("Пользователь не найден"));
-                    return user.getAccountType() == AccountType.APPLICANT
-                            ? FileUtil.DEFAULT_APPLICANT_AVATAR
-                            : FileUtil.DEFAULT_EMPLOYER_AVATAR;
-                });
+        String avatarPath = userDao.findAvatarPathById(userId)
+                .orElse(FileUtil.DEFAULT_AVATAR);
 
-        return FileUtil.getOutputFile(avatarFilename, FileUtil.IMAGES_SUBDIR, MediaType.IMAGE_JPEG);
+        return FileUtil.getOutputFile(avatarPath, MediaType.IMAGE_JPEG);
     }
-
-    private void validateUser(UserDTO userDto) {
-        log.debug("Валидация данных пользователя: {}", userDto.getEmail());
-        if (userDto.getEmail() == null || userDto.getEmail().isEmpty()) {
-            log.error("Email не может быть пустым");
-            throw new InvalidUserDataException("Email не может быть пустым");
-        }
-        if (userDao.existsByEmail(userDto.getEmail())) {
-            log.error("Email {} уже используется", userDto.getEmail());
-            throw new InvalidUserDataException("Email уже используется");
-        }
-        if (userDto.getPassword() == null || userDto.getPassword().isEmpty()) {
-            log.error("Пароль не может быть пустым");
-            throw new InvalidUserDataException("Пароль не может быть пустым");
-        }
-        if (userDto.getPassword().length() < 6) {
-            log.error("Пароль должен содержать минимум 6 символов");
-            throw new InvalidUserDataException("Пароль должен содержать минимум 6 символов");
-        }
-        if (userDto.getName() == null || userDto.getName().trim().isEmpty()) {
-            log.error("Имя не может быть пустым");
-            throw new InvalidUserDataException("Имя не может быть пустым");
-        }
-        if (userDto.getSurname() == null || userDto.getSurname().trim().isEmpty()) {
-            log.error("Фамилия не может быть пустым");
-            throw new InvalidUserDataException("Фамилия не может быть пустым");
-        }
-        if (userDto.getAge() == null) {
-            log.error("Возраст не может быть null");
-            throw new InvalidUserDataException("Возраст не может быть null");
-        }
-        if (userDto.getAge() < 18 || userDto.getAge() > 60) {
-            log.error("Возраст должен быть между 18 и 60");
-            throw new InvalidUserDataException("Возраст должен быть между 18 и 60");
-        }
-        if (userDto.getPhoneNumber() != null && !userDto.getPhoneNumber().matches("^\\d{10,15}$")) {
-            log.error("Некорректный номер телефона: {}", userDto.getPhoneNumber());
-            throw new InvalidUserDataException("Номер телефона должен содержать только цифры и быть длиной 10-15 символов");
-        }
-        if (userDto.getAccountType() == null) {
-            log.error("Тип аккаунта не может быть null");
-            throw new InvalidUserDataException("Тип аккаунта не может быть null");
-        }
-        if (!userDto.getName().matches("^[a-zA-Zа-яА-Я]+$")) {
-            log.error("Имя содержит недопустимые символы: {}", userDto.getName());
-            throw new InvalidUserDataException("Имя не может содержать цифры или специальные символы");
-        }
-        if (!userDto.getSurname().matches("^[a-zA-Zа-яА-Я]+$")) {
-            log.error("Фамилия содержит недопустимые символы: {}", userDto.getSurname());
-            throw new InvalidUserDataException("Фамилия не может содержать цифры или специальные символы");
-        }
-        log.debug("Валидация пользователя {} прошла успешно", userDto.getEmail());
-    }
-
 }
