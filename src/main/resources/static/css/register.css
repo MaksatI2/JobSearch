@@ -1,0 +1,86 @@
+.form-container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+.form-group {
+    margin-bottom: 20px;
+}
+label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+}
+input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 16px;
+    box-sizing: border-box;
+}
+input.error-field {
+    border-color: #ff4444;
+}
+.error {
+    color: #ff4444;
+    font-size: 0.85em;
+    margin-top: 5px;
+}
+.account-type-selector {
+    margin-bottom: 25px;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+.account-type-btn {
+    padding: 10px 20px;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background: #f5f5f5;
+    color: #333;
+}
+.account-type-btn.active {
+    background-color: #4CAF50;
+    color: white;
+    border-color: #4CAF50;
+}
+.global-error {
+    color: #ff4444;
+    margin-bottom: 20px;
+    padding: 10px;
+    background-color: #ffeeee;
+    border-radius: 4px;
+    text-align: center;
+}
+.submit-btn {
+    width: 100%;
+    padding: 12px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: background-color 0.3s;
+}
+.submit-btn:hover {
+    background-color: #45a049;
+}
+.login-link {
+    text-align: center;
+    margin-top: 20px;
+    color: #666;
+}
+.login-link a {
+    color: #1976d2;
+    text-decoration: none;
+}
