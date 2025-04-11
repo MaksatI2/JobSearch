@@ -19,9 +19,4 @@ public class EditUserDao {
                 user.getPhoneNumber(),
                 email);
     }
-
-    public int deleteUserByEmail(String email) {
-        String sql = "DELETE FROM users WHERE email = ?";
-        return jdbcTemplate.update(sql, email);
-    }
 }
