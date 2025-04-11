@@ -45,6 +45,6 @@ public class ProfileController {
             model.addAttribute("vacancies", vacancies);
         }
 
-        return "profile";
+        return "user/profile";
     }
 }

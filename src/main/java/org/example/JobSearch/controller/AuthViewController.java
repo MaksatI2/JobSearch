@@ -5,7 +5,6 @@ import lombok.RequiredArgsConstructor;
 import org.example.JobSearch.dto.register.ApplicantRegisterDTO;
 import org.example.JobSearch.dto.register.EmployerRegisterDTO;
 import org.example.JobSearch.exceptions.InvalidRegisterException;
-import org.example.JobSearch.exceptions.InvalidUserDataException;
 import org.example.JobSearch.service.UserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
