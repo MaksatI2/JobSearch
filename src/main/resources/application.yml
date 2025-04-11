@@ -3,6 +3,12 @@ server:
 spring:
   application:
     name: "JobSearch"
+  mvc:
+    static-path-pattern: /static/**
+  freemarker:
+    expose-session-attributes: true
+
+
   datasource:
     url: jdbc:h2:./db/jobSearch;AUTO_SERVER=TRUE
     username: maksat
@@ -10,19 +16,25 @@ spring:
     driver-class-name: org.h2.Driver
   liquibase:
     change-log: classpath:/db/changelog/master.yml
+
+  h2:
+    console:
+      enabled: true
+
   output:
     ansi:
       enabled: always
+
 logging:
   level:
     root: info
-  file:
-    path: logs
+    org:
+      springframework:
+        security: debug
 
-  pattern:
-    console: "%d{yyyy-MM-dd HH:mm:ss} %-5level %logger{36} - %msg%n"
+  file:
+    name: logs/spring.log
   logback:
     rollingpolicy:
       max-file-size: 10MB
-      max-history: 5
-
+      max-history: 7
