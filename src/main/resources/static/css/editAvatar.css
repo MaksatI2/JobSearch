@@ -1,0 +1,141 @@
+.container {
+    max-width: 800px;
+    margin: 30px auto;
+    padding: 0 20px;
+}
+
+.avatar-edit-container {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    background-color: #f9f9f9;
+    padding: 30px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+}
+
+.current-avatar {
+    text-align: center;
+    padding: 20px;
+    border-bottom: 1px solid #eee;
+}
+
+.avatar-image {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #ddd;
+}
+
+.no-avatar {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    background-color: #ddd;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+    font-style: italic;
+    color: #666;
+}
+
+.avatar-upload-section {
+    padding: 20px;
+}
+
+.file-upload {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.file-label {
+    background-color: #6c757d;
+    color: white;
+    padding: 8px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-right: 10px;
+    transition: background-color 0.3s;
+}
+
+.file-label:hover {
+    background-color: #5a6268;
+}
+
+.file-input {
+    display: none;
+}
+
+.file-name {
+    font-size: 14px;
+    color: #6c757d;
+}
+
+.avatar-requirements {
+    background-color: #f0f0f0;
+    padding: 15px;
+    border-radius: 5px;
+    margin: 20px 0;
+    font-size: 14px;
+}
+
+.avatar-requirements p {
+    margin-top: 0;
+    font-weight: bold;
+}
+
+.avatar-requirements ul {
+    margin-bottom: 0;
+    padding-left: 20px;
+}
+
+.button-group {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.btn {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    text-decoration: none;
+    display: inline-block;
+    transition: background-color 0.3s;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: #0069d9;
+}
+
+.btn-secondary {
+    background-color: #6c757d;
+    color: white;
+}
+
+.btn-secondary:hover {
+    background-color: #5a6268;
+}
+
+.error-message {
+    color: #dc3545;
+    margin-top: 10px;
+    font-size: 14px;
+}
+
+.success-message {
+    color: #28a745;
+    margin-top: 10px;
+    font-size: 14px;
+}
