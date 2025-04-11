@@ -55,11 +55,11 @@ public class SecurityConfig {
                                 "/vacancies/allVacancies",
                                 "/vacancies/category/**"
                         ).permitAll()
+                        .requestMatchers("/resumes/allResumes").hasAuthority("EMPLOYER")
                         .requestMatchers("/resumes/**").hasAuthority("APPLICANT")
                         .requestMatchers("/users/applicants/**").hasAuthority("APPLICANT")
                         .requestMatchers("/vacancies/**").hasAuthority("EMPLOYER")
                         .requestMatchers("/users/employers/**").hasAuthority("EMPLOYER")
-                        .requestMatchers("/resumes/allResumes").hasAuthority("EMPLOYER")
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form

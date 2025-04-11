@@ -40,34 +40,34 @@ public class EditUserServiceImpl implements EditUserService {
         }
     }
 
-//    @Override
-//    public void updateUserAvatar(Long userId, MultipartFile file) {
-//        log.info("Обновление аватара для пользователя ID: {}", userId);
-//        if (file == null || file.isEmpty()) {
-//            log.error("Файл для обновления аватара не может быть пустым");
-//            throw new InvalidUserDataException("Файл не может быть пустым");
-//        }
-//
-//        editUserDao.findById(userId)
-//                .orElseThrow(() -> {
-//                    log.error("Пользователь с ID {} не найден", userId);
-//                    return new UserNotFoundException("Пользователь с ID не найден: " + userId);
-//                });
-//
-//        try {
-//            String avatarPath = FileUtil.saveUploadFile(file, FileUtil.IMAGES_SUBDIR);
-//            log.debug("Аватар сохранен по пути: {}", avatarPath);
-//
-//            int updatedRows = editUserDao.updateUserAvatar(userId, avatarPath);
-//
-//            if (updatedRows == 0) {
-//                log.error("Не удалось обновить аватар для пользователя ID: {}", userId);
-//                throw new InvalidUserDataException("Не удалось обновить аватар для пользователя ID: " + userId);
-//            }
-//            log.info("Аватар пользователя ID {} успешно обновлен", userId);
-//        } catch (Exception e) {
-//            log.error("Ошибка при обновлении аватара: {}", e.getMessage());
-//            throw new InvalidUserDataException("Ошибка при обновлении аватара: " + e.getMessage());
-//        }
-//    }
+    @Override
+    public void updateUserAvatar(Long userId, MultipartFile file) {
+        log.info("Обновление аватара для пользователя ID: {}", userId);
+        if (file == null || file.isEmpty()) {
+            log.error("Файл для обновления аватара не может быть пустым");
+            throw new InvalidUserDataException("Файл не может быть пустым");
+        }
+
+        editUserDao.findById(userId)
+                .orElseThrow(() -> {
+                    log.error("Пользователь с ID {} не найден", userId);
+                    return new UserNotFoundException("Пользователь с ID не найден: " + userId);
+                });
+
+        try {
+            String avatarPath = FileUtil.saveUploadFile(file, FileUtil.IMAGES_SUBDIR);
+            log.debug("Аватар сохранен по пути: {}", avatarPath);
+
+            int updatedRows = editUserDao.updateUserAvatar(userId, avatarPath);
+
+            if (updatedRows == 0) {
+                log.error("Не удалось обновить аватар для пользователя ID: {}", userId);
+                throw new InvalidUserDataException("Не удалось обновить аватар для пользователя ID: " + userId);
+            }
+            log.info("Аватар пользователя ID {} успешно обновлен", userId);
+        } catch (Exception e) {
+            log.error("Ошибка при обновлении аватара: {}", e.getMessage());
+            throw new InvalidUserDataException("Ошибка при обновлении аватара: " + e.getMessage());
+        }
+    }
 }

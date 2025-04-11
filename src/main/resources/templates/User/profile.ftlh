@@ -56,7 +56,7 @@
                 <img src="${user.avatar}"
                      alt="Аватар"
                      onerror="this.src='/static/default-avatar/default_avatar.jpg'">
-                <a href="/profile/change-avatar" class="change-avatar-button">Изменить аватар</a>
+                <a href="#" class="change-avatar-button">Изменить аватар</a>
             </div>
             <p>${user.name} ${user.surname}</p>
 
@@ -73,7 +73,7 @@
 
         <div class="right-column">
             <#if user.accountType == "APPLICANT">
-                <a href="/resumes/create" class="action-button">Создать резюме</a>
+                <a href="#" class="action-button">Создать резюме</a>
 
                 <div class="responses-card">
                     Отклики: ${responsesCount}
@@ -91,7 +91,7 @@
                     <p>У вас пока нет резюме.</p>
                 </#list>
             <#elseif user.accountType == "EMPLOYER">
-                <a href="/vacancies/create" class="action-button">Создать вакансию</a>
+                <a href="#" class="action-button">Создать вакансию</a>
 
                 <h3>Ваши вакансии</h3>
                 <#list vacancies![] as vacancy>
