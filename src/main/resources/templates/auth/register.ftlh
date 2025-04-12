@@ -1,4 +1,3 @@
-<#-- register.ftlh -->
 <#import "/spring.ftl" as spring>
 <!DOCTYPE html>
 <html lang="ru">
@@ -27,44 +26,46 @@
         <@spring.bind "applicantRegisterDTO" />
         <#if spring.status.error>
             <div class="global-error">
-                Пожалуйста, исправьте ошибки в форме
+                <#list spring.status.errorMessages as error>
+                    <div>${error}</div>
+                </#list>
             </div>
         </#if>
 
         <form action="/auth/register/applicant" method="post">
             <div class="form-group">
                 <label for="name">Имя:</label>
-                <@spring.formInput "applicantRegisterDTO.name", "class='form-control' + (spring.status.error?then(' error-field', ''))" />
+                <@spring.formInput "applicantRegisterDTO.name", "class='form-control' + ((spring.status.error && spring.status.errors['name']?has_content)?then(' error-field', ''))", "id='name'" />
                 <@spring.showErrors "<br>" "error" />
             </div>
 
             <div class="form-group">
                 <label for="surname">Фамилия:</label>
-                <@spring.formInput "applicantRegisterDTO.surname", "class='form-control' + (spring.status.error?then(' error-field', ''))" />
+                <@spring.formInput "applicantRegisterDTO.surname", "class='form-control' + ((spring.status.error && spring.status.errors['surname']?has_content)?then(' error-field', ''))", "id='surname'" />
                 <@spring.showErrors "<br>" "error" />
             </div>
 
             <div class="form-group">
                 <label for="age">Возраст:</label>
-                <@spring.formInput "applicantRegisterDTO.age", "class='form-control' + (spring.status.error?then(' error-field', ''))" />
+                <@spring.formInput "applicantRegisterDTO.age", "class='form-control' + ((spring.status.error && spring.status.errors['age']?has_content)?then(' error-field', ''))", "id='age'" />
                 <@spring.showErrors "<br>" "error" />
             </div>
 
             <div class="form-group">
                 <label for="email">Email:</label>
-                <@spring.formInput "applicantRegisterDTO.email", "class='form-control' + (spring.status.error?then(' error-field', ''))" />
+                <@spring.formInput "applicantRegisterDTO.email", "class='form-control' + ((spring.status.error && spring.status.errors['email']?has_content)?then(' error-field', ''))", "id='email'" />
                 <@spring.showErrors "<br>" "error" />
             </div>
 
             <div class="form-group">
                 <label for="password">Пароль (минимум 6 символов):</label>
-                <@spring.formPasswordInput "applicantRegisterDTO.password", "class='form-control' + (spring.status.error?then(' error-field', ''))" />
+                <@spring.formInput "applicantRegisterDTO.password", "class='form-control' + ((spring.status.error && spring.status.errors['password']?has_content)?then(' error-field', ''))", "id='password'" />
                 <@spring.showErrors "<br>" "error" />
             </div>
 
             <div class="form-group">
                 <label for="phoneNumber">Номер телефона:</label>
-                <@spring.formInput "applicantRegisterDTO.phoneNumber", "class='form-control' + (spring.status.error?then(' error-field', ''))" />
+                <@spring.formInput "applicantRegisterDTO.phoneNumber", "class='form-control' + ((spring.status.error && spring.status.errors['phoneNumber']?has_content)?then(' error-field', ''))", "id='phoneNumber'" />
                 <@spring.showErrors "<br>" "error" />
             </div>
 
@@ -74,32 +75,34 @@
         <@spring.bind "employerRegisterDTO" />
         <#if spring.status.error>
             <div class="global-error">
-                Пожалуйста, исправьте ошибки в форме
+                <#list spring.status.errorMessages as error>
+                    <div>${error}</div>
+                </#list>
             </div>
         </#if>
 
         <form action="/auth/register/employer" method="post">
             <div class="form-group">
                 <label for="companyName">Название компании:</label>
-                <@spring.formInput "employerRegisterDTO.companyName", "class='form-control' + (spring.status.error?then(' error-field', ''))" />
+                <@spring.formInput "employerRegisterDTO.companyName", "class='form-control' + ((spring.status.error && spring.status.errors['companyName']?has_content)?then(' error-field', ''))", "id='companyName'" />
                 <@spring.showErrors "<br>" "error" />
             </div>
 
             <div class="form-group">
                 <label for="email">Email:</label>
-                <@spring.formInput "employerRegisterDTO.email", "class='form-control' + (spring.status.error?then(' error-field', ''))" />
+                <@spring.formInput "employerRegisterDTO.email", "class='form-control' + ((spring.status.error && spring.status.errors['email']?has_content)?then(' error-field', ''))", "id='email'" />
                 <@spring.showErrors "<br>" "error" />
             </div>
 
             <div class="form-group">
                 <label for="password">Пароль (минимум 6 символов):</label>
-                <@spring.formPasswordInput "employerRegisterDTO.password", "class='form-control' + (spring.status.error?then(' error-field', ''))" />
+                <@spring.formInput "employerRegisterDTO.password", "class='form-control' + ((spring.status.error && spring.status.errors['password']?has_content)?then(' error-field', ''))", "id='password'" />
                 <@spring.showErrors "<br>" "error" />
             </div>
 
             <div class="form-group">
                 <label for="phoneNumber">Номер телефона:</label>
-                <@spring.formInput "employerRegisterDTO.phoneNumber", "class='form-control' + (spring.status.error?then(' error-field', ''))" />
+                <@spring.formInput "employerRegisterDTO.phoneNumber", "class='form-control' + ((spring.status.error && spring.status.errors['phoneNumber']?has_content)?then(' error-field', ''))", "id='phoneNumber'" />
                 <@spring.showErrors "<br>" "error" />
             </div>
 
