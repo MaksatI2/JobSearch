@@ -2,9 +2,13 @@ package org.example.JobSearch.dto.register;
 
 import jakarta.validation.constraints.*;
 
-import lombok.Data;
+import lombok.*;
 
-@Data
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class EmployerRegisterDTO {
 
     @NotBlank(message = "Название компании обязательно")
@@ -19,5 +23,6 @@ public class EmployerRegisterDTO {
     private String password;
 
     @NotBlank(message = "Номер телефона обязателен")
+    @Pattern(regexp = "^\\+?[0-9\\s-]{10,15}$", message = "Некорректный номер телефона")
     private String phoneNumber;
 }
