@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Личный кабинет</title>
+    <title>Личный кабинет | JobSearch</title>
     <link rel="stylesheet" href="/static/css/profile.css">
 </head>
 <body>
@@ -58,13 +58,14 @@
                      onerror="this.src='/static/default-avatar/default_avatar.jpg'">
                 <a href="#" class="change-avatar-button">Изменить аватар</a>
             </div>
-            <p>${user.name} ${user.surname}</p>
 
             <#if user.accountType == "APPLICANT">
+                <p>${user.name} ${user.surname}</p>
+                <p>Email: ${user.email}</p>
                 <p>Возраст: ${user.age}</p>
                 <p>Телефон: ${user.phoneNumber}</p>
             <#else>
-                <p>Компания: ${user.name}</p>
+                <p>${user.name}</p>
                 <p>Телефон: ${user.phoneNumber}</p>
             </#if>
 
@@ -85,7 +86,7 @@
                         <p><strong>${resume.name}</strong></p>
                         <p>Обновлено: ${resume.updateTime}</p>
                         <a href="#" class="button-link">Обновить</a>
-                        <a href="#" class="button-link">Ред.</a>
+                        <a href="#" class="button-link">Редактировать</a>
                     </div>
                 <#else>
                     <p>У вас пока нет резюме.</p>
@@ -99,7 +100,7 @@
                         <p><strong>${vacancy.name}</strong></p>
                         <p>Обновлено: ${vacancy.updateTime}</p>
                         <a href="#" class="button-link">Обновить</a>
-                        <a href="#" class="button-link">Ред.</a>
+                        <a href="#" class="button-link">Редактировать</a>
                     </div>
                 <#else>
                     <p>У вас пока нет вакансий.</p>

@@ -42,7 +42,7 @@
                     <article class="vacancy-card">
                         <div class="vacancy-header">
                             <h2 class="vacancy-title">${vacancy.name}</h2>
-                            <span class="salary">${vacancy.salary} ₽</span>
+                            <span class="salary">${vacancy.salary} ⃀</span>
                         </div>
                         <p class="vacancy-description">${vacancy.description}</p>
                         <div class="vacancy-meta">
