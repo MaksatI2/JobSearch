@@ -13,6 +13,8 @@ import java.time.LocalDate;
 @Builder
 public class VacancyDTO {
 
+    Long id;
+
     @NotNull(message = "ID автора вакансии не может быть пустым")
     @Positive(message = "ID автора должен быть положительным числом")
     private Long authorId;

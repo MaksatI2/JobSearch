@@ -89,7 +89,7 @@ public class VacancyServiceImpl implements VacancyService {
             throw new VacancyNotFoundException("Вакансия не найдена по ID: " + vacancyId);
         }
 
-        Long categoryId = parseAndValidateId(editvacancyDto.getCategoryId(), "ID категории");
+        Long categoryId = editvacancyDto.getCategoryId();
 
         if (!categoryDao.existsById(categoryId)) {
             log.error("Попытка обновления вакансии с несуществующей категорией ID: {}", categoryId);
@@ -147,6 +147,7 @@ public class VacancyServiceImpl implements VacancyService {
     private VacancyDTO toDTO(Vacancy vacancy) {
         log.trace("Преобразование Vacancy в VacancyDTO для вакансии ID: {}", vacancy.getId());
         return VacancyDTO.builder()
+                .id(vacancy.getId())
                 .authorId(vacancy.getAuthorId())
                 .categoryId(vacancy.getCategoryId())
                 .name(vacancy.getName())
@@ -158,30 +159,6 @@ public class VacancyServiceImpl implements VacancyService {
                 .createDate(vacancy.getCreatedDate())
                 .updateTime(vacancy.getUpdateTime())
                 .build();
-    }
-
-    private void validateVacancy(VacancyDTO vacancyDto) {
-        log.debug("Валидация вакансии: {}", vacancyDto.getName());
-        if (!vacancyDto.getName().matches("^[a-zA-Zа-яА-ЯёЁ\\s]+$") || vacancyDto.getName().length() < 2) {
-            log.error("Некорректное название вакансии: {}", vacancyDto.getName());
-            throw new IllegalArgumentException("Название должно содержать только буквы и быть не короче 2 символов");
-        }
-        if (vacancyDto.getDescription().length() < 10) {
-            log.error("Слишком короткое описание вакансии: {}", vacancyDto.getName());
-            throw new IllegalArgumentException("Описание вакансии должно содержать не менее 10 символов");
-        }
-        if (vacancyDto.getSalary() < 0) {
-            log.error("Отрицательная зарплата в вакансии: {}", vacancyDto.getName());
-            throw new IllegalArgumentException("Зарплата не может быть отрицательной");
-        }
-        if (vacancyDto.getExpFrom() < 0) {
-            log.error("Отрицательный минимальный опыт в вакансии: {}", vacancyDto.getName());
-            throw new IllegalArgumentException("Минимальный опыт не может быть отрицательным");
-        }
-        if (vacancyDto.getExpTo() < 0 || vacancyDto.getExpTo() > 50) {
-            log.error("Некорректный максимальный опыт в вакансии: {}", vacancyDto.getExpTo());
-            throw new IllegalArgumentException("Максимальный опыт не может быть отрицательным и не должен превышать 50 лет");
-        }
     }
 
     private void validateEditVacancy(EditVacancyDTO editVacancyDto) {
@@ -209,17 +186,27 @@ public class VacancyServiceImpl implements VacancyService {
         }
     }
 
-    private Long parseAndValidateId(String id, String fieldName) {
-        try {
-            Long parsedId = Long.parseLong(id);
-            if (parsedId <= 0) {
-                log.error("{} должен быть положительным числом: {}", fieldName, id);
-                throw new IllegalArgumentException(fieldName + " должен быть положительным числом");
-            }
-            return parsedId;
-        } catch (NumberFormatException e) {
-            log.error("{} содержит недопустимые символы: {}", fieldName, id);
-            throw new IllegalArgumentException(fieldName + " должен содержать только цифры");
-        }
+    @Override
+    public EditVacancyDTO convertToEditDTO(VacancyDTO dto) {
+        return EditVacancyDTO.builder()
+                .categoryId(dto.getCategoryId())
+                .name(dto.getName())
+                .description(dto.getDescription())
+                .salary(dto.getSalary())
+                .expFrom(dto.getExpFrom())
+                .expTo(dto.getExpTo())
+                .isActive(dto.getIsActive())
+                .updateTime(new Timestamp(System.currentTimeMillis()))
+                .build();
     }
+
+    @Override
+    public VacancyDTO getVacancyById(Long id) {
+        log.info("Поиск вакансии по ID: {}", id);
+        Vacancy vacancy = vacancyDao.getVacancyById(id);
+        return toDTO(vacancy);
+    }
+
+
+
 }

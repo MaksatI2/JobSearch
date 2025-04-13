@@ -21,4 +21,7 @@ public interface VacancyService {
 
     List<VacancyDTO> getRespApplToVacancy(Long applicantId);
 
+    VacancyDTO getVacancyById(Long id);
+
+    EditVacancyDTO convertToEditDTO(VacancyDTO dto);
 }

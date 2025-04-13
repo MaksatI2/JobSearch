@@ -84,4 +84,10 @@ public class VacancyDao {
         String sql = "SELECT * FROM vacancies WHERE author_id = ?";
         return jdbcTemplate.query(sql, new VacancyMapper(), employerId);
     }
+
+    public Vacancy getVacancyById(Long id) {
+        String sql = "SELECT * FROM vacancies WHERE id = ?";
+            return jdbcTemplate.queryForObject(sql, new VacancyMapper(), id);
+    }
+
 }
