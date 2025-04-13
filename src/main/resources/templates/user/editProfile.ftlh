@@ -16,7 +16,7 @@
         <div class="navbar-menu">
             <ul>
                 <li><a href="/">Главная</a></li>
-                <li><a href="/">Вакансии</a></li>
+                <li><a href="/vacancies">Вакансии</a></li>
                 <#if Session.SPRING_SECURITY_CONTEXT?? && Session.SPRING_SECURITY_CONTEXT.authentication.authorities?seq_contains('EMPLOYER')>
                     <li><a href="/resumes/allResumes">Резюме</a></li>
                 </#if>

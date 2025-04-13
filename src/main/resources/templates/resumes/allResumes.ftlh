@@ -14,7 +14,7 @@
             <a href="/" class="logo">JobSearch</a>
             <div class="nav-links">
                 <a href="/" class="nav-link">Главная</a>
-                <a href="/" class="nav-link">Вакансии</a>
+                <a href="/vacancies" class="nav-link">Вакансии</a>
                 <a href="/resumes/allResumes" class="nav-link active">Резюме</a>
                 <#if Session.SPRING_SECURITY_CONTEXT??>
                     <a href="/profile" class="nav-link">Профиль</a>
