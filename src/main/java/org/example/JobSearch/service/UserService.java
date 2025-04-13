@@ -1,5 +1,6 @@
 package org.example.JobSearch.service;
 
+import org.example.JobSearch.dto.EditDTO.EditUserDTO;
 import org.example.JobSearch.dto.UserDTO;
 import org.example.JobSearch.dto.register.ApplicantRegisterDTO;
 import org.example.JobSearch.dto.register.EmployerRegisterDTO;

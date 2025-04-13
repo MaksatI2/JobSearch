@@ -31,6 +31,10 @@ public class ProfileController {
     public String showProfilePage(Model model, Principal principal) {
         String email = principal.getName();
         UserDTO user = userService.getUserByEmail(email);
+
+        String avatarUrl = "/api/users/" + user.getId() + "/avatar";
+        user.setAvatar(avatarUrl);
+
         model.addAttribute("user", user);
 
         if (user.getAccountType() == AccountType.APPLICANT) {

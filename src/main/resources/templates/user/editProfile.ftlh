@@ -7,29 +7,29 @@
     <link rel="stylesheet" href="/static/css/editProfile.css">
 </head>
 <body>
-<nav class="navbar">
-    <div class="navbar-container">
-        <div class="navbar-logo">
-            <a href="/">JobSearch</a>
-        </div>
-
-        <div class="navbar-menu">
-            <ul>
-                <li><a href="/">Главная</a></li>
-                <li><a href="/vacancies">Вакансии</a></li>
+<header class="header">
+    <div class="container">
+        <nav class="navbar">
+            <a href="/" class="logo">JobSearch</a>
+            <div class="nav-links">
+                <a href="/" class="nav-link">Главная</a>
+                <a href="/vacancies" class="nav-link active">Вакансии</a>
                 <#if Session.SPRING_SECURITY_CONTEXT?? && Session.SPRING_SECURITY_CONTEXT.authentication.authorities?seq_contains('EMPLOYER')>
-                    <li><a href="/resumes/allResumes">Резюме</a></li>
+                    <a href="/resumes/allResumes" class="nav-link">Резюме</a>
                 </#if>
-                <li><a href="/profile">Профиль</a></li>
-                <li>
-                    <form action="/logout" method="post" style="display: inline;">
-                        <button type="submit" class="logout-button">Выйти</button>
+                <#if Session.SPRING_SECURITY_CONTEXT??>
+                    <a href="/profile" class="nav-link">Профиль</a>
+                    <form action="/logout" method="post" class="logout-form">
+                        <button type="submit" class="logout-btn">Выйти</button>
                     </form>
-                </li>
-            </ul>
-        </div>
+                <#else>
+                    <a href="/auth/login" class="nav-link">Войти</a>
+                    <a href="/auth/register" class="nav-link register-btn">Регистрация</a>
+                </#if>
+            </div>
+        </nav>
     </div>
-</nav>
+</header>
 
 <div class="container">
     <h2>Редактирование профиля</h2>
@@ -78,5 +78,11 @@
         </div>
     </div>
 </div>
+
+<footer class="footer">
+    <div class="container">
+        <p>© 2025 JobSearch. Все права защищены.</p>
+    </div>
+</footer>
 </body>
 </html>

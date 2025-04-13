@@ -5,6 +5,7 @@ import org.example.JobSearch.dto.EditDTO.EditUserDTO;
 import org.example.JobSearch.dto.UserDTO;
 import org.example.JobSearch.service.EditUserService;
 import org.example.JobSearch.service.UserService;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -61,19 +62,28 @@ public class EditUserController {
         return "redirect:/profile";
     }
 
-    @PostMapping("/upload-avatar")
-    public String uploadAvatar(
-            @RequestParam("avatarFile") MultipartFile avatarFile,
-            @RequestParam("userId") Long userId,
-            RedirectAttributes redirectAttributes) {
+    @GetMapping("/avatar/edit")
+    public String showEditAvatarForm(Model model, Principal principal) {
+        String currentUserEmail = principal.getName();
+        UserDTO user = userService.getUserByEmail(currentUserEmail);
 
+        String avatarUrl = "/api/users/" + user.getId() + "/avatar";
+        user.setAvatar(avatarUrl);
+
+        model.addAttribute("user", user);
+
+        model.addAttribute("user", user);
+        model.addAttribute("userId", user.getId());
+
+        return "user/editAvatar";
+    }
+
+    @PostMapping("/avatar")
+    public String updateAvatar(@RequestParam("file") MultipartFile file,
+                               @RequestParam("userId") Long userId,
+                               RedirectAttributes redirectAttributes) {
         try {
-            if (avatarFile.isEmpty()) {
-                redirectAttributes.addFlashAttribute("errorMessage", "Пожалуйста, выберите файл");
-                return "redirect:/profile";
-            }
-
-            editUserService.updateUserAvatar(userId, avatarFile);
+            editUserService.updateUserAvatar(userId, file);
             redirectAttributes.addFlashAttribute("successMessage", "Аватар успешно обновлен");
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", "Ошибка при обновлении аватара: " + e.getMessage());
