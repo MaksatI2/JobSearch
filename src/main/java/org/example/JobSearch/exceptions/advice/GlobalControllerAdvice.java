@@ -5,6 +5,7 @@ import org.example.JobSearch.exceptions.*;
 import org.example.JobSearch.service.ErrorService;
 import org.springframework.beans.TypeMismatchException;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -21,6 +22,14 @@ import java.util.NoSuchElementException;
 @RequiredArgsConstructor
 public class GlobalControllerAdvice {
     private final ErrorService errorService;
+
+    @ExceptionHandler(AccessDeniedException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public ModelAndView handleAccessDenied(AccessDeniedException e) {
+        ModelAndView mav = new ModelAndView("errors/403");
+        mav.addObject("error", errorService.makeResponse(e));
+        return mav;
+    }
 
     @ExceptionHandler({
             UserNotFoundException.class,

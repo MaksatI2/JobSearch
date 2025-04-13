@@ -76,8 +76,11 @@ public class SecurityConfig {
                         .deleteCookies("JSESSIONID")
                         .permitAll()
                 )
-                .sessionManagement( session ->
-                        session.sessionCreationPolicy( SessionCreationPolicy.ALWAYS ));
+                .exceptionHandling(exception -> exception
+                        .accessDeniedPage("/errors/403")
+                )
+                .sessionManagement(session ->
+                        session.sessionCreationPolicy(SessionCreationPolicy.ALWAYS));
 
         return http.build();
     }
