@@ -54,7 +54,7 @@
                     <img src="${user.avatar}"
                          alt="Аватар"
                          onerror="this.src='/static/default-avatar/default_avatar.jpg'">
-                    <a href="#" class="change-avatar-button">Изменить аватар</a>
+                    <a href="/profile/avatar/edit" class="change-avatar-button">Изменить аватар</a>
                 </div>
 
                 <#if user.accountType == "APPLICANT">

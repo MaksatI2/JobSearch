@@ -15,6 +15,8 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
+
 @Controller
 @RequestMapping("/vacancies")
 @RequiredArgsConstructor
@@ -46,10 +48,10 @@ public class VacancyViewController {
     }
 
     @GetMapping("/{id}/edit")
-    public String showEditForm(@PathVariable Long id, Model model) {
+    public String showEditForm(@PathVariable Long id, Model model, Principal principal) {
         VacancyDTO vacancy = vacancyService.getVacancyById(id);
 
-        String currentUserEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+        String currentUserEmail = principal.getName();
         Long currentUserId = userService.getUserId(currentUserEmail);
 
         if (!vacancy.getAuthorId().equals(currentUserId)) {
@@ -67,9 +69,9 @@ public class VacancyViewController {
     public String editVacancy(@PathVariable Long id,
                               @Valid @ModelAttribute("vacancyForm") EditVacancyDTO form,
                               BindingResult bindingResult,
-                              Model model) {
+                              Model model, Principal principal) {
 
-        String currentUserEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+        String currentUserEmail = principal.getName();
         Long currentUserId = userService.getUserId(currentUserEmail);
 
         VacancyDTO vacancy = vacancyService.getVacancyById(id);
