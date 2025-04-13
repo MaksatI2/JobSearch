@@ -74,7 +74,7 @@
 
 <footer class="footer">
     <div class="container">
-        <p>© 2023 JobSearch. Все права защищены.</p>
+        <p>© 2025 JobSearch. Все права защищены.</p>
     </div>
 </footer>
 </body>

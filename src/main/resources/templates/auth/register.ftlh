@@ -6,8 +6,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Регистрация</title>
     <link rel="stylesheet" href="/static/css/register.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 </head>
 <body>
+<header class="header">
+    <div class="container">
+        <nav class="navbar">
+            <a href="/" class="logo">JobSearch</a>
+            <div class="nav-links">
+                <a href="/" class="nav-link">Главная</a>
+                <a href="/vacancies" class="nav-link active">Вакансии</a>
+            </div>
+        </nav>
+    </div>
+</header>
 <div class="form-container">
     <h2 style="text-align: center; margin-bottom: 25px;">Регистрация</h2>
 

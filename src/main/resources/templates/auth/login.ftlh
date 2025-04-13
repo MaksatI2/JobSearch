@@ -1,4 +1,3 @@
-<#-- src/main/resources/templates/login.ftlh -->
 <#import "/spring.ftl" as spring>
 <!DOCTYPE html>
 <html lang="ru">
@@ -7,8 +6,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Вход в систему</title>
     <link rel="stylesheet" href="/static/css/login.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 </head>
 <body>
+<header class="header">
+    <div class="container">
+        <nav class="navbar">
+            <a href="/" class="logo">JobSearch</a>
+            <div class="nav-links">
+                <a href="/" class="nav-link">Главная</a>
+                <a href="/vacancies" class="nav-link active">Вакансии</a>
+            </div>
+        </nav>
+    </div>
+</header>
 <div class="login-container">
     <h2>Вход в систему</h2>
 
