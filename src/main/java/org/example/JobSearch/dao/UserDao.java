@@ -114,6 +114,12 @@ public class UserDao {
         Integer count = jdbcTemplate.queryForObject(sql, Integer.class, userId);
         return count != null && count > 0;
     }
+
+    public Long getUserId(String email) {
+        String sql = "select id from users where email like ?";
+        return jdbcTemplate.queryForObject(sql, Long.class, email);
+    }
+
 }
 
 

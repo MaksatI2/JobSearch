@@ -2,6 +2,7 @@ package org.example.JobSearch.service;
 
 import org.example.JobSearch.dto.EditDTO.EditVacancyDTO;
 import org.example.JobSearch.dto.VacancyDTO;
+import org.example.JobSearch.dto.create.CreateVacancyDTO;
 
 import java.util.List;
 
@@ -10,7 +11,7 @@ public interface VacancyService {
 
     List<VacancyDTO> getVacanciesByCategory(Long categoryId);
 
-    void createVacancy(VacancyDTO vacancyDto);
+    void createVacancy(CreateVacancyDTO createvacancyDto, Long employerId);
 
     void updateVacancy(Long vacancyId, EditVacancyDTO editvacancyDto);
 

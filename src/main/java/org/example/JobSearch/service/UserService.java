@@ -3,10 +3,12 @@ package org.example.JobSearch.service;
 import org.example.JobSearch.dto.UserDTO;
 import org.example.JobSearch.dto.register.ApplicantRegisterDTO;
 import org.example.JobSearch.dto.register.EmployerRegisterDTO;
+import org.example.JobSearch.model.User;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface UserService {
 
@@ -29,4 +31,6 @@ public interface UserService {
     List<UserDTO> getApplicantsVacancy(Long vacancyId);
 
     boolean userExists(String email);
+
+    Long getUserId(String email);
 }

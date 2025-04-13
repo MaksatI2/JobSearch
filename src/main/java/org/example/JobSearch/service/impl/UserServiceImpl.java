@@ -212,4 +212,14 @@ public class UserServiceImpl implements UserService {
 
         return FileUtil.getOutputFile(avatarPath, MediaType.IMAGE_JPEG);
     }
+
+    @Override
+    public Long getUserId(String email) {
+        Long userId = userDao.getUserId(email);
+        if (userId == null || userId == 0) {
+            throw new UserNotFoundException("Нету пользователя с таким Email");
+        }
+        return  userId;
+    }
+
 }

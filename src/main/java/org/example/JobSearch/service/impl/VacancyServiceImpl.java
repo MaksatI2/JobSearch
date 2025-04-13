@@ -7,12 +7,15 @@ import org.example.JobSearch.dao.UserDao;
 import org.example.JobSearch.dao.VacancyDao;
 import org.example.JobSearch.dto.EditDTO.EditVacancyDTO;
 import org.example.JobSearch.dto.VacancyDTO;
+import org.example.JobSearch.dto.create.CreateVacancyDTO;
 import org.example.JobSearch.exceptions.CategoryNotFoundException;
 import org.example.JobSearch.exceptions.VacancyNotFoundException;
 import org.example.JobSearch.model.Vacancy;
 import org.example.JobSearch.service.VacancyService;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -46,25 +49,34 @@ public class VacancyServiceImpl implements VacancyService {
     }
 
     @Override
-    public void createVacancy(VacancyDTO vacancyDto) {
-        log.info("Создание новой вакансии: {}", vacancyDto.getName());
-        Long authorId = parseAndValidateId(vacancyDto.getAuthorId(), "ID автора");
-        Long categoryId = parseAndValidateId(vacancyDto.getCategoryId(), "ID категории");
+    public void createVacancy(CreateVacancyDTO createVacancyDto, Long employerId) {
+        log.info("Создание новой вакансии работодателем ID: {}", employerId);
 
-        if (!userDao.isUserEmployer(authorId)) {
-            log.error("Попытка создания вакансии пользователем, не являющимся работодателем: {}", authorId);
-            throw new VacancyNotFoundException("Только работодатели могут создавать вакансии");
+        if (!userDao.isUserEmployer(employerId)) {
+            log.error("Попытка создания вакансии пользователем, не являющимся работодателем: {}", employerId);
+            throw new AccessDeniedException("Только работодатели могут создавать вакансии");
         }
+
+        Long categoryId = createVacancyDto.getCategoryId();
 
         if (!categoryDao.existsById(categoryId)) {
             log.error("Попытка создания вакансии с несуществующей категорией ID: {}", categoryId);
-            throw new VacancyNotFoundException("Категория с ID: " + categoryId + " не существует");
+            throw new IllegalArgumentException("Категория с ID: " + categoryId + " не существует");
         }
 
-        vacancyDto.setAuthorId(authorId.toString());
-        vacancyDto.setCategoryId(categoryId.toString());
+        VacancyDTO vacancyDto = VacancyDTO.builder()
+                .authorId(employerId)
+                .categoryId(categoryId)
+                .name(createVacancyDto.getName())
+                .description(createVacancyDto.getDescription())
+                .salary(createVacancyDto.getSalary())
+                .expFrom(createVacancyDto.getExpFrom())
+                .expTo(createVacancyDto.getExpTo())
+                .isActive(createVacancyDto.getIsActive())
+                .createDate(new Timestamp(System.currentTimeMillis()))
+                .updateTime(new Timestamp(System.currentTimeMillis()))
+                .build();
 
-        validateVacancy(vacancyDto);
         vacancyDao.createVacancy(vacancyDto);
         log.info("Вакансия успешно создана: {}", vacancyDto.getName());
     }
@@ -135,8 +147,8 @@ public class VacancyServiceImpl implements VacancyService {
     private VacancyDTO toDTO(Vacancy vacancy) {
         log.trace("Преобразование Vacancy в VacancyDTO для вакансии ID: {}", vacancy.getId());
         return VacancyDTO.builder()
-                .authorId(String.valueOf(vacancy.getAuthorId()))
-                .categoryId(String.valueOf(vacancy.getCategoryId()))
+                .authorId(vacancy.getAuthorId())
+                .categoryId(vacancy.getCategoryId())
                 .name(vacancy.getName())
                 .description(vacancy.getDescription())
                 .salary(vacancy.getSalary())

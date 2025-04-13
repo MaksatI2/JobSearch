@@ -17,11 +17,6 @@ import java.util.List;
 public class VacancyController {
     private final VacancyService vacancyService;
 
-    @PostMapping
-    public ResponseEntity<String> createVacancy(@RequestBody @Valid VacancyDTO vacancyDTO) {
-        vacancyService.createVacancy(vacancyDTO);
-        return ResponseEntity.status(HttpStatus.CREATED).body("Vacancy created successfully");
-    }
 
     @PutMapping("/{id}")
     public ResponseEntity<String> updateVacancy(@PathVariable Long id, @RequestBody @Valid EditVacancyDTO editvacancyDTO) {

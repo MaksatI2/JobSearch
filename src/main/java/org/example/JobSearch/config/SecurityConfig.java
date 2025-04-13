@@ -52,7 +52,7 @@ public class SecurityConfig {
                                 "/static/**",
                                 "/favicon.ico",
                                 "/error",
-                                "/vacancies/allVacancies",
+                                "/vacancies",
                                 "/vacancies/category/**"
                         ).permitAll()
                         .requestMatchers("/resumes/allResumes").hasAuthority("EMPLOYER")

@@ -1,24 +1,22 @@
-package org.example.JobSearch.dto;
+package org.example.JobSearch.dto.create;
 
 import jakarta.validation.constraints.*;
 import lombok.*;
 
-import java.sql.Timestamp;
-import java.time.LocalDate;
 
 @Getter
 @Setter
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@AllArgsConstructor
+@NoArgsConstructor
 @Builder
-public class VacancyDTO {
+public class CreateVacancyDTO {
 
     @NotNull(message = "ID автора вакансии не может быть пустым")
     @Positive(message = "ID автора должен быть положительным числом")
     private Long authorId;
 
-    @NotNull(message = "ID автора вакансии не может быть пустым")
-    @Positive(message = "ID автора должен быть положительным числом")
+    @NotNull(message = "ID категории не может быть пустым")
+    @Positive(message = "ID категории должен быть положительным числом")
     private Long categoryId;
 
     @NotBlank(message = "Название вакансии не может быть пустым")
@@ -44,9 +42,4 @@ public class VacancyDTO {
 
     @NotNull
     private Boolean isActive;
-
-    private Timestamp createDate;
-
-    @NotNull(message = "Дата обновления не может быть пустой")
-    private Timestamp updateTime;
 }
