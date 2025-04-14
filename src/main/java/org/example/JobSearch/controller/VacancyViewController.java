@@ -9,7 +9,6 @@ import org.example.JobSearch.service.CategoryService;
 import org.example.JobSearch.service.UserService;
 import org.example.JobSearch.service.VacancyService;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -39,8 +38,19 @@ public class VacancyViewController {
     }
 
     @PostMapping("/create")
-    public String addVacancy(CreateVacancyDTO vacancyDTO) {
-        String currentUserEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+    public String addVacancy(@Valid @ModelAttribute("vacancyForm") CreateVacancyDTO vacancyDTO,
+                             BindingResult bindingResult,
+                             Model model,
+                             Principal principal) {
+
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("categories", categoryService.getAllCategories());
+            return "vacancies/createVacancy";
+        }
+
+        model.addAttribute("errors", bindingResult);
+
+        String currentUserEmail = principal.getName();
         Long currentUser = userService.getUserId(currentUserEmail);
         vacancyService.createVacancy(vacancyDTO, currentUser);
 

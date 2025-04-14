@@ -18,6 +18,7 @@ public class EditVacancyDTO {
     @Positive(message = "ID автора должен быть положительным числом")
     private Long categoryId;
 
+    @Pattern(regexp = "^[a-zA-Zа-яА-ЯёЁ\\s]+$", message = "Название должно содержать только буквы и пробелы")
     @NotBlank(message = "Название вакансии не может быть пустым")
     @Size(min = 2, max = 100, message = "Название вакансии должно быть от 2 до 100 символов")
     private String name;

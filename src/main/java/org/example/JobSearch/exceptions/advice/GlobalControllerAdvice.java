@@ -73,13 +73,22 @@ public class GlobalControllerAdvice {
 
     @ExceptionHandler({
             IllegalArgumentException.class,
-            HttpMessageNotReadableException.class,
-            TypeMismatchException.class
+            HttpMessageNotReadableException.class
     })
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ModelAndView handleBadRequestExceptions(Exception e) {
         ModelAndView mav = new ModelAndView("errors/400");
         mav.addObject("error", errorService.makeResponse(e));
+        return mav;
+    }
+
+    @ExceptionHandler(TypeMismatchException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ModelAndView TypeMismatchException(Exception e) {
+        ModelAndView mav = new ModelAndView("errors/400");
+        mav.addObject("error", errorService.makeResponse(
+                new IllegalArgumentException("ID должно быть числом")
+        ));
         return mav;
     }
 

@@ -23,23 +23,25 @@ public class CreateVacancyDTO {
     @Size(min = 2, max = 100, message = "Название вакансии должно быть от 2 до 100 символов")
     private String name;
 
-    @NotBlank(message = "Описание вакансии не может быть пустым")
-    @Size(min = 10, max = 1000, message = "Описание вакансии должно быть от 10 до 1000 символов")
+    @NotBlank(message = "Описание обязательно")
+    @Size(min = 10, max = 1000, message = "Описание должно быть от 10 до 1000 символов")
     private String description;
 
-    @NotNull(message = "Зарплата не может быть пустой")
-    @Min(value = 0, message = "Зарплата не может быть отрицательной")
+    @NotNull(message = "Зарплата обязательна")
+    @Positive(message = "Зарплата не может быть отрицательной")
+    @Digits(integer = 10, fraction = 2, message = "Введите корректную зарплату")
     private Float salary;
 
-    @NotNull(message = "Минимальный опыт не может быть пустым")
-    @Min(value = 0, message = "Минимальный опыт не может быть отрицательным")
+    @NotNull(message = "Укажите минимальный опыт")
+    @Min(value = 0, message = "Опыт не может быть меньше 0")
+    @Max(value = 50, message = "Опыт не может быть больше 50")
     private Integer expFrom;
 
-    @NotNull(message = "Максимальный опыт не может быть пустым")
-    @Min(value = 0, message = "Максимальный опыт не может быть отрицательным")
-    @Max(value = 50, message = "Максимальный опыт не может превышать 50 лет")
+    @NotNull(message = "Укажите максимальный опыт")
+    @Min(value = 0, message = "Опыт не может быть меньше 0")
+    @Max(value = 50, message = "Опыт не может быть больше 50")
     private Integer expTo;
 
-    @NotNull
+    @NotNull(message = "Статус обязателен")
     private Boolean isActive;
 }
