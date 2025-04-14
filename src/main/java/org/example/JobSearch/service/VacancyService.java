@@ -3,6 +3,7 @@ package org.example.JobSearch.service;
 import org.example.JobSearch.dto.EditDTO.EditVacancyDTO;
 import org.example.JobSearch.dto.VacancyDTO;
 import org.example.JobSearch.dto.create.CreateVacancyDTO;
+import org.example.JobSearch.dto.page.Page;
 
 import java.util.List;
 
@@ -17,7 +18,7 @@ public interface VacancyService {
 
     void deleteVacancy(Long vacancyId);
 
-    List<VacancyDTO> getAllVacancies();
+    Page<VacancyDTO> getAllVacancies(int page, int size);
 
     List<VacancyDTO> getRespApplToVacancy(Long applicantId);
 

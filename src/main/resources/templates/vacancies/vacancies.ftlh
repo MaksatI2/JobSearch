@@ -62,6 +62,24 @@
                     </article>
                 </#list>
             </div>
+
+            <#if totalPages gt 1>
+                <div class="pagination">
+                    <#if (currentPage > 1)>
+                        <a href="/vacancies?page=1&size=${pageSize}" class="page-btn">« Первая</a>
+                        <a href="/vacancies?page=${currentPage - 1}&size=${pageSize}" class="page-btn">‹ Назад</a>
+                    </#if>
+
+                    <#list 1..totalPages as i>
+                        <a href="/vacancies?page=${i}&size=${pageSize}" class="page-btn <#if i == currentPage>active</#if>">${i}</a>
+                    </#list>
+
+                    <#if (currentPage < totalPages)>
+                        <a href="/vacancies?page=${currentPage + 1}&size=${pageSize}" class="page-btn">Вперёд ›</a>
+                        <a href="/vacancies?page=${totalPages}&size=${pageSize}" class="page-btn">Последняя »</a>
+                    </#if>
+                </div>
+            </#if>
         <#else>
             <div class="empty-state">
                 <h3>Вакансии не найдены</h3>

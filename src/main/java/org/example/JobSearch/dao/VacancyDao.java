@@ -4,10 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.example.JobSearch.dao.mapper.VacancyMapper;
 import org.example.JobSearch.dto.EditDTO.EditVacancyDTO;
 import org.example.JobSearch.dto.VacancyDTO;
-import org.example.JobSearch.exceptions.ResumeNotFoundException;
 import org.example.JobSearch.model.Vacancy;
-import org.springframework.dao.DataAccessException;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -45,9 +42,15 @@ public class VacancyDao {
         jdbcTemplate.update(sql, id);
     }
 
-    public List<Vacancy> getAllVacancies() {
-        String sql = "SELECT * FROM vacancies WHERE is_active = TRUE";
-        return jdbcTemplate.query(sql, new VacancyMapper());
+    public List<Vacancy> getAllVacancies(Integer page, Integer size) {
+        String sql = "SELECT * FROM vacancies WHERE is_active = TRUE LIMIT ? OFFSET ?";
+        int offset = (page - 1) * size;
+        return jdbcTemplate.query(sql, new VacancyMapper(), size, offset);
+    }
+
+    public int countActiveVacancies() {
+        String sql = "SELECT COUNT(*) FROM vacancies WHERE is_active = TRUE";
+        return jdbcTemplate.queryForObject(sql, Integer.class);
     }
 
     public List<Vacancy> getVacanciesByCategory(Long categoryId) {

@@ -11,8 +11,6 @@ import lombok.*;
 @Builder
 public class CreateVacancyDTO {
 
-    @NotNull(message = "ID автора вакансии не может быть пустым")
-    @Positive(message = "ID автора должен быть положительным числом")
     private Long authorId;
 
     @NotNull(message = "ID категории не может быть пустым")
@@ -29,7 +27,6 @@ public class CreateVacancyDTO {
 
     @NotNull(message = "Зарплата обязательна")
     @Positive(message = "Зарплата не может быть отрицательной")
-    @Digits(integer = 10, fraction = 2, message = "Введите корректную зарплату")
     private Float salary;
 
     @NotNull(message = "Укажите минимальный опыт")

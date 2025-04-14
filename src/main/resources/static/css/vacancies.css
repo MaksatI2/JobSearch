@@ -327,3 +327,34 @@ body {
     color: #b91c1c;
     border: 1px solid #fca5a5;
 }
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    margin: 30px 0;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.page-btn {
+    padding: 8px 14px;
+    background-color: #f0f0f0;
+    color: #333;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 500;
+    border: 1px solid #ccc;
+    transition: all 0.2s ease;
+}
+
+.page-btn:hover {
+    background-color: #e2e2e2;
+}
+
+.page-btn.active {
+    background-color: #007bff;
+    color: white;
+    border-color: #007bff;
+    pointer-events: none;
+}
+

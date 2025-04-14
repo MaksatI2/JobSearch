@@ -8,10 +8,12 @@ import org.example.JobSearch.dao.VacancyDao;
 import org.example.JobSearch.dto.EditDTO.EditVacancyDTO;
 import org.example.JobSearch.dto.VacancyDTO;
 import org.example.JobSearch.dto.create.CreateVacancyDTO;
+import org.example.JobSearch.dto.page.Page;
 import org.example.JobSearch.exceptions.CategoryNotFoundException;
 import org.example.JobSearch.exceptions.VacancyNotFoundException;
 import org.example.JobSearch.model.Vacancy;
 import org.example.JobSearch.service.VacancyService;
+import org.example.JobSearch.util.PageUtils;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
@@ -116,16 +118,17 @@ public class VacancyServiceImpl implements VacancyService {
         log.info("Вакансия ID {} успешно удалена", vacancyId);
     }
 
-    @Override
-    public List<VacancyDTO> getAllVacancies() {
-        log.info("Получение списка всех вакансий");
-        List<VacancyDTO> vacancies = vacancyDao.getAllVacancies().stream().map(this::toDTO).collect(Collectors.toList());
-        if (vacancies.isEmpty()) {
-            log.warn("Список вакансий пуст");
-            throw new VacancyNotFoundException("Вакансий не найдено");
-        }
-        log.debug("Получено {} вакансий", vacancies.size());
-        return vacancies;
+    public Page<VacancyDTO> getAllVacancies(int page, int size) {
+        log.info("Получение вакансий с пагинацией: страница {}, размер {}", page, size);
+
+        List<Vacancy> vacancies = vacancyDao.getAllVacancies(page, size);
+        long totalElements = vacancyDao.countActiveVacancies();
+
+        List<VacancyDTO> vacancyDTOs = vacancies.stream()
+                .map(this::toDTO)
+                .collect(Collectors.toList());
+
+        return PageUtils.createPage(vacancyDTOs, page, size, (int) totalElements);
     }
 
     @Override
