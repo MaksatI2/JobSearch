@@ -101,7 +101,6 @@ public class VacancyServiceImpl implements VacancyService {
             throw new IllegalArgumentException("Минимальный опыт не может быть больше максимального");
         }
 
-        validateEditVacancy(editvacancyDto);
         vacancyDao.updateVacancy(vacancyId, editvacancyDto);
         log.info("Вакансия ID {} успешно обновлена", vacancyId);
     }
@@ -161,31 +160,6 @@ public class VacancyServiceImpl implements VacancyService {
                 .build();
     }
 
-    private void validateEditVacancy(EditVacancyDTO editVacancyDto) {
-        log.debug("Валидация обновляемой вакансии: {}", editVacancyDto.getName());
-
-        if (!editVacancyDto.getName().matches("^[a-zA-Zа-яА-ЯёЁ\\s]+$") || editVacancyDto.getName().length() < 2) {
-            log.error("Некорректное название вакансии: {}", editVacancyDto.getName());
-            throw new IllegalArgumentException("Название должно содержать только буквы и быть не короче 2 символов");
-        }
-        if (editVacancyDto.getDescription().length() < 10) {
-            log.error("Слишком короткое описание вакансии: {}", editVacancyDto.getName());
-            throw new IllegalArgumentException("Описание вакансии должно содержать не менее 10 символов");
-        }
-        if (editVacancyDto.getSalary() < 0) {
-            log.error("Отрицательная зарплата в вакансии: {}", editVacancyDto.getName());
-            throw new IllegalArgumentException("Зарплата не может быть отрицательной");
-        }
-        if (editVacancyDto.getExpFrom() < 0) {
-            log.error("Отрицательный минимальный опыт в вакансии: {}", editVacancyDto.getName());
-            throw new IllegalArgumentException("Минимальный опыт не может быть отрицательным");
-        }
-        if (editVacancyDto.getExpTo() < 0 || editVacancyDto.getExpTo() > 50) {
-            log.error("Некорректный максимальный опыт в вакансии: {}", editVacancyDto.getExpTo());
-            throw new IllegalArgumentException("Максимальный опыт не может быть отрицательным и не должен превышать 50 лет");
-        }
-    }
-
     @Override
     public EditVacancyDTO convertToEditDTO(VacancyDTO dto) {
         return EditVacancyDTO.builder()
@@ -207,6 +181,10 @@ public class VacancyServiceImpl implements VacancyService {
         return toDTO(vacancy);
     }
 
+    @Override
+    public void refreshVacancy(Long vacancyId) {
+        vacancyDao.refreshVacancy(vacancyId);
+    }
 
 
 }

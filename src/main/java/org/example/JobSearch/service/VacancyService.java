@@ -24,4 +24,6 @@ public interface VacancyService {
     VacancyDTO getVacancyById(Long id);
 
     EditVacancyDTO convertToEditDTO(VacancyDTO dto);
+
+    void refreshVacancy(Long vacancyId);
 }
