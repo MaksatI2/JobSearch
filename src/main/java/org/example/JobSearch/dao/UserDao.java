@@ -120,6 +120,12 @@ public class UserDao {
         return jdbcTemplate.queryForObject(sql, Long.class, email);
     }
 
+    public boolean existsByPhoneNumber(String phoneNumber) {
+        String sql = "SELECT COUNT(*) FROM users WHERE phone_number = ?";
+        Integer count = jdbcTemplate.queryForObject(sql, Integer.class, phoneNumber);
+        return count != null && count > 0;
+    }
+
 }
 
 

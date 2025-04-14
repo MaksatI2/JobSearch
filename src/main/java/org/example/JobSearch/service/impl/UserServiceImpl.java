@@ -147,6 +147,10 @@ public class UserServiceImpl implements UserService {
             throw new InvalidRegisterException("email", "Email уже используется");
         }
 
+        if (userDao.existsByPhoneNumber(applicantDto.getPhoneNumber())) {
+            throw new InvalidRegisterException("phoneNumber", "Номер телефона уже используется");
+        }
+
         User user = new User();
         user.setEmail(applicantDto.getEmail());
         user.setPassword(passwordEncoder.encode(applicantDto.getPassword()));
@@ -165,6 +169,10 @@ public class UserServiceImpl implements UserService {
 
         if (userDao.existsByEmail(employerDto.getEmail())) {
             throw new InvalidRegisterException("email", "Email уже используется");
+        }
+
+        if (userDao.existsByPhoneNumber(employerDto.getPhoneNumber())) {
+            throw new InvalidRegisterException("phoneNumber", "Номер телефона уже используется");
         }
 
         User user = new User();
