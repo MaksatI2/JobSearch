@@ -15,7 +15,7 @@
             <a href="/" class="logo">JobSearch</a>
             <div class="nav-links">
                 <a href="/" class="nav-link">Главная</a>
-                <a href="/vacancies" class="nav-link active">Вакансии</a>
+                <a href="/vacancies" class="nav-link">Вакансии</a>
             </div>
         </nav>
     </div>

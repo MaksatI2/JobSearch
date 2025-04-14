@@ -221,13 +221,24 @@ h2 {
     margin-top: 8px;
     padding: 6px 12px;
     border: none;
-    background-color: var(--gray);
+    background-color:  var(--green);
     color: #fff;
     border-radius: 5px;
     cursor: pointer;
     text-decoration: none;
     font-weight: 500;
     transition: background-color 0.2s;
+    text-align: center;
+    font-size: 14px;
+}
+
+.refresh-button {
+    background-color: var(--green);
+    color: #fff;
+}
+
+.refresh-button:hover {
+    background-color: #0ea371;
 }
 
 .button-link:hover {
@@ -262,7 +273,7 @@ h3 {
 .change-avatar-button {
     display: block;
     padding: 8px 12px;
-    background-color: var(--gray);
+    background-color: var(--primary);
     color: white;
     border-radius: 4px;
     text-decoration: none;
@@ -271,13 +282,14 @@ h3 {
     margin: 10px auto 0;
     width: fit-content;
     font-weight: 500;
+    border: none;
+    cursor: pointer;
+    text-align: center;
 }
 
 .change-avatar-button:hover {
-    background-color: #5a6268;
+    background-color: var(--primary-light);
 }
-
-
 
 @media (max-width: 768px) {
     .profile {

@@ -1,3 +1,4 @@
+<#import "/spring.ftl" as spring>
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -36,24 +37,27 @@
     <div class="container">
         <h1 class="page-title">Создать вакансию</h1>
 
-        <#if error??>
-            <div class="alert alert-danger">${error}</div>
+        <@spring.bind "vacancyForm" />
+        <#if spring.status.error>
+            <div class="global-error">
+                <#list spring.status.errorMessages as error>
+                    <div>${error}</div>
+                </#list>
+            </div>
         </#if>
 
         <form action="/vacancies/create" method="post" class="vacancy-form">
             <div class="form-group">
                 <label for="name">Название вакансии</label>
-                <input type="text" id="name" name="name" required
-                       minlength="2" maxlength="100"
-                       value="${vacancyForm.name!''}">
-                <#if nameError??>
-                    <span class="error">${nameError}</span>
-                </#if>
+                <@spring.formInput "vacancyForm.name", "class='form-control' + ((spring.status.error && spring.status.errors['name']?has_content)?then(' error-field', ''))", "id='name'" />
+                <@spring.showErrors "<br>" "error" />
             </div>
 
+<#--            пока оставил так проверку на фронте думаю когда будет жс поменять-->
+<#--            пока не могу додуматься как сделать валидацию на бэке-->
             <div class="form-group">
                 <label for="categoryId">Категория:</label>
-                <select id="categoryId" name="categoryId">
+                <select id="categoryId" name="categoryId" required>
                     <option value="">Выберите категорию</option>
                     <#list categories as category>
                         <option value="${category.id}">${category.name}</option>
@@ -64,44 +68,42 @@
 
             <div class="form-group">
                 <label for="description">Описание</label>
-                <textarea id="description" name="description" required
-                          minlength="10" maxlength="1000">${vacancyForm.description!''}</textarea>
-                <#if descriptionError??>
-                    <span class="error">${descriptionError}</span>
-                </#if>
+                <@spring.formInput "vacancyForm.description", "class='form-control' + ((spring.status.error && spring.status.errors['description']?has_content)?then(' error-field', ''))", "id='description'" />
+                <@spring.showErrors "<br>" "error" />
             </div>
 
             <div class="form-row">
                 <div class="form-group">
                     <label for="salary">Зарплата</label>
-                    <input type="number" id="salary" name="salary" required
-                           min="0" step="0.01"
-                           value="${vacancyForm.salary!''}">
-                    <#if salaryError??>
-                        <span class="error">${salaryError}</span>
-                    </#if>
+                    <@spring.formInput
+                    "vacancyForm.salary",
+                    "type='number' min='0' class='form-control' + ((spring.status.error && spring.status.errors['salary']?has_content)?then(' error-field', '')) required",
+                    "id='salary'" />
+                    <@spring.showErrors "<br>" "error" />
                 </div>
 
                 <div class="form-group">
-                    <label for="expFrom">Опыт работы от (лет)</label>
-                    <input type="number" id="expFrom" name="expFrom" required
-                           min="0" max="50"
-                           value="${vacancyForm.expFrom!''}">
-                    <#if expFromError??>
-                        <span class="error">${expFromError}</span>
-                    </#if>
+                    <label for="expFrom">Опыт от</label>
+                    <@spring.formInput
+                    "vacancyForm.expFrom",
+                    "type='number' min='0' class='form-control' + ((spring.status.error && spring.status.errors['expFrom']?has_content)?then(' error-field', '')) required",
+                    "id='expFrom'" />
+                    <@spring.showErrors "<br>" "error" />
                 </div>
 
                 <div class="form-group">
-                    <label for="expTo">Опыт работы до (лет)</label>
-                    <input type="number" id="expTo" name="expTo" required
-                           min="0" max="50"
-                           value="${vacancyForm.expTo!''}">
-                    <#if expToError??>
-                        <span class="error">${expToError}</span>
-                    </#if>
+                    <label for="expTo">Опыт до</label>
+                    <@spring.formInput
+                    "vacancyForm.expTo",
+                    "type='number' min='0' class='form-control' + ((spring.status.error && spring.status.errors['expTo']?has_content)?then(' error-field', '')) required",
+                    "id='expTo'" />
+                    <@spring.showErrors "<br>" "error" />
                 </div>
+            </div>
 
+            <#--            пока оставил так проверку на фронте думаю когда будет жс поменять-->
+            <#--            пока не могу додуматься как сделать валидацию на бэке
+                            можно но муторно -->
                 <div class="form-group">
                     <label for="isActive">Статус вакансии</label>
                     <select id="isActive" name="isActive" required>
@@ -111,7 +113,6 @@
                     </select>
                 </div>
 
-            </div>
 
             <button type="submit" class="submit-btn">Создать вакансию</button>
         </form>

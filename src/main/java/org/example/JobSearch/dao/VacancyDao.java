@@ -11,6 +11,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 @Repository
@@ -88,6 +89,11 @@ public class VacancyDao {
     public Vacancy getVacancyById(Long id) {
         String sql = "SELECT * FROM vacancies WHERE id = ?";
             return jdbcTemplate.queryForObject(sql, new VacancyMapper(), id);
+    }
+
+    public void refreshVacancy(Long id) {
+        String sql = "UPDATE vacancies SET update_time = ? WHERE id = ?";
+        jdbcTemplate.update(sql, new Timestamp(System.currentTimeMillis()), id);
     }
 
 }

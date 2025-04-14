@@ -14,12 +14,12 @@
             <a href="/" class="logo">JobSearch</a>
             <div class="nav-links">
                 <a href="/" class="nav-link">Главная</a>
-                <a href="/vacancies" class="nav-link active">Вакансии</a>
+                <a href="/vacancies" class="nav-link">Вакансии</a>
                 <#if Session.SPRING_SECURITY_CONTEXT?? && Session.SPRING_SECURITY_CONTEXT.authentication.authorities?seq_contains('EMPLOYER')>
                     <a href="/resumes/allResumes" class="nav-link">Резюме</a>
                 </#if>
                 <#if Session.SPRING_SECURITY_CONTEXT??>
-                    <a href="/profile" class="nav-link">Профиль</a>
+                    <a href="/profile" class="nav-link active">Профиль</a>
                     <form action="/logout" method="post" class="logout-form">
                         <button type="submit" class="logout-btn">Выйти</button>
                     </form>
@@ -98,6 +98,9 @@
                             <div class="vacancy-card">
                                 <p><strong>${vacancy.name}</strong></p>
                                 <p>Обновлено: ${vacancy.updateTime}</p>
+                                <form action="/profile/vacancies/${vacancy.id}/refresh" method="post" class="inline-form">
+                                    <button type="submit" class="button-link refresh-button">Обновить</button>
+                                </form>
                                 <a href="/vacancies/${vacancy.id}/edit" class="button-link">Редактировать</a>
                             </div>
                         <#else>
