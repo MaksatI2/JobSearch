@@ -1,10 +1,12 @@
+<#import "/spring.ftl" as spring>
 <!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Редактирование профиля</title>
-    <link rel="stylesheet" href="/static/css/profile.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Редактирование профиля | JobSearch</title>
     <link rel="stylesheet" href="/static/css/editProfile.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 </head>
 <body>
 <header class="header">
@@ -31,53 +33,55 @@
     </div>
 </header>
 
-<div class="container">
-    <h2>Редактирование профиля</h2>
+<main class="main">
+    <div class="container">
+        <h1 class="page-title">Редактирование профиля</h1>
 
-    <div class="profile-edit-container">
-        <div class="profile-edit-form">
-            <h3>Изменить данные профиля</h3>
-            <form action="/profile/edit" method="post">
+        <@spring.bind "editUserDTO" />
+        <#if spring.status.error>
+            <div class="global-error">
+                <#list spring.status.errorMessages as error>
+                    <div>${error}</div>
+                </#list>
+            </div>
+        </#if>
+
+        <form action="/profile/edit" method="post" class="profile-form">
+            <div class="form-row">
                 <div class="form-group">
                     <label for="name">Имя</label>
-                    <input type="text" id="name" name="name" value="${editUserDTO.name}" required>
-                    <#if errors?? && errors.getFieldError('name')??>
-                        <span class="error">${errors.getFieldError('name').defaultMessage}</span>
-                    </#if>
+                    <@spring.formInput "editUserDTO.name", "class='form-control' + ((spring.status.errors['name']?has_content)?then(' error-field', ''))", "id='name'" />
+                    <@spring.showErrors "<br>" "error" />
                 </div>
 
                 <div class="form-group">
                     <label for="surname">Фамилия</label>
-                    <input type="text" id="surname" name="surname" value="${editUserDTO.surname}" required>
-                    <#if errors?? && errors.getFieldError('surname')??>
-                        <span class="error">${errors.getFieldError('surname').defaultMessage}</span>
-                    </#if>
+                    <@spring.formInput "editUserDTO.surname", "class='form-control' + ((spring.status.errors['surname']?has_content)?then(' error-field', ''))", "id='surname'" />
+                    <@spring.showErrors "<br>" "error" />
                 </div>
+            </div>
 
+            <div class="form-row">
                 <div class="form-group">
                     <label for="age">Возраст</label>
-                    <input type="number" id="age" name="age" value="${editUserDTO.age?c}" required min="18" max="60">
-                    <#if errors?? && errors.getFieldError('age')??>
-                        <span class="error">${errors.getFieldError('age').defaultMessage}</span>
-                    </#if>
+                    <@spring.formInput "editUserDTO.age", "class='form-control' + ((spring.status.errors['age']?has_content)?then(' error-field', ''))", "id='age'" />
+                    <@spring.showErrors "<br>" "error" />
                 </div>
 
                 <div class="form-group">
                     <label for="phoneNumber">Номер телефона</label>
-                    <input type="text" id="phoneNumber" name="phoneNumber" value="${editUserDTO.phoneNumber}" required>
-                    <#if errors?? && errors.getFieldError('phoneNumber')??>
-                        <span class="error">${errors.getFieldError('phoneNumber').defaultMessage}</span>
-                    </#if>
+                    <@spring.formInput "editUserDTO.phoneNumber", "class='form-control' + ((spring.status.errors['phoneNumber']?has_content)?then(' error-field', ''))", "id='phoneNumber'" />
+                    <@spring.showErrors "<br>" "error" />
                 </div>
+            </div>
 
-                <div class="button-group">
-                    <button type="submit" class="btn btn-success">Сохранить</button>
-                    <a href="/profile" class="btn btn-secondary">Отмена</a>
-                </div>
-            </form>
-        </div>
+            <div class="button-group">
+                <button type="submit" class="submit-btn">Сохранить изменения</button>
+                <a href="/profile" class="btn btn-secondary">Отмена</a>
+            </div>
+        </form>
     </div>
-</div>
+</main>
 
 <footer class="footer">
     <div class="container">

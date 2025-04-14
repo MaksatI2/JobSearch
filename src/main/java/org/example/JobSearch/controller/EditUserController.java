@@ -36,8 +36,6 @@ public class EditUserController {
                 .build();
 
         model.addAttribute("editUserDTO", editUserDTO);
-        model.addAttribute("userId", user.getId());
-
         return "user/editProfile";
     }
 
@@ -49,7 +47,7 @@ public class EditUserController {
             RedirectAttributes redirectAttributes) {
 
         if (bindingResult.hasErrors()) {
-            return "editProfile";
+            return "user/editProfile";
         }
 
         try {

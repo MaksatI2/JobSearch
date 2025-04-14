@@ -4,8 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Вход в систему</title>
-    <link rel="stylesheet" href="/static/css/login.css">
+    <title>Вход | JobSearch</title>
+    <link rel="stylesheet" href="/static/css/register.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 </head>
 <body>
@@ -20,38 +20,43 @@
         </nav>
     </div>
 </header>
-<div class="login-container">
-    <h2>Вход в систему</h2>
 
-    <#if loginError??>
-        <div class="error-message">
-            ${loginError}
+<main class="main">
+    <div class="container">
+        <div class="registration-form-container">
+            <h1 class="page-title">Вход в систему</h1>
+
+            <#if loginError??>
+                <div class="global-error">
+                    ${loginError}
+                </div>
+            </#if>
+
+            <#if registrationSuccess??>
+                <div class="success-message">
+                    ${registrationSuccess}
+                </div>
+            </#if>
+
+            <form action="/login" method="post" class="registration-form">
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="username" class="form-control" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Пароль</label>
+                    <input type="password" id="password" name="password" class="form-control" required>
+                </div>
+
+                <button type="submit" class="submit-btn">Войти</button>
+            </form>
+
+            <div class="register-link">
+                Ещё нет аккаунта? <a href="/auth/register">Зарегистрироваться</a>
+            </div>
         </div>
-    </#if>
-
-    <#if registrationSuccess??>
-        <div class="success-message">
-            ${registrationSuccess}
-        </div>
-    </#if>
-
-    <form action="/login" method="post">
-        <div class="form-group">
-            <label for="email">Email:</label>
-            <input type="email" id="email" name="username" required>
-        </div>
-
-        <div class="form-group">
-            <label for="password">Пароль:</label>
-            <input type="password" id="password" name="password" required>
-        </div>
-
-        <button type="submit">Войти</button>
-    </form>
-
-    <div class="register-link">
-        Ещё нет аккаунта? <a href="/auth/register">Зарегистрироваться</a>
     </div>
-</div>
+</main>
 </body>
 </html>
