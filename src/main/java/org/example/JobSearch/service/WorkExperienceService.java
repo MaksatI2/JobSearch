@@ -13,4 +13,6 @@ public interface WorkExperienceService {
     void updateWorkExperience(Long id, WorkExperienceDTO workExperienceDto);
 
     void deleteWorkExperience(Long id);
+
+    void validateCreateWorkExperience(Long resumeId, WorkExperienceDTO workExperienceDto);
 }

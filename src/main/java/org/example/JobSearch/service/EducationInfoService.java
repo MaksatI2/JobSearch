@@ -13,4 +13,6 @@ public interface EducationInfoService {
     void updateEducationInfo(Long id, EducationInfoDTO educationInfoDto);
 
     void deleteEducationInfo(Long id);
+
+    void validateCreateEducationInfo(Long resumeId, EducationInfoDTO educationInfoDto);
 }

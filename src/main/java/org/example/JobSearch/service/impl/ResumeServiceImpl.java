@@ -13,6 +13,7 @@ import org.example.JobSearch.dto.ResumeDTO;
 import org.example.JobSearch.dto.WorkExperienceDTO;
 import org.example.JobSearch.dto.create.CreateResumeDTO;
 import org.example.JobSearch.exceptions.CategoryNotFoundException;
+import org.example.JobSearch.exceptions.CreateResumeException;
 import org.example.JobSearch.exceptions.InvalidUserDataException;
 import org.example.JobSearch.exceptions.ResumeNotFoundException;
 import org.example.JobSearch.model.Resume;
@@ -32,7 +33,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ResumeServiceImpl implements ResumeService {
     private final ResumeDao resumeDao;
-    private final UserDao userDao;
     private final EducationInfoService educationInfoService;
     private final WorkExperienceService workExperienceService;
     private final CategoryDao categoryDao;
@@ -47,6 +47,8 @@ public class ResumeServiceImpl implements ResumeService {
     @Transactional
     public void createResume(CreateResumeDTO resumeDto) {
         log.info("Создание нового резюме для соискателя ID: {}", resumeDto.getApplicantId());
+
+        validateCreateResume(resumeDto);
 
         if (!categoryDao.existsById(resumeDto.getCategoryId())) {
             log.error("Категория с ID {} не найдена", resumeDto.getCategoryId());
@@ -277,5 +279,31 @@ public class ResumeServiceImpl implements ResumeService {
                 .position(dto.getPosition())
                 .responsibilities(dto.getResponsibilities())
                 .build();
+    }
+
+    @Override
+    public void validateCreateResume(CreateResumeDTO resumeDto) {
+        if (resumeDto.getCategoryId() == null) {
+            throw new CreateResumeException("categoryId", "категории не может быть пустым");
+        }
+
+        if (resumeDto.getName() == null || resumeDto.getName().trim().isEmpty()) {
+            throw new CreateResumeException("name", "Название резюме не может быть пустым");
+        }
+
+        if (resumeDto.getName().length() < 8) {
+            throw new CreateResumeException("name", "Название резюме должно содержать минимум 8 символов");
+        }
+
+        if (resumeDto.getName().matches(".*\\d.*")) {
+            throw new CreateResumeException("name", "Название резюме не должно содержать цифры");
+        }
+
+        if (resumeDto.getSalary() != null) {
+            if (resumeDto.getSalary() < 0) {
+                throw new CreateResumeException("salary", "Зарплата не может быть отрицательной");
+            }
+        }
+
     }
 }
