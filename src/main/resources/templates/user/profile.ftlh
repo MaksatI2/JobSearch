@@ -84,7 +84,7 @@
                             <p><strong>${resume.name}</strong></p>
                             <p>Обновлено: ${resume.updateTime}</p>
                             <a href="#" class="button-link">Обновить</a>
-                            <a href="#" class="button-link">Редактировать</a>
+                            <a href="/resumes/${resumes.id}/edit" class="button-link">Редактировать</a>
                         </div>
                     <#else>
                         <p>У вас пока нет резюме.</p>

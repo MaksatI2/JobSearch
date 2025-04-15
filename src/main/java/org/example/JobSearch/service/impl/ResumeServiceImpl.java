@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.JobSearch.dao.CategoryDao;
 import org.example.JobSearch.dao.ResumeDao;
-import org.example.JobSearch.dao.UserDao;
 import org.example.JobSearch.dto.EditDTO.EditEducationInfoDTO;
 import org.example.JobSearch.dto.EditDTO.EditResumeDTO;
 import org.example.JobSearch.dto.EditDTO.EditWorkExperienceDTO;
@@ -305,5 +304,68 @@ public class ResumeServiceImpl implements ResumeService {
             }
         }
 
+    }
+
+    @Override
+    public EditResumeDTO convertToEditDTO(ResumeDTO resume) {
+
+        EditResumeDTO editResumeDTO = EditResumeDTO.builder()
+                .categoryId(resume.getCategoryId())
+                .name(resume.getName())
+                .salary(resume.getSalary())
+                .isActive(resume.getIsActive())
+                .build();
+
+        // Преобразование образования
+        if (resume.getEducationInfos() != null && !resume.getEducationInfos().isEmpty()) {
+            List<EditEducationInfoDTO> educationInfos = resume.getEducationInfos().stream()
+                    .map(this::convertToEditEducationInfoDTO)
+                    .collect(Collectors.toList());
+            editResumeDTO.setEducationInfos(educationInfos);
+        }
+
+        // Преобразование опыта работы
+        if (resume.getWorkExperiences() != null && !resume.getWorkExperiences().isEmpty()) {
+            List<EditWorkExperienceDTO> workExperiences = resume.getWorkExperiences().stream()
+                    .map(this::convertToEditWorkExperienceDTO)
+                    .collect(Collectors.toList());
+            editResumeDTO.setWorkExperiences(workExperiences);
+        }
+
+        return editResumeDTO;
+    }
+
+    private EditEducationInfoDTO convertToEditEducationInfoDTO(EducationInfoDTO dto) {
+        return EditEducationInfoDTO.builder()
+                .id(dto.getId())
+                .institution(dto.getInstitution())
+                .program(dto.getProgram())
+                .startDate(dto.getStartDate())
+                .endDate(dto.getEndDate())
+                .degree(dto.getDegree())
+                .build();
+    }
+
+    private EditWorkExperienceDTO convertToEditWorkExperienceDTO(WorkExperienceDTO dto) {
+        return EditWorkExperienceDTO.builder()
+                .id(dto.getId())
+                .years(dto.getYears())
+                .companyName(dto.getCompanyName())
+                .position(dto.getPosition())
+                .responsibilities(dto.getResponsibilities())
+                .build();
+    }
+
+    @Override
+    public ResumeDTO getResumeById(Long id) {
+        log.info("Получение резюме по ID: {}", id);
+        Resume resume = resumeDao.getResumeById(id);
+
+        ResumeDTO dto = toDTO(resume);
+
+        dto.setEducationInfos(educationInfoService.getEducationInfoByResumeId(id));
+        dto.setWorkExperiences(workExperienceService.getWorkExperienceByResumeId(id));
+
+        return dto;
     }
 }
