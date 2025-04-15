@@ -1,6 +1,7 @@
 package org.example.JobSearch.service;
 
 
+import jakarta.validation.Valid;
 import org.example.JobSearch.dto.EditDTO.EditResumeDTO;
 import org.example.JobSearch.dto.ResumeDTO;
 import org.example.JobSearch.dto.create.CreateResumeDTO;
@@ -19,4 +20,10 @@ public interface ResumeService {
     List<ResumeDTO> getUserResumes(Long applicants_id);
 
     List<ResumeDTO> getResumesByCategory(Long categoryId);
+
+    void validateCreateResume(CreateResumeDTO resumeDTO);
+
+    EditResumeDTO convertToEditDTO(ResumeDTO resume);
+
+    ResumeDTO getResumeById(Long id);
 }

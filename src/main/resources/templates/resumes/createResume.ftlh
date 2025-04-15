@@ -1,9 +1,10 @@
+<#import "/spring.ftl" as spring>
 <!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Создать резюме | JobSearch</title>
+    <title>Создание резюме | JobSearch</title>
     <link rel="stylesheet" href="/static/css/createResume.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 </head>
@@ -15,18 +16,7 @@
             <div class="nav-links">
                 <a href="/" class="nav-link">Главная</a>
                 <a href="/vacancies" class="nav-link">Вакансии</a>
-                <#if Session.SPRING_SECURITY_CONTEXT?? && Session.SPRING_SECURITY_CONTEXT.authentication.authorities?seq_contains('EMPLOYER')>
-                    <a href="/resumes/allResumes" class="nav-link active">Резюме</a>
-                </#if>
-                <#if Session.SPRING_SECURITY_CONTEXT??>
-                    <a href="/profile" class="nav-link">Профиль</a>
-                    <form action="/logout" method="post" class="logout-form">
-                        <button type="submit" class="logout-btn">Выйти</button>
-                    </form>
-                <#else>
-                    <a href="/auth/login" class="nav-link">Войти</a>
-                    <a href="/auth/register" class="nav-link register-btn">Регистрация</a>
-                </#if>
+                <a href="/resumes/allResumes" class="nav-link">Резюме</a>
             </div>
         </nav>
     </div>
@@ -34,19 +24,19 @@
 
 <main class="main">
     <div class="container">
-        <h1 class="page-title">Создать резюме</h1>
+        <div class="resume-form-container">
+            <h1 class="page-title">Создание резюме</h1>
 
-        <form action="/resumes/create" method="post" class="resume-form">
-            <div class="form-section">
-                <h2 class="section-title">Основная информация</h2>
-                <div class="form-group">
-                    <label for="name">Название резюме*</label>
-                    <input type="text" class="form-control" id="name" name="name" value="${resumeForm.name!''}" required>
-                    <#if fields?? && fields.hasErrors("name")>
-                        <div class="error">${fields.getFieldError("name")?string!}</div>
-                    </#if>
+            <@spring.bind "resumeForm" />
+            <#if spring.status.error>
+                <div class="global-error">
+                    <#list spring.status.errorMessages as error>
+                        <div>${error}</div>
+                    </#list>
                 </div>
+            </#if>
 
+            <form action="/resumes/create" method="post" class="resume-form">
                 <div class="form-group">
                     <label for="categoryId">Категория*</label>
                     <select class="form-control" id="categoryId" name="categoryId" required>
@@ -58,96 +48,122 @@
                             </option>
                         </#list>
                     </select>
-                    <#if fields?? && fields.hasErrors("categoryId")>
-                        <div class="error">${fields.getFieldError("categoryId")?string!}</div>
-                    </#if>
+                    <@spring.showErrors "<br>" "error" />
                 </div>
 
                 <div class="form-group">
-                    <label for="salary">Желаемая зарплата*</label>
-                    <input type="number" class="form-control" id="salary" name="salary" value="${resumeForm.salary!''}">
-                    <#if fields?? && fields.hasErrors("salary")>
-                        <div class="error">${fields.getFieldError("salary")?string!}</div>
+                    <label for="name">Название резюме *</label>
+                    <@spring.formInput "resumeForm.name", "class='form-control' + ((spring.status.error && spring.status.errors['name']?has_content)?then(' error-field', ''))", "id='name'" />
+                    <@spring.showErrors "<br>" "error" />
+                </div>
+
+                <div class="form-group">
+                    <label for="salary">Желаемая зарплата</label>
+                    <@spring.formInput "resumeForm.salary", "class='form-control' + ((spring.status.error && spring.status.errors['salary']?has_content)?then(' error-field', ''))", "id='salary' type='number' min='0' step='0.01'" />
+                    <@spring.showErrors "<br>" "error" />
+                </div>
+
+                <div class="form-group">
+                    <label for="description">Описание</label>
+                    <textarea id="description" name="description" class="form-control" rows="5"><#if resumeForm.description??>${resumeForm.description}</#if></textarea>
+                </div>
+
+                <h3 class="section-title">Опыт работы</h3>
+                <div id="work-experiences">
+                    <#if resumeForm.workExperiences?? && resumeForm.workExperiences?has_content>
+                        <#list resumeForm.workExperiences as workExp>
+                            <@spring.bind "resumeForm.workExperiences[${workExp?index}]" />
+                            <div class="work-experience-item">
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>Компания*</label>
+                                        <input type="text" name="workExperiences[${workExp?index}].companyName" value="${(workExp.companyName!'')}" class="form-control${spring.status.error?then(' error-field', '')}" />
+                                        <@spring.showErrors "<br>" "error" />
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Должность*</label>
+                                        <input type="text" name="workExperiences[${workExp?index}].position" value="${(workExp.position!'')}" class="form-control${spring.status.error?then(' error-field', '')}" />
+                                        <@spring.showErrors "<br>" "error" />
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>Дата начала*</label>
+                                        <input type="date" name="workExperiences[${workExp?index}].startDate" value="${(workExp.startDate??)?then(workExp.startDate?string('yyyy-MM-dd'), '')}" class="form-control${spring.status.error?then(' error-field', '')}" />
+                                        <@spring.showErrors "<br>" "error" />
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Дата окончания</label>
+                                        <input type="date" name="workExperiences[${workExp?index}].endDate" value="${(workExp.endDate??)?then(workExp.endDate?string('yyyy-MM-dd'), '')}" class="form-control${spring.status.error?then(' error-field', '')}" />
+                                        <@spring.showErrors "<br>" "error" />
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label>Описание</label>
+                                    <textarea name="workExperiences[${workExp?index}].description" class="form-control" rows="3">${(workExp.description!'')}</textarea>
+                                    <@spring.showErrors "<br>" "error" />
+                                </div>
+                            </div>
+                        </#list>
+                    <#else>
+                        <p>Опыт работы не добавлен. Нажмите кнопку ниже, чтобы добавить.</p>
                     </#if>
                 </div>
-            </div>
+                <button type="submit" name="addWorkExp" class="btn-add">+ Добавить место работы</button>
 
-            <div class="form-section">
-                <h2 class="section-title">Опыт работы</h2>
-                <#if workExpError??>
-                    <div class="alert alert-danger">${workExpError}</div>
-                </#if>
-                <#list resumeForm.workExperiences![] as exp>
-                    <div class="form-group form-group-nested">
-                        <div class="form-group">
-                            <label>Компания</label>
-                            <input type="text" class="form-control" name="workExperiences[${exp_index}].companyName" value="${exp.companyName!}">
-                        </div>
-                        <div class="form-group">
-                            <label>Должность</label>
-                            <input type="text" class="form-control" name="workExperiences[${exp_index}].position" value="${exp.position!}">
-                        </div>
-                        <div class="form-group">
-                            <label>Годы опыта</label>
-                            <input type="number" class="form-control" name="workExperiences[${exp_index}].years" value="${exp.years!}">
-                        </div>
-                        <div class="form-group">
-                            <label>Обязанности</label>
-                            <textarea class="form-control" name="workExperiences[${exp_index}].responsibilities">${exp.responsibilities!}</textarea>
-                        </div>
-                    </div>
-                </#list>
-                <button type="submit" name="addWorkExp" class="btn btn-outline">Добавить опыт</button>
-            </div>
+                <h3 class="section-title">Образование</h3>
+                <div id="education-infos">
+                    <#if resumeForm.educationInfos?? && resumeForm.educationInfos?has_content>
+                        <#list resumeForm.educationInfos as education>
+                            <@spring.bind "resumeForm.educationInfos[${education?index}]" />
+                            <div class="education-item">
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>Учебное заведение*</label>
+                                        <input type="text" name="educationInfos[${education?index}].institution" value="${(education.institution!'')}" class="form-control${spring.status.error?then(' error-field', '')}" />
+                                        <@spring.showErrors "<br>" "error" />
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Степень*</label>
+                                        <input type="text" name="educationInfos[${education?index}].degree" value="${(education.degree!'')}" class="form-control${spring.status.error?then(' error-field', '')}" />
+                                        <@spring.showErrors "<br>" "error" />
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>Дата начала*</label>
+                                        <input type="date" name="educationInfos[${education?index}].startDate" value="${(education.startDate??)?then(education.startDate?string('yyyy-MM-dd'), '')}" class="form-control${spring.status.error?then(' error-field', '')}" />
+                                        <@spring.showErrors "<br>" "error" />
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Дата окончания</label>
+                                        <input type="date" name="educationInfos[${education?index}].endDate" value="${(education.endDate??)?then(education.endDate?string('yyyy-MM-dd'), '')}" class="form-control${spring.status.error?then(' error-field', '')}" />
+                                        <@spring.showErrors "<br>" "error" />
+                                    </div>
+                                </div>
+                            </div>
+                        </#list>
+                    <#else>
+                        <p>Образование не добавлено. Нажмите кнопку ниже, чтобы добавить.</p>
+                    </#if>
+                </div>
+                <button type="submit" name="addEducation" class="btn-add">+ Добавить образование</button>
 
-            <div class="form-section">
-                <h2 class="section-title">Образование</h2>
-                <#if eduError??>
-                    <div class="alert alert-danger">${eduError}</div>
-                </#if>
-                <#list resumeForm.educationInfos![] as edu>
-                    <div class="form-group form-group-nested">
-                        <div class="form-group">
-                            <label>Учебное заведение</label>
-                            <input type="text" class="form-control" name="educationInfos[${edu_index}].institution" value="${edu.institution!''}">
-                        </div>
-                        <div class="form-group">
-                            <label>Программа</label>
-                            <input type="text" class="form-control" name="educationInfos[${edu_index}].program" value="${edu.program!''}">
-                        </div>
-                        <div class="form-group">
-                            <label>Степень</label>
-                            <input type="text" class="form-control" name="educationInfos[${edu_index}].degree" value="${edu.degree!''}">
-                        </div>
-                        <div class="form-group">
-                            <label>Дата начала (необязательно)</label>
-                            <input type="date" class="form-control" name="educationInfos[${edu_index}].startDate"
-                                   value="<#if edu.startDate??>${edu.startDate?string('yyyy-MM-dd')}</#if>">
-                        </div>
-                        <div class="form-group">
-                            <label>Дата окончания (необязательно)</label>
-                            <input type="date" class="form-control" name="educationInfos[${edu_index}].endDate"
-                                   value="<#if edu.endDate??>${edu.endDate?string('yyyy-MM-dd')}</#if>">
-                        </div>
-                    </div>
-                </#list>
-                <button type="submit" name="addEducation" class="btn btn-outline">Добавить образование</button>
-            </div>
+                <div class="form-group">
+                    <label for="isActive">Статус резюме</label>
+                    <select class="form-control" id="isActive" name="isActive" required>
+                        <option value="">Выберите статус</option>
+                        <option value="true" <#if resumeForm.isActive?? && resumeForm.isActive == true>selected</#if>>Активно</option>
+                        <option value="false" <#if resumeForm.isActive?? && resumeForm.isActive == false>selected</#if>>Неактивно</option>
+                    </select>
+                </div>
 
-            <div class="form-group">
-                <label for="isActive">Статус резюме</label>
-                <select class="form-control" id="isActive" name="isActive" required>
-                    <option value="">Выберите статус</option>
-                    <option value="true" <#if resumeForm.isActive?? && resumeForm.isActive == true>selected</#if>>Активно</option>
-                    <option value="false" <#if resumeForm.isActive?? && resumeForm.isActive == false>selected</#if>>Неактивно</option>
-                </select>
-            </div>
-
-            <div class="form-actions">
-                <button type="submit" class="submit-btn">Создать резюме</button>
-                <a href="/profile" class="btn btn-secondary">Отмена</a>
-            </div>
-        </form>
+                <div class="form-actions">
+                    <button type="submit" class="submit-btn">Создать резюме</button>
+                    <a href="/profile" class="cancel-btn">Отмена</a>
+                </div>
+            </form>
+        </div>
     </div>
 </main>
 

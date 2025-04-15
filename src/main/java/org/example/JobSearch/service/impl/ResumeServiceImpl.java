@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.JobSearch.dao.CategoryDao;
 import org.example.JobSearch.dao.ResumeDao;
-import org.example.JobSearch.dao.UserDao;
 import org.example.JobSearch.dto.EditDTO.EditEducationInfoDTO;
 import org.example.JobSearch.dto.EditDTO.EditResumeDTO;
 import org.example.JobSearch.dto.EditDTO.EditWorkExperienceDTO;
@@ -13,6 +12,7 @@ import org.example.JobSearch.dto.ResumeDTO;
 import org.example.JobSearch.dto.WorkExperienceDTO;
 import org.example.JobSearch.dto.create.CreateResumeDTO;
 import org.example.JobSearch.exceptions.CategoryNotFoundException;
+import org.example.JobSearch.exceptions.CreateResumeException;
 import org.example.JobSearch.exceptions.InvalidUserDataException;
 import org.example.JobSearch.exceptions.ResumeNotFoundException;
 import org.example.JobSearch.model.Resume;
@@ -32,7 +32,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ResumeServiceImpl implements ResumeService {
     private final ResumeDao resumeDao;
-    private final UserDao userDao;
     private final EducationInfoService educationInfoService;
     private final WorkExperienceService workExperienceService;
     private final CategoryDao categoryDao;
@@ -47,6 +46,8 @@ public class ResumeServiceImpl implements ResumeService {
     @Transactional
     public void createResume(CreateResumeDTO resumeDto) {
         log.info("Создание нового резюме для соискателя ID: {}", resumeDto.getApplicantId());
+
+        validateCreateResume(resumeDto);
 
         if (!categoryDao.existsById(resumeDto.getCategoryId())) {
             log.error("Категория с ID {} не найдена", resumeDto.getCategoryId());
@@ -277,5 +278,94 @@ public class ResumeServiceImpl implements ResumeService {
                 .position(dto.getPosition())
                 .responsibilities(dto.getResponsibilities())
                 .build();
+    }
+
+    @Override
+    public void validateCreateResume(CreateResumeDTO resumeDto) {
+        if (resumeDto.getCategoryId() == null) {
+            throw new CreateResumeException("categoryId", "категории не может быть пустым");
+        }
+
+        if (resumeDto.getName() == null || resumeDto.getName().trim().isEmpty()) {
+            throw new CreateResumeException("name", "Название резюме не может быть пустым");
+        }
+
+        if (resumeDto.getName().length() < 8) {
+            throw new CreateResumeException("name", "Название резюме должно содержать минимум 8 символов");
+        }
+
+        if (resumeDto.getName().matches(".*\\d.*")) {
+            throw new CreateResumeException("name", "Название резюме не должно содержать цифры");
+        }
+
+        if (resumeDto.getSalary() != null) {
+            if (resumeDto.getSalary() < 0) {
+                throw new CreateResumeException("salary", "Зарплата не может быть отрицательной");
+            }
+        }
+
+    }
+
+    @Override
+    public EditResumeDTO convertToEditDTO(ResumeDTO resume) {
+
+        EditResumeDTO editResumeDTO = EditResumeDTO.builder()
+                .categoryId(resume.getCategoryId())
+                .name(resume.getName())
+                .salary(resume.getSalary())
+                .isActive(resume.getIsActive())
+                .build();
+
+        // Преобразование образования
+        if (resume.getEducationInfos() != null && !resume.getEducationInfos().isEmpty()) {
+            List<EditEducationInfoDTO> educationInfos = resume.getEducationInfos().stream()
+                    .map(this::convertToEditEducationInfoDTO)
+                    .collect(Collectors.toList());
+            editResumeDTO.setEducationInfos(educationInfos);
+        }
+
+        // Преобразование опыта работы
+        if (resume.getWorkExperiences() != null && !resume.getWorkExperiences().isEmpty()) {
+            List<EditWorkExperienceDTO> workExperiences = resume.getWorkExperiences().stream()
+                    .map(this::convertToEditWorkExperienceDTO)
+                    .collect(Collectors.toList());
+            editResumeDTO.setWorkExperiences(workExperiences);
+        }
+
+        return editResumeDTO;
+    }
+
+    private EditEducationInfoDTO convertToEditEducationInfoDTO(EducationInfoDTO dto) {
+        return EditEducationInfoDTO.builder()
+                .id(dto.getId())
+                .institution(dto.getInstitution())
+                .program(dto.getProgram())
+                .startDate(dto.getStartDate())
+                .endDate(dto.getEndDate())
+                .degree(dto.getDegree())
+                .build();
+    }
+
+    private EditWorkExperienceDTO convertToEditWorkExperienceDTO(WorkExperienceDTO dto) {
+        return EditWorkExperienceDTO.builder()
+                .id(dto.getId())
+                .years(dto.getYears())
+                .companyName(dto.getCompanyName())
+                .position(dto.getPosition())
+                .responsibilities(dto.getResponsibilities())
+                .build();
+    }
+
+    @Override
+    public ResumeDTO getResumeById(Long id) {
+        log.info("Получение резюме по ID: {}", id);
+        Resume resume = resumeDao.getResumeById(id);
+
+        ResumeDTO dto = toDTO(resume);
+
+        dto.setEducationInfos(educationInfoService.getEducationInfoByResumeId(id));
+        dto.setWorkExperiences(workExperienceService.getWorkExperienceByResumeId(id));
+
+        return dto;
     }
 }
