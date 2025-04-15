@@ -1,12 +1,13 @@
 package org.example.JobSearch.dao;
 
 import lombok.RequiredArgsConstructor;
-import org.example.JobSearch.dao.mapper.ResumeDTOMapper;
 import org.example.JobSearch.dao.mapper.ResumeMapper;
 import org.example.JobSearch.dto.EditDTO.EditResumeDTO;
 import org.example.JobSearch.dto.ResumeDTO;
 import org.example.JobSearch.dto.create.CreateResumeDTO;
+import org.example.JobSearch.exceptions.ResumeNotFoundException;
 import org.example.JobSearch.model.Resume;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -78,9 +79,13 @@ public class ResumeDao {
         return jdbcTemplate.query(sql, new ResumeMapper(), categoryId);
     }
 
-    public ResumeDTO getResumeById(Long id) {
+    public Resume getResumeById(Long id) {
         String sql = "SELECT * FROM resumes WHERE id = ?";
-        return jdbcTemplate.queryForObject(sql, new Object[]{id}, new ResumeDTOMapper());
+        try {
+            return jdbcTemplate.queryForObject(sql, new ResumeMapper(), id);
+        } catch (EmptyResultDataAccessException e) {
+            throw new ResumeNotFoundException("Resume not found with ID: " + id);
+        }
     }
 
     public Boolean existsResume(Long id) {

@@ -82,6 +82,7 @@ body {
 
 .register-btn:hover {
     background-color: var(--primary-light);
+    color: white;
 }
 
 .logout-form {
@@ -114,13 +115,24 @@ body {
     margin-bottom: 32px;
 }
 
-.vacancy-form {
+.resume-form {
     max-width: 800px;
     margin: 0 auto;
     padding: 2rem;
     background: var(--white);
     border-radius: 8px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.form-section {
+    margin-bottom: 2rem;
+}
+
+.section-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--dark);
+    margin-bottom: 1rem;
 }
 
 .form-group {
@@ -152,76 +164,16 @@ body {
     border-color: var(--red);
 }
 
-.form-group textarea {
-    min-height: 150px;
-    resize: vertical;
-}
-
-.form-row {
-    display: flex;
-    gap: 1rem;
-}
-
-.form-row .form-group {
-    flex: 1;
-}
-
-.section-title {
-    font-size: 1.25rem;
-    font-weight: 600;
-    color: var(--dark);
-    margin: 2rem 0 1rem;
-}
-
-.work-experience-item,
-.education-item {
+.form-group-nested {
     background-color: var(--light-gray);
     padding: 1rem;
     border-radius: 4px;
     margin-bottom: 1rem;
 }
 
-.btn-add {
-    background-color: transparent;
-    border: 1px solid var(--primary);
-    color: var(--primary);
-    padding: 0.5rem 1rem;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 0.875rem;
-    margin-bottom: 1rem;
-    transition: background-color 0.2s;
-}
-
-.btn-add:hover {
-    background-color: var(--primary);
-    color: var(--white);
-}
-
-.btn-remove {
-    background-color: transparent;
-    border: 1px solid var(--red);
-    color: var(--red);
-    padding: 0.5rem 1rem;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 0.875rem;
-    margin-top: 0.5rem;
-    transition: background-color 0.2s;
-}
-
-.btn-remove:hover {
-    background-color: var(--red);
-    color: var(--white);
-}
-
-.global-error {
-    background-color: #fee2e2;
-    color: #b91c1c;
-    border: 1px solid #fca5a5;
-    padding: 1rem;
-    margin-bottom: 1.5rem;
-    border-radius: 4px;
+.form-group textarea {
+    min-height: 100px;
+    resize: vertical;
 }
 
 .error {
@@ -230,40 +182,60 @@ body {
     margin-top: 0.25rem;
 }
 
-.form-actions {
-    display: flex;
-    gap: 1rem;
-    margin-top: 2rem;
+.alert.alert-danger {
+    background-color: #fee2e2;
+    color: #b91c1c;
+    border: 1px solid #fca5a5;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+    border-radius: 4px;
 }
 
-.submit-btn {
-    background-color: var(--primary);
-    color: var(--white);
+.btn {
     padding: 0.75rem 1.5rem;
-    border: none;
     border-radius: 4px;
     font-size: 1rem;
     cursor: pointer;
     transition: background-color 0.2s;
 }
 
+.btn-outline {
+    background-color: transparent;
+    border: 1px solid var(--primary);
+    color: var(--primary);
+}
+
+.btn-outline:hover {
+    background-color: var(--primary-light);
+    color: var(--white);
+}
+
+.submit-btn {
+    background-color: var(--primary);
+    color: var(--white);
+    border: none;
+}
+
 .submit-btn:hover {
     background-color: var(--primary-light);
 }
 
-.cancel-btn {
+.btn-secondary {
     background-color: var(--gray);
     color: var(--white);
-    padding: 0.75rem 1.5rem;
-    border-radius: 4px;
     text-decoration: none;
-    font-size: 1rem;
-    text-align: center;
-    transition: background-color 0.2s;
+    display: inline-block;
+    border: none;
 }
 
-.cancel-btn:hover {
+.btn-secondary:hover {
     background-color: #5a6268;
+}
+
+.form-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
 }
 
 .footer {
@@ -283,101 +255,7 @@ body {
         gap: 16px;
     }
 
-    .vacancy-form {
+    .resume-form {
         padding: 1.5rem;
     }
-
-    .form-row {
-        flex-direction: column;
-    }
-}
-
-.remove-btn {
-    background-color: #ff6b6b;
-    color: white;
-    border: none;
-    padding: 8px 16px;
-    border-radius: 4px;
-    cursor: pointer;
-    margin-top: 10px;
-    font-size: 14px;
-}
-
-.remove-btn:hover {
-    background-color: #ff5252;
-}
-
-.work-experience-item, .education-item {
-    border: 1px solid #e0e0e0;
-    padding: 15px;
-    margin-bottom: 20px;
-    border-radius: 8px;
-    position: relative;
-}
-
-.error-message {
-    color: #dc3545;
-    font-size: 0.875rem;
-    margin-top: 0.25rem;
-}
-
-.work-experience-item, .education-item {
-    border: 1px solid #e0e0e0;
-    padding: 1.5rem;
-    margin-bottom: 1.5rem;
-    border-radius: 0.5rem;
-    background-color: #f9f9f9;
-}
-
-.remove-btn {
-    background-color: #ff6b6b;
-    color: white;
-    border: none;
-    padding: 0.5rem 1rem;
-    border-radius: 0.25rem;
-    cursor: pointer;
-    margin-top: 1rem;
-    font-size: 0.875rem;
-    transition: background-color 0.2s;
-}
-
-.remove-btn:hover {
-    background-color: #ff5252;
-}
-
-.btn-add {
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    padding: 0.75rem 1.5rem;
-    border-radius: 0.25rem;
-    cursor: pointer;
-    margin-bottom: 2rem;
-    font-size: 1rem;
-    transition: background-color 0.2s;
-}
-
-.btn-add:hover {
-    background-color: #3e8e41;
-}
-
-.form-text.text-muted {
-    color: #6c757d;
-    font-size: 0.75rem;
-    margin-top: 0.25rem;
-}
-
-.field-error {
-    color: #dc3545;
-    font-size: 0.875em;
-}
-
-.alert-danger {
-    color: #721c24;
-    background-color: #f8d7da;
-    border-color: #f5c6cb;
-    padding: 0.75rem 1.25rem;
-    margin-bottom: 1rem;
-    border: 1px solid transparent;
-    border-radius: 0.25rem;
 }

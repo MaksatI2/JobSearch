@@ -16,7 +16,6 @@ import java.util.List;
 @Builder
 public class CreateResumeDTO {
 
-    Long id;
 
     private Long applicantId;
 

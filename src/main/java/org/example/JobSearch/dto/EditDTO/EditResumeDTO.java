@@ -1,20 +1,20 @@
 package org.example.JobSearch.dto.EditDTO;
 
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 import lombok.*;
+import org.example.JobSearch.dto.EducationInfoDTO;
+import org.example.JobSearch.dto.WorkExperienceDTO;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 @Getter
 @Setter
-@AllArgsConstructor(access = AccessLevel.PUBLIC)
-@NoArgsConstructor(access = AccessLevel.PUBLIC)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder
 public class EditResumeDTO {
-
-    private Long id;
-
-    private Long applicantId;
 
     @NotNull(message = "ID категории не может быть пустым")
     @Positive(message = "ID категории должен быть положительным числом")
@@ -31,5 +31,12 @@ public class EditResumeDTO {
     @NotNull(message = "Статус активности не может быть пустым")
     private Boolean isActive;
 
+    @NotNull(message = "Время обновления не может быть пустым")
     private Timestamp updateTime;
+
+    @Valid
+    private List<EditEducationInfoDTO> educationInfos;
+
+    @Valid
+    private List<EditWorkExperienceDTO> workExperiences;
 }
