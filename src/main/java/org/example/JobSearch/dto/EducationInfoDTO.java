@@ -2,20 +2,19 @@ package org.example.JobSearch.dto;
 
 import jakarta.validation.constraints.*;
 import lombok.*;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 
 @Getter
 @Setter
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@AllArgsConstructor(access = AccessLevel.PUBLIC)
+@NoArgsConstructor(access = AccessLevel.PUBLIC)
 @Builder
 public class EducationInfoDTO {
 
-    @NotNull
     private Long id;
 
-    @NotNull(message = "ID резюме не может быть пустым")
     private Long resumeId;
 
     @NotBlank
@@ -26,12 +25,10 @@ public class EducationInfoDTO {
     @Size(min = 2, max = 100, message = "Название программы должно быть от 2 до 100 символов")
     private String program;
 
-    @NotNull(message = "Дата начала обучения не может быть пустой")
-    @PastOrPresent(message = "Дата начала обучения не может быть в будущем")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date startDate;
 
-    @NotNull(message = "Дата окончания обучения не может быть пустой")
-    @FutureOrPresent(message = "Дата окончания обучения не может быть в прошлом")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date endDate;
 
     @NotBlank

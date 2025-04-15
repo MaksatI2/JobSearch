@@ -3,7 +3,6 @@ package org.example.JobSearch.service.impl;
 import lombok.RequiredArgsConstructor;
 import org.example.JobSearch.dao.EducationInfoDao;
 import org.example.JobSearch.dto.EducationInfoDTO;
-import org.example.JobSearch.exceptions.InvalidUserDataException;
 import org.example.JobSearch.model.EducationInfo;
 import org.example.JobSearch.service.EducationInfoService;
 import org.springframework.stereotype.Service;

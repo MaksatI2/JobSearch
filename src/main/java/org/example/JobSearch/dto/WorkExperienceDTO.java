@@ -5,15 +5,13 @@ import lombok.*;
 
 @Getter
 @Setter
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@AllArgsConstructor(access = AccessLevel.PUBLIC)
+@NoArgsConstructor(access = AccessLevel.PUBLIC)
 @Builder
 public class WorkExperienceDTO {
 
-    @NotNull
     private Long id;
 
-    @NotNull(message = "ID резюме не может быть пустым")
     private Long resumeId;
 
     @NotNull

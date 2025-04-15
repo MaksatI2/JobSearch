@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.example.JobSearch.dao.mapper.ResumeMapper;
 import org.example.JobSearch.dto.EditDTO.EditResumeDTO;
 import org.example.JobSearch.dto.ResumeDTO;
+import org.example.JobSearch.dto.create.CreateResumeDTO;
 import org.example.JobSearch.exceptions.ResumeNotFoundException;
 import org.example.JobSearch.model.Resume;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -21,7 +22,7 @@ import java.util.List;
 public class ResumeDao {
     private final JdbcTemplate jdbcTemplate;
 
-    public Long createResume(ResumeDTO resume) {
+    public Long createResume(CreateResumeDTO resume) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
         String sql = """
                     INSERT INTO resumes (applicant_id, category_id, name, salary, is_active, update_time, create_date)
