@@ -1,61 +1,104 @@
 package org.example.JobSearch.exceptions.advice;
 
 import lombok.RequiredArgsConstructor;
-import org.example.JobSearch.exceptions.ErrorResponseBody;
+import org.example.JobSearch.exceptions.*;
 import org.example.JobSearch.service.ErrorService;
 import org.springframework.beans.TypeMismatchException;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.NoSuchElementException;
 
-@RestControllerAdvice
+@ControllerAdvice
 @RequiredArgsConstructor
 public class GlobalControllerAdvice {
     private final ErrorService errorService;
 
-    @ExceptionHandler(NoSuchElementException.class)
-    public ResponseEntity<ErrorResponseBody> handleNotFoundException(NoSuchElementException e) {
-        ErrorResponseBody errorResponse = errorService.makeResponse(e);
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+    @ExceptionHandler(AccessDeniedException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public ModelAndView handleAccessDenied(AccessDeniedException e) {
+        ModelAndView mav = new ModelAndView("errors/403");
+        mav.addObject("error", errorService.makeResponse(e));
+        return mav;
+    }
+
+    @ExceptionHandler({
+            UserNotFoundException.class,
+            ResumeNotFoundException.class,
+            VacancyNotFoundException.class,
+            CategoryNotFoundException.class,
+            InvalidUserDataException.class
+    })
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ModelAndView handleNotFoundException(NoSuchElementException e) {
+        ModelAndView mav = new ModelAndView("errors/404");
+        mav.addObject("error", errorService.makeResponse(e));
+        return mav;
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ErrorResponseBody> handleValidationException(MethodArgumentNotValidException e) {
-        ErrorResponseBody errorResponse = errorService.makeResponse(e.getBindingResult());
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ModelAndView handleValidationException(MethodArgumentNotValidException e) {
+        ModelAndView mav = new ModelAndView("errors/400");
+
+        Map<String, String> fieldErrors = new HashMap<>();
+        e.getBindingResult().getFieldErrors().forEach(error ->
+                fieldErrors.put(error.getField(), error.getDefaultMessage()));
+
+        mav.addObject("error", errorService.makeResponse(
+                new IllegalArgumentException("Ошибка валидации данных")
+        ));
+        mav.addObject("fieldErrors", fieldErrors);
+
+        return mav;
     }
 
-    @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<ErrorResponseBody> handleIllegalArgumentException(IllegalArgumentException e) {
-        ErrorResponseBody errorResponse = errorService.makeResponse(e);
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+    @ExceptionHandler(InvalidRegisterException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ModelAndView handleInvalidRegisterException(InvalidRegisterException e) {
+        ModelAndView mav = new ModelAndView("auth/register");
+        mav.addObject("error", errorService.makeResponse(e));
+        mav.addObject("type", e.getFieldName().contains("company") ? "employer" : "applicant");
+        return mav;
     }
 
-    @ExceptionHandler(HttpMessageNotReadableException.class)
-    public ResponseEntity<ErrorResponseBody> handleJsonParseException(HttpMessageNotReadableException e) {
-        ErrorResponseBody errorResponse = errorService.makeResponse(e);
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+    @ExceptionHandler({
+            IllegalArgumentException.class,
+            HttpMessageNotReadableException.class
+    })
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ModelAndView handleBadRequestExceptions(Exception e) {
+        ModelAndView mav = new ModelAndView("errors/400");
+        mav.addObject("error", errorService.makeResponse(e));
+        return mav;
     }
 
     @ExceptionHandler(TypeMismatchException.class)
-    public ResponseEntity<ErrorResponseBody> handleTypeMismatch(TypeMismatchException ex) {
-        ErrorResponseBody errorResponse = errorService.makeResponse(
-                new IllegalArgumentException("Id должен быть числом")
-        );
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ModelAndView TypeMismatchException(Exception e) {
+        ModelAndView mav = new ModelAndView("errors/400");
+        mav.addObject("error", errorService.makeResponse(
+                new IllegalArgumentException("ID должно быть числом")
+        ));
+        return mav;
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponseBody> handleAllOtherExceptions(Exception e) {
-        ErrorResponseBody errorResponse = errorService.makeResponse(
-                new IllegalArgumentException("Произошла ошибка при обработке запроса. Проверьте входные данные.")
-        );
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ModelAndView handleAllOtherExceptions(Exception e) {
+        ModelAndView mav = new ModelAndView("errors/400");
+        mav.addObject("error", errorService.makeResponse(
+                new IllegalArgumentException("Произошла ошибка при обработке запроса")
+        ));
+        return mav;
     }
-
 }

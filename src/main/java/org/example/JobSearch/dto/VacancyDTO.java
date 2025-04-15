@@ -13,13 +13,15 @@ import java.time.LocalDate;
 @Builder
 public class VacancyDTO {
 
-    @NotBlank(message = "ID автора вакансии не может быть пустым")
-    @Pattern(regexp = "^[1-9]\\d*$", message = "ID автора должен содержать только положительные цифры")
-    private String authorId;
+    Long id;
 
-    @NotBlank(message = "ID категории не может быть пустым")
-    @Pattern(regexp = "^[1-9]\\d*$", message = "ID категории должен содержать только положительные цифры")
-    private String categoryId;
+    @NotNull(message = "ID автора вакансии не может быть пустым")
+    @Positive(message = "ID автора должен быть положительным числом")
+    private Long authorId;
+
+    @NotNull(message = "ID автора вакансии не может быть пустым")
+    @Positive(message = "ID автора должен быть положительным числом")
+    private Long categoryId;
 
     @NotBlank(message = "Название вакансии не может быть пустым")
     @Size(min = 2, max = 100, message = "Название вакансии должно быть от 2 до 100 символов")

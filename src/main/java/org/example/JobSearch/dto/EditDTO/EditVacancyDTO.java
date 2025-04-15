@@ -12,10 +12,13 @@ import java.sql.Timestamp;
 @Builder
 public class EditVacancyDTO {
 
-    @NotBlank(message = "ID категории не может быть пустым")
-    @Pattern(regexp = "^[1-9]\\d*$", message = "ID категории должен содержать только положительные цифры")
-    private String categoryId;
+    Long id;
 
+    @NotNull(message = "ID автора вакансии не может быть пустым")
+    @Positive(message = "ID автора должен быть положительным числом")
+    private Long categoryId;
+
+    @Pattern(regexp = "^[a-zA-Zа-яА-ЯёЁ\\s]+$", message = "Название должно содержать только буквы и пробелы")
     @NotBlank(message = "Название вакансии не может быть пустым")
     @Size(min = 2, max = 100, message = "Название вакансии должно быть от 2 до 100 символов")
     private String name;
@@ -40,6 +43,5 @@ public class EditVacancyDTO {
     @NotNull
     private Boolean isActive;
 
-    @NotNull(message = "Дата обновления не может быть пустой")
     private Timestamp updateTime;
 }

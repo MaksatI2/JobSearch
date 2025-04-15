@@ -1,0 +1,103 @@
+INSERT INTO vacancies (author_id, category_id, name, description, salary, exp_from, exp_to, is_active)
+VALUES
+((SELECT id FROM users WHERE email = 'employer1@example.com'),
+ (SELECT id FROM categories WHERE name = 'Preventive Care'),
+ 'Preventive Care Nurse',
+ 'Providing preventive medical services and maintaining documentation',
+ 35000, 1, 3, TRUE),
+
+((SELECT id FROM users WHERE email = 'employer1@example.com'),
+ (SELECT id FROM categories WHERE name = 'Medical Treatments'),
+ 'Physiotherapist',
+ 'Performing physiotherapy procedures',
+ 40000, 2, 5, TRUE),
+
+((SELECT id FROM users WHERE email = 'employer2@example.com'),
+ (SELECT id FROM categories WHERE name = 'Stress Management'),
+ 'Stress Management Psychologist',
+ 'Providing stress management counseling',
+ 45000, 3, 6, TRUE),
+
+((SELECT id FROM users WHERE email = 'employer3@example.com'),
+ (SELECT id FROM categories WHERE name = 'Mindfulness Practices'),
+ 'Meditation Instructor',
+ 'Conducting group and individual meditation sessions',
+ 30000, 1, 3, TRUE),
+
+((SELECT id FROM users WHERE email = 'employer4@example.com'),
+ (SELECT id FROM categories WHERE name = 'Healthy Diets'),
+ 'Nutritionist',
+ 'Developing personalized meal plans',
+ 50000, 2, 5, TRUE),
+
+((SELECT id FROM users WHERE email = 'employer4@example.com'),
+ (SELECT id FROM categories WHERE name = 'Nutrition'),
+ 'Nutrition Consultant',
+ 'Providing healthy eating advice',
+ 32000, 1, 3, FALSE),
+
+((SELECT id FROM users WHERE email = 'employer5@example.com'),
+ (SELECT id FROM categories WHERE name = 'Exercise Programs'),
+ 'Personal Trainer',
+ 'Conducting one-on-one training sessions',
+ 40000, 2, 4, TRUE),
+
+((SELECT id FROM users WHERE email = 'employer6@example.com'),
+ (SELECT id FROM categories WHERE name = 'Fitness'),
+ 'Group Fitness Instructor',
+ 'Leading group exercise classes',
+ 35000, 1, 3, TRUE),
+
+((SELECT id FROM users WHERE email = 'employer7@example.com'),
+ (SELECT id FROM categories WHERE name = 'Mental Wellbeing'),
+ 'Art Therapist',
+ 'Conducting art therapy sessions',
+ 38000, 2, 5, TRUE),
+
+((SELECT id FROM users WHERE email = 'employer8@example.com'),
+ (SELECT id FROM categories WHERE name = 'Physical Health'),
+ 'Nurse',
+ 'Providing general patient care',
+ 32000, 1, 3, TRUE),
+
+((SELECT id FROM users WHERE email = 'employer9@example.com'),
+ (SELECT id FROM categories WHERE name = 'Medical Treatments'),
+ 'Massage Therapist',
+ 'Performing therapeutic massage',
+ 42000, 3, 6, TRUE),
+
+((SELECT id FROM users WHERE email = 'employer10@example.com'),
+ (SELECT id FROM categories WHERE name = 'Healthy Diets'),
+ 'Healthy Chef',
+ 'Preparing nutritious meals',
+ 48000, 3, 5, TRUE),
+
+((SELECT id FROM users WHERE email = 'employer11@example.com'),
+ (SELECT id FROM categories WHERE name = 'Exercise Programs'),
+ 'Yoga Instructor',
+ 'Teaching yoga classes',
+ 37000, 2, 4, TRUE),
+
+((SELECT id FROM users WHERE email = 'employer12@example.com'),
+ (SELECT id FROM categories WHERE name = 'Stress Management'),
+ 'Stress Management Coach',
+ 'Providing one-on-one coaching sessions',
+ 55000, 4, 7, TRUE),
+
+((SELECT id FROM users WHERE email = 'employer13@example.com'),
+ (SELECT id FROM categories WHERE name = 'Preventive Care'),
+ 'General Practitioner',
+ 'Conducting primary patient consultations',
+ 60000, 5, 8, TRUE),
+
+((SELECT id FROM users WHERE email = 'employer14@example.com'),
+ (SELECT id FROM categories WHERE name = 'Mindfulness Practices'),
+ 'Breathing Techniques Instructor',
+ 'Teaching proper breathing techniques',
+ 33000, 1, 3, FALSE),
+
+((SELECT id FROM users WHERE email = 'employer15@example.com'),
+ (SELECT id FROM categories WHERE name = 'Fitness'),
+ 'Functional Training Coach',
+ 'Conducting functional training sessions',
+ 45000, 2, 5, TRUE);

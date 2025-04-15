@@ -1,6 +1,7 @@
 package org.example.JobSearch.controller;
 
 
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.ui.Model;
 import lombok.RequiredArgsConstructor;
 import org.example.JobSearch.dto.ResumeDTO;
@@ -13,6 +14,8 @@ import org.example.JobSearch.service.UserService;
 import org.example.JobSearch.service.VacancyService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.security.Principal;
@@ -31,6 +34,10 @@ public class ProfileController {
     public String showProfilePage(Model model, Principal principal) {
         String email = principal.getName();
         UserDTO user = userService.getUserByEmail(email);
+
+        String avatarUrl = "/api/users/" + user.getId() + "/avatar";
+        user.setAvatar(avatarUrl);
+
         model.addAttribute("user", user);
 
         if (user.getAccountType() == AccountType.APPLICANT) {
@@ -46,5 +53,19 @@ public class ProfileController {
         }
 
         return "user/profile";
+    }
+
+    @PostMapping("/vacancies/{id}/refresh")
+    public String refreshVacancy(@PathVariable Long id, Principal principal) {
+        String email = principal.getName();
+        UserDTO user = userService.getUserByEmail(email);
+
+        VacancyDTO vacancy = vacancyService.getVacancyById(id);
+        if (!vacancy.getAuthorId().equals(user.getId())) {
+            throw new AccessDeniedException("Вы можете обновлять только свои собственные вакансии.");
+        }
+
+        vacancyService.refreshVacancy(id);
+        return "redirect:/profile?refreshSuccess";
     }
 }

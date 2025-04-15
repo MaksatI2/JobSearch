@@ -6,6 +6,7 @@ import org.example.JobSearch.dao.EditUserDao;
 import org.example.JobSearch.dao.UserDao;
 import org.example.JobSearch.dao.mapper.EditUserMapper;
 import org.example.JobSearch.dto.EditDTO.EditUserDTO;
+import org.example.JobSearch.exceptions.InvalidRegisterException;
 import org.example.JobSearch.exceptions.InvalidUserDataException;
 import org.example.JobSearch.exceptions.UserNotFoundException;
 import org.example.JobSearch.model.User;
@@ -28,6 +29,10 @@ public class EditUserServiceImpl implements EditUserService {
     public void updateUserByEmail(String email, EditUserDTO editUserDTO) {
         User existingUser = userDao.findByEmail(email)
                 .orElseThrow(() -> new UserNotFoundException("Пользователь не найден: " + email));
+
+        if (userDao.existsByPhoneNumber(editUserDTO.getPhoneNumber())) {
+            throw new InvalidUserDataException("Номер телефона уже используется");
+        }
 
         User userToUpdate = editUserMapper.toUser(editUserDTO);
         userToUpdate.setPassword(existingUser.getPassword());

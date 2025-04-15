@@ -114,6 +114,18 @@ public class UserDao {
         Integer count = jdbcTemplate.queryForObject(sql, Integer.class, userId);
         return count != null && count > 0;
     }
+
+    public Long getUserId(String email) {
+        String sql = "select id from users where email like ?";
+        return jdbcTemplate.queryForObject(sql, Long.class, email);
+    }
+
+    public boolean existsByPhoneNumber(String phoneNumber) {
+        String sql = "SELECT COUNT(*) FROM users WHERE phone_number = ?";
+        Integer count = jdbcTemplate.queryForObject(sql, Integer.class, phoneNumber);
+        return count != null && count > 0;
+    }
+
 }
 
 

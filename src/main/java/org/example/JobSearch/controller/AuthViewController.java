@@ -2,6 +2,7 @@ package org.example.JobSearch.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.example.JobSearch.dto.register.ApplicantRegisterDTO;
 import org.example.JobSearch.dto.register.EmployerRegisterDTO;
 import org.example.JobSearch.exceptions.InvalidRegisterException;
@@ -11,7 +12,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-
+@Slf4j
 @Controller
 @RequestMapping("/auth")
 @RequiredArgsConstructor
@@ -44,7 +45,10 @@ public class AuthViewController {
             BindingResult bindingResult,
             Model model) {
 
+        log.info("Registering applicant: {}", applicantDto);
+
         if (bindingResult.hasErrors()) {
+            log.warn("Validation errors: {}", bindingResult.getAllErrors());
             model.addAttribute("type", "applicant");
             return "auth/register";
         }
@@ -53,6 +57,7 @@ public class AuthViewController {
             userService.registerApplicant(applicantDto);
             return "redirect:/auth/login?registered";
         } catch (InvalidRegisterException e) {
+            log.error("Registration error: {}", e.getMessage());
             model.addAttribute("type", "applicant");
             bindingResult.rejectValue(e.getFieldName(), "error.applicantRegisterDTO", e.getMessage());
             return "auth/register";
@@ -65,7 +70,10 @@ public class AuthViewController {
             BindingResult bindingResult,
             Model model) {
 
+        log.info("Registering employer: {}", employerDto);
+
         if (bindingResult.hasErrors()) {
+            log.warn("Validation errors: {}", bindingResult.getAllErrors());
             model.addAttribute("type", "employer");
             return "auth/register";
         }
@@ -74,6 +82,7 @@ public class AuthViewController {
             userService.registerEmployer(employerDto);
             return "redirect:/auth/login?registered";
         } catch (InvalidRegisterException e) {
+            log.error("Registration error: {}", e.getMessage());
             model.addAttribute("type", "employer");
             bindingResult.rejectValue(e.getFieldName(), "error.employerRegisterDTO", e.getMessage());
             return "auth/register";

@@ -2,59 +2,98 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Активные вакансии</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Вакансии | JobSearch</title>
     <link rel="stylesheet" href="/static/css/vacancies.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 </head>
 <body>
-<nav class="navbar">
-    <div class="navbar-container">
-        <div class="navbar-logo">
-            <a href="/">JobSearch</a>
-        </div>
-
-        <div class="navbar-menu">
-            <ul>
-                <li><a href="/">Главная</a></li>
-                <li><a href="/">Вакансии</a></li>
+<header class="header">
+    <div class="container">
+        <nav class="navbar">
+            <a href="/" class="logo">JobSearch</a>
+            <div class="nav-links">
+                <a href="/" class="nav-link">Главная</a>
+                <a href="/vacancies" class="nav-link active">Вакансии</a>
                 <#if Session.SPRING_SECURITY_CONTEXT?? && Session.SPRING_SECURITY_CONTEXT.authentication.authorities?seq_contains('EMPLOYER')>
-                    <li><a href="/resumes/allResumes">Резюме</a></li>
+                    <a href="/resumes/allResumes" class="nav-link">Резюме</a>
                 </#if>
                 <#if Session.SPRING_SECURITY_CONTEXT??>
-                    <li><a href="/profile">Профиль</a></li>
-                    <li>
-                        <form action="/logout" method="post" style="display: inline;">
-                            <button type="submit" class="logout-button">Выйти</button>
-                        </form>
-                    </li>
+                    <a href="/profile" class="nav-link">Профиль</a>
+                    <form action="/logout" method="post" class="logout-form">
+                        <button type="submit" class="logout-btn">Выйти</button>
+                    </form>
                 <#else>
-                    <li><a href="/auth/login">Войти</a></li>
-                    <li><a href="/auth/register">Регистрация</a></li>
+                    <a href="/auth/login" class="nav-link">Войти</a>
+                    <a href="/auth/register" class="nav-link register-btn">Регистрация</a>
                 </#if>
-            </ul>
-        </div>
+            </div>
+        </nav>
     </div>
-</nav>
+</header>
 
-<div class="container">
-    <h1>Список активных вакансий</h1>
+<main class="main">
+    <div class="container">
+        <h1 class="page-title">Все вакансии</h1>
 
-    <#if vacancies?? && vacancies?has_content>
-        <div class="vacancies-list">
-            <#list vacancies as vacancy>
-                <div class="vacancy-card">
-                    <h2>${vacancy.name}</h2>
-                    <p>${vacancy.description}</p>
-                    <p class="salary">Зарплата: ${vacancy.salary} руб.</p>
-                    <p><span class="experience">Опыт: от ${vacancy.expFrom} до ${vacancy.expTo} лет</span></p>
-                    <p class="vacancy-meta">Дата обновления: ${vacancy.updateTime?string("dd.MM.yyyy HH:mm")}</p>
+        <#if vacancies?? && vacancies?has_content>
+            <div class="vacancies-grid">
+                <#list vacancies as vacancy>
+                    <article class="vacancy-card">
+                        <div class="vacancy-header">
+                            <h2 class="vacancy-title">${vacancy.name}</h2>
+                            <span class="salary">${vacancy.salary} ⃀</span>
+                        </div>
+                        <p class="vacancy-description">${vacancy.description}</p>
+                        <div class="vacancy-meta">
+                            <span class="experience">
+                                <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                                Опыт: ${vacancy.expFrom}-${vacancy.expTo} лет
+                            </span>
+                            <span class="update-time">
+                                <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                </svg>
+                                ${vacancy.updateTime?string("dd.MM.yyyy")}
+                            </span>
+                        </div>
+                    </article>
+                </#list>
+            </div>
+
+            <#if totalPages gt 1>
+                <div class="pagination">
+                    <#if (currentPage > 1)>
+                        <a href="/vacancies?page=1&size=${pageSize}" class="page-btn">« Первая</a>
+                        <a href="/vacancies?page=${currentPage - 1}&size=${pageSize}" class="page-btn">‹ Назад</a>
+                    </#if>
+
+                    <#list 1..totalPages as i>
+                        <a href="/vacancies?page=${i}&size=${pageSize}" class="page-btn <#if i == currentPage>active</#if>">${i}</a>
+                    </#list>
+
+                    <#if (currentPage < totalPages)>
+                        <a href="/vacancies?page=${currentPage + 1}&size=${pageSize}" class="page-btn">Вперёд ›</a>
+                        <a href="/vacancies?page=${totalPages}&size=${pageSize}" class="page-btn">Последняя »</a>
+                    </#if>
                 </div>
-            </#list>
-        </div>
-    <#else>
-        <div class="no-vacancies">
-            <p>Нет доступных вакансий.</p>
-        </div>
-    </#if>
-</div>
+            </#if>
+        <#else>
+            <div class="empty-state">
+                <h3>Вакансии не найдены</h3>
+                <p>Попробуйте зайти позже</p>
+                <a href="/vacancies" class="details-btn">Вернуться ко всем вакансиям</a>
+            </div>
+        </#if>
+    </div>
+</main>
+
+<footer class="footer">
+    <div class="container">
+        <p>© 2025 JobSearch. Все права защищены.</p>
+    </div>
+</footer>
 </body>
 </html>

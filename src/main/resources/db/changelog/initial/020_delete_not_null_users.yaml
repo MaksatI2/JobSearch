@@ -1,0 +1,9 @@
+databaseChangeLog:
+  - changeSet:
+      id: 020
+      author: I.Maksat
+      changes:
+        - dropNotNullConstraint:
+            tableName: users
+            columnName: surname
+            columnDataType: VARCHAR(255)

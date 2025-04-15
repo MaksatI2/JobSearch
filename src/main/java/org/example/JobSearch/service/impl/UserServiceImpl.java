@@ -142,10 +142,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void registerApplicant(ApplicantRegisterDTO applicantDto) {
-        validateApplicantData(applicantDto);
 
         if (userDao.existsByEmail(applicantDto.getEmail())) {
             throw new InvalidRegisterException("email", "Email уже используется");
+        }
+
+        if (userDao.existsByPhoneNumber(applicantDto.getPhoneNumber())) {
+            throw new InvalidRegisterException("phoneNumber", "Номер телефона уже используется");
         }
 
         User user = new User();
@@ -163,10 +166,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void registerEmployer(EmployerRegisterDTO employerDto) {
-        validateEmployerData(employerDto);
 
         if (userDao.existsByEmail(employerDto.getEmail())) {
             throw new InvalidRegisterException("email", "Email уже используется");
+        }
+
+        if (userDao.existsByPhoneNumber(employerDto.getPhoneNumber())) {
+            throw new InvalidRegisterException("phoneNumber", "Номер телефона уже используется");
         }
 
         User user = new User();
@@ -182,47 +188,6 @@ public class UserServiceImpl implements UserService {
         userDao.save(user);
     }
 
-    private void validateApplicantData(ApplicantRegisterDTO dto) {
-        if (dto.getName() == null || dto.getName().trim().isEmpty()) {
-            throw new InvalidRegisterException("name", "Имя обязательно");
-        }
-        if (!dto.getName().matches("^[a-zA-Zа-яА-Я\\s-]+$")) {
-            throw new InvalidRegisterException("name", "Имя содержит недопустимые символы");
-        }
-        if (dto.getSurname() == null || dto.getSurname().trim().isEmpty()) {
-            throw new InvalidRegisterException("surname", "Фамилия обязательна");
-        }
-        if (!dto.getSurname().matches("^[a-zA-Zа-яА-Я\\s-]+$")) {
-            throw new InvalidRegisterException("surname", "Фамилия содержит недопустимые символы");
-        }
-        if (dto.getAge() == null || dto.getAge() < 18 || dto.getAge() > 50) {
-            throw new InvalidRegisterException("age", "Возраст должен быть от 18 до 50 лет");
-        }
-        if (dto.getEmail() == null || !dto.getEmail().matches("^[\\w-.]+@([\\w-]+\\.)+[\\w-]{2,4}$")) {
-            throw new InvalidRegisterException("email", "Неверный формат email");
-        }
-        if (dto.getPassword() == null || dto.getPassword().length() < 6) {
-            throw new InvalidRegisterException("password", "Пароль должен содержать минимум 6 символов");
-        }
-        if (dto.getPhoneNumber() == null || !dto.getPhoneNumber().matches("^\\+?[0-9\\s-]{10,15}$")) {
-            throw new InvalidRegisterException("phoneNumber", "Некорректный номер телефона");
-        }
-    }
-
-    private void validateEmployerData(EmployerRegisterDTO dto) {
-        if (dto.getCompanyName() == null || dto.getCompanyName().trim().isEmpty()) {
-            throw new InvalidRegisterException("companyName", "Название компании обязательно");
-        }
-        if (dto.getEmail() == null || !dto.getEmail().matches("^[\\w-.]+@([\\w-]+\\.)+[\\w-]{2,4}$")) {
-            throw new InvalidRegisterException("email", "Неверный формат email");
-        }
-        if (dto.getPassword() == null || dto.getPassword().length() < 6) {
-            throw new InvalidRegisterException("password", "Пароль должен содержать минимум 6 символов");
-        }
-        if (dto.getPhoneNumber() == null || !dto.getPhoneNumber().matches("^\\+?[0-9\\s-]{10,15}$")) {
-            throw new InvalidRegisterException("phoneNumber", "Некорректный номер телефона");
-        }
-    }
 
     @Override
     public List<UserDTO> getApplicantsVacancy(Long vacancyId) {
@@ -255,4 +220,14 @@ public class UserServiceImpl implements UserService {
 
         return FileUtil.getOutputFile(avatarPath, MediaType.IMAGE_JPEG);
     }
+
+    @Override
+    public Long getUserId(String email) {
+        Long userId = userDao.getUserId(email);
+        if (userId == null || userId == 0) {
+            throw new UserNotFoundException("Нету пользователя с таким Email");
+        }
+        return  userId;
+    }
+
 }

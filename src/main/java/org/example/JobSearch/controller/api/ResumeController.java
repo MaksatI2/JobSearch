@@ -17,11 +17,11 @@ import java.util.List;
 public class ResumeController {
     private final ResumeService resumeService;
 
-    @PostMapping
-    public ResponseEntity<String> createResume(@RequestBody ResumeDTO resumeDTO) {
-        resumeService.createResume(resumeDTO);
-        return ResponseEntity.status(HttpStatus.CREATED).body("Resume created successfully");
-    }
+//    @PostMapping
+//    public ResponseEntity<String> createResume(@RequestBody ResumeDTO resumeDTO) {
+//        resumeService.createResume(resumeDTO);
+//        return ResponseEntity.status(HttpStatus.CREATED).body("Resume created successfully");
+//    }
 
     @PutMapping("/{id}")
     public ResponseEntity<String> updateResume(@PathVariable @Valid Long id, @RequestBody EditResumeDTO editresumeDTO) {

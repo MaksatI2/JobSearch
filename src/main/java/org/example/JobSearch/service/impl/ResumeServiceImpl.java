@@ -11,6 +11,7 @@ import org.example.JobSearch.dto.EditDTO.EditWorkExperienceDTO;
 import org.example.JobSearch.dto.EducationInfoDTO;
 import org.example.JobSearch.dto.ResumeDTO;
 import org.example.JobSearch.dto.WorkExperienceDTO;
+import org.example.JobSearch.dto.create.CreateResumeDTO;
 import org.example.JobSearch.exceptions.CategoryNotFoundException;
 import org.example.JobSearch.exceptions.InvalidUserDataException;
 import org.example.JobSearch.exceptions.ResumeNotFoundException;
@@ -44,18 +45,8 @@ public class ResumeServiceImpl implements ResumeService {
 
     @Override
     @Transactional
-    public void createResume(ResumeDTO resumeDto) {
+    public void createResume(CreateResumeDTO resumeDto) {
         log.info("Создание нового резюме для соискателя ID: {}", resumeDto.getApplicantId());
-
-        if (resumeDto.getApplicantId() == null) {
-            log.error("ID соискателя не может быть null");
-            throw new InvalidUserDataException("ID соискателя не может быть null");
-        }
-
-        if (!userDao.isUserApplicant(resumeDto.getApplicantId())) {
-            log.error("Попытка создания резюме пользователем, не являющимся соискателем: {}", resumeDto.getApplicantId());
-            throw new InvalidUserDataException("Только соискатели могут создавать резюме");
-        }
 
         if (!categoryDao.existsById(resumeDto.getCategoryId())) {
             log.error("Категория с ID {} не найдена", resumeDto.getCategoryId());
@@ -94,9 +85,6 @@ public class ResumeServiceImpl implements ResumeService {
     public void updateResume(Long resumeId, EditResumeDTO editResumeDto) {
         log.info("Обновление резюме ID: {}", resumeId);
 
-        validateResumeId(resumeId);
-        validateEditResume(editResumeDto);
-
         if (!resumeDao.existsResume(resumeId)) {
             throw new ResumeNotFoundException("Резюме с ID не найдено: " + resumeId);
         }
@@ -115,31 +103,6 @@ public class ResumeServiceImpl implements ResumeService {
 
         if (editResumeDto.getWorkExperiences() != null) {
             updateWorkExperiences(resumeId, editResumeDto.getWorkExperiences());
-        }
-    }
-
-    private void validateEditResume(EditResumeDTO editResumeDto) {
-        log.debug("Валидация обновляемого резюме");
-
-        if (editResumeDto.getCategoryId() == null || editResumeDto.getCategoryId() <= 0) {
-            log.error("Некорректный ID категории: {}", editResumeDto.getCategoryId());
-            throw new InvalidUserDataException("ID категории должен быть положительным числом");
-        }
-
-        if (editResumeDto.getName() == null || !editResumeDto.getName().matches("^[a-zA-Zа-яА-ЯёЁ\\s]+$")
-                || editResumeDto.getName().length() < 2) {
-            log.error("Некорректное название резюме: {}", editResumeDto.getName());
-            throw new InvalidUserDataException("Название должно содержать только буквы и быть не короче 2 символов");
-        }
-
-        if (editResumeDto.getSalary() != null && editResumeDto.getSalary() < 0) {
-            log.error("Отрицательная зарплата в резюме: {}", editResumeDto.getSalary());
-            throw new InvalidUserDataException("Зарплата не может быть отрицательной");
-        }
-
-        if (editResumeDto.getUpdateTime() == null) {
-            log.error("Время обновления не может быть null");
-            throw new InvalidUserDataException("Время обновления обязательно для заполнения");
         }
     }
 
@@ -221,18 +184,10 @@ public class ResumeServiceImpl implements ResumeService {
         return dto;
     }
 
-    private void validateResumeId(Long resumeId) {
-        if (resumeId == null || resumeId <= 0) {
-            log.error("Некорректный ID резюме: {}", resumeId);
-            throw new InvalidUserDataException("ID резюме должен быть положительным числом");
-        }
-    }
-
-    private void updateEducationInfos(Long resumeId, List<EditEducationInfoDTO> educationDtos) {
+    private void updateEducationInfos(Long resumeId, List<EditEducationInfoDTO> educationDtos)  {
         List<EducationInfoDTO> existingEducations = educationInfoService.getEducationInfoByResumeId(resumeId);
 
         for (EditEducationInfoDTO dto : educationDtos) {
-            validateEducationInfo(dto);
 
             if (dto.getId() != null) {
                 boolean exists = existingEducations.stream()
@@ -266,23 +221,6 @@ public class ResumeServiceImpl implements ResumeService {
                 });
     }
 
-    private void validateEducationInfo(EditEducationInfoDTO dto) {
-        if (dto.getInstitution() == null || dto.getInstitution().length() < 2) {
-            log.error("Некорректное название учебного заведения: {}", dto.getInstitution());
-            throw new InvalidUserDataException("Название учебного заведения должно быть не короче 2 символов");
-        }
-
-        if (dto.getStartDate() == null || dto.getEndDate() == null) {
-            log.error("Даты обучения не могут быть null");
-            throw new InvalidUserDataException("Даты начала и окончания обучения обязательны");
-        }
-
-        if (dto.getStartDate().after(dto.getEndDate())) {
-            log.error("Дата начала обучения {} позже даты окончания {}", dto.getStartDate(), dto.getEndDate());
-            throw new InvalidUserDataException("Дата начала обучения не может быть позже даты окончания");
-        }
-    }
-
     private EducationInfoDTO convertToEducationInfoDTO(EditEducationInfoDTO dto) {
         return EducationInfoDTO.builder()
                 .id(dto.getId())
@@ -298,7 +236,6 @@ public class ResumeServiceImpl implements ResumeService {
         List<WorkExperienceDTO> existingExperiences = workExperienceService.getWorkExperienceByResumeId(resumeId);
 
         for (EditWorkExperienceDTO dto : workExperienceDtos) {
-            validateWorkExperience(dto);
 
             if (dto.getId() != null) {
                 boolean exists = existingExperiences.stream()
@@ -330,23 +267,6 @@ public class ResumeServiceImpl implements ResumeService {
                     workExperienceService.deleteWorkExperience(exp.getId());
                     log.info("Удалена запись об опыте работы с ID {} для резюме {}", exp.getId(), resumeId);
                 });
-    }
-
-    private void validateWorkExperience(EditWorkExperienceDTO dto) {
-        if (dto.getYears() == null || dto.getYears() < 0 || dto.getYears() > 50) {
-            log.error("Некорректный опыт работы: {}", dto.getYears());
-            throw new InvalidUserDataException("Опыт работы должен быть от 0 до 50 лет");
-        }
-
-        if (dto.getCompanyName() == null || dto.getCompanyName().length() < 2) {
-            log.error("Некорректное название компании: {}", dto.getCompanyName());
-            throw new InvalidUserDataException("Название компании должно быть не короче 2 символов");
-        }
-
-        if (dto.getResponsibilities() == null || dto.getResponsibilities().length() < 10) {
-            log.error("Слишком короткое описание обязанностей: {}", dto.getResponsibilities());
-            throw new InvalidUserDataException("Описание обязанностей должно содержать не менее 10 символов");
-        }
     }
 
     private WorkExperienceDTO convertToWorkExperienceDTO(EditWorkExperienceDTO dto) {
