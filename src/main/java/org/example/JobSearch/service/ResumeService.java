@@ -22,4 +22,8 @@ public interface ResumeService {
     List<ResumeDTO> getResumesByCategory(Long categoryId);
 
     void validateCreateResume(CreateResumeDTO resumeDTO);
+
+    EditResumeDTO convertToEditDTO(ResumeDTO resume);
+
+    ResumeDTO getResumeById(Long id);
 }
