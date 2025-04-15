@@ -2,6 +2,7 @@ package org.example.JobSearch.dto.EditDTO;
 
 import jakarta.validation.constraints.*;
 import lombok.*;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 
@@ -22,12 +23,10 @@ public class EditEducationInfoDTO {
     @Size(min = 2, max = 100, message = "Название программы должно быть от 2 до 100 символов")
     private String program;
 
-    @NotNull(message = "Дата начала обучения не может быть пустой")
-    @PastOrPresent(message = "Дата начала обучения не может быть в будущем")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date startDate;
 
-    @NotNull(message = "Дата окончания обучения не может быть пустой")
-    @FutureOrPresent(message = "Дата окончания обучения не может быть в прошлом")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date endDate;
 
     @NotBlank

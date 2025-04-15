@@ -67,11 +67,6 @@ body {
     color: var(--primary);
 }
 
-.nav-link.active {
-    color: var(--primary);
-    font-weight: 600;
-}
-
 .register-btn {
     background-color: var(--primary);
     color: white;
@@ -112,6 +107,7 @@ body {
     font-weight: 700;
     color: var(--dark);
     margin-bottom: 32px;
+    text-align: center;
 }
 
 .vacancy-form {
@@ -123,6 +119,19 @@ body {
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
+.section {
+    margin-bottom: 2rem;
+}
+
+.section-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--dark);
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--light-gray);
+}
+
 .form-group {
     margin-bottom: 1.5rem;
 }
@@ -131,7 +140,7 @@ body {
     display: block;
     margin-bottom: 0.5rem;
     font-weight: 500;
-    color: #333;
+    color: var(--dark);
 }
 
 .form-control {
@@ -148,15 +157,6 @@ body {
     box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
 }
 
-.form-control.error-field {
-    border-color: var(--red);
-}
-
-.form-group textarea {
-    min-height: 150px;
-    resize: vertical;
-}
-
 .form-row {
     display: flex;
     gap: 1rem;
@@ -166,53 +166,11 @@ body {
     flex: 1;
 }
 
-.section-title {
-    font-size: 1.25rem;
-    font-weight: 600;
-    color: var(--dark);
-    margin: 2rem 0 1rem;
-}
-
-.work-experience-item,
-.education-item {
-    background-color: var(--light-gray);
-    padding: 1rem;
-    border-radius: 4px;
-    margin-bottom: 1rem;
-}
-
-.btn-add {
-    background-color: transparent;
-    border: 1px solid var(--primary);
-    color: var(--primary);
-    padding: 0.5rem 1rem;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 0.875rem;
-    margin-bottom: 1rem;
-    transition: background-color 0.2s;
-}
-
-.btn-add:hover {
-    background-color: var(--primary);
-    color: var(--white);
-}
-
-.btn-remove {
-    background-color: transparent;
-    border: 1px solid var(--red);
+.error {
     color: var(--red);
-    padding: 0.5rem 1rem;
-    border-radius: 4px;
-    cursor: pointer;
     font-size: 0.875rem;
-    margin-top: 0.5rem;
-    transition: background-color 0.2s;
-}
-
-.btn-remove:hover {
-    background-color: var(--red);
-    color: var(--white);
+    margin-top: 0.25rem;
+    display: block;
 }
 
 .global-error {
@@ -224,16 +182,11 @@ body {
     border-radius: 4px;
 }
 
-.error {
-    color: var(--red);
-    font-size: 0.875rem;
-    margin-top: 0.25rem;
-}
-
 .form-actions {
     display: flex;
     gap: 1rem;
     margin-top: 2rem;
+    justify-content: center;
 }
 
 .submit-btn {
@@ -245,6 +198,7 @@ body {
     font-size: 1rem;
     cursor: pointer;
     transition: background-color 0.2s;
+    font-weight: 500;
 }
 
 .submit-btn:hover {
@@ -260,6 +214,7 @@ body {
     font-size: 1rem;
     text-align: center;
     transition: background-color 0.2s;
+    font-weight: 500;
 }
 
 .cancel-btn:hover {
@@ -272,6 +227,7 @@ body {
     color: var(--gray);
     font-size: 0.875rem;
     border-top: 1px solid #E5E7EB;
+    margin-top: 3rem;
 }
 
 @media (max-width: 768px) {
@@ -290,94 +246,4 @@ body {
     .form-row {
         flex-direction: column;
     }
-}
-
-.remove-btn {
-    background-color: #ff6b6b;
-    color: white;
-    border: none;
-    padding: 8px 16px;
-    border-radius: 4px;
-    cursor: pointer;
-    margin-top: 10px;
-    font-size: 14px;
-}
-
-.remove-btn:hover {
-    background-color: #ff5252;
-}
-
-.work-experience-item, .education-item {
-    border: 1px solid #e0e0e0;
-    padding: 15px;
-    margin-bottom: 20px;
-    border-radius: 8px;
-    position: relative;
-}
-
-.error-message {
-    color: #dc3545;
-    font-size: 0.875rem;
-    margin-top: 0.25rem;
-}
-
-.work-experience-item, .education-item {
-    border: 1px solid #e0e0e0;
-    padding: 1.5rem;
-    margin-bottom: 1.5rem;
-    border-radius: 0.5rem;
-    background-color: #f9f9f9;
-}
-
-.remove-btn {
-    background-color: #ff6b6b;
-    color: white;
-    border: none;
-    padding: 0.5rem 1rem;
-    border-radius: 0.25rem;
-    cursor: pointer;
-    margin-top: 1rem;
-    font-size: 0.875rem;
-    transition: background-color 0.2s;
-}
-
-.remove-btn:hover {
-    background-color: #ff5252;
-}
-
-.btn-add {
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    padding: 0.75rem 1.5rem;
-    border-radius: 0.25rem;
-    cursor: pointer;
-    margin-bottom: 2rem;
-    font-size: 1rem;
-    transition: background-color 0.2s;
-}
-
-.btn-add:hover {
-    background-color: #3e8e41;
-}
-
-.form-text.text-muted {
-    color: #6c757d;
-    font-size: 0.75rem;
-    margin-top: 0.25rem;
-}
-
-.field-error {
-    color: #dc3545;
-    font-size: 0.875em;
-}
-
-.alert-danger {
-    color: #721c24;
-    background-color: #f8d7da;
-    border-color: #f5c6cb;
-    padding: 0.75rem 1.25rem;
-    margin-bottom: 1rem;
-    border: 1px solid transparent;
-    border-radius: 0.25rem;
 }

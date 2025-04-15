@@ -14,6 +14,8 @@ import java.util.List;
 @Builder
 public class ResumeDTO {
 
+    Long id;
+
     @NotNull
     @NotNull(message = "ID соискателя не может быть пустым")
     @Positive(message = "ID соискателя должен быть положительным числом")

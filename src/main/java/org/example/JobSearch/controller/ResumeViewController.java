@@ -2,17 +2,13 @@ package org.example.JobSearch.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.example.JobSearch.dto.EditDTO.EditEducationInfoDTO;
 import org.example.JobSearch.dto.EditDTO.EditResumeDTO;
-import org.example.JobSearch.dto.EditDTO.EditWorkExperienceDTO;
 import org.example.JobSearch.dto.EducationInfoDTO;
 import org.example.JobSearch.dto.ResumeDTO;
 import org.example.JobSearch.dto.WorkExperienceDTO;
 import org.example.JobSearch.dto.create.CreateResumeDTO;
-import org.example.JobSearch.exceptions.CreateResumeException;
-import org.example.JobSearch.service.CategoryService;
-import org.example.JobSearch.service.ResumeService;
-import org.example.JobSearch.service.UserService;
+import org.example.JobSearch.model.Resume;
+import org.example.JobSearch.service.*;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,7 +18,6 @@ import org.springframework.web.bind.annotation.*;
 import java.security.Principal;
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 
 @Controller
@@ -35,42 +30,78 @@ public class ResumeViewController {
 
     @GetMapping("/allResumes")
     public String getAllActiveResumes(Model model) {
-            model.addAttribute("resumes", resumeService.getAllResumes());
+        model.addAttribute("resumes", resumeService.getAllResumes());
         return "resumes/allResumes";
     }
 
     @GetMapping("/create")
     public String showCreateForm(Model model) {
         CreateResumeDTO resumeForm = new CreateResumeDTO();
-
-        EducationInfoDTO defaultEducation = new EducationInfoDTO();
-        defaultEducation.setStartDate(new Date());
-        defaultEducation.setEndDate(new Date());
-
         model.addAttribute("resumeForm", resumeForm);
         model.addAttribute("categories", categoryService.getAllCategories());
 
-        model.addAttribute("workExperiences", Collections.singletonList(new WorkExperienceDTO()));
-        model.addAttribute("educationInfos", Collections.singletonList(defaultEducation));
+        resumeForm.setWorkExperiences(new ArrayList<>());
+        resumeForm.setEducationInfos(new ArrayList<>());
 
         return "resumes/createResume";
     }
 
     @PostMapping("/create")
-    public String createResume(@Valid @ModelAttribute("resumeForm") CreateResumeDTO resumeDTO,
-                               BindingResult bindingResult,
-                               Model model,
-                               Principal principal) {
+    public String handleResumeForm(
+            @Valid @ModelAttribute("resumeForm") CreateResumeDTO resumeDTO,
+            BindingResult bindingResult,
+            @RequestParam(value = "addWorkExp", required = false) Boolean addWorkExp,
+            @RequestParam(value = "addEducation", required = false) Boolean addEducation,
+            @RequestParam(value = "removeWorkExp", required = false) Integer removeWorkExpIndex,
+            @RequestParam(value = "removeEducation", required = false) Integer removeEducationIndex,
+            Model model,
+            Principal principal) {
 
-        try {
-            resumeService.validateCreateResume(resumeDTO);
-        } catch (CreateResumeException e) {
-            bindingResult.rejectValue(e.getFieldName(), "error.resumeForm", e.getMessage());
+
+        if (removeWorkExpIndex != null && resumeDTO.getWorkExperiences() != null
+                && removeWorkExpIndex >= 0 && removeWorkExpIndex < resumeDTO.getWorkExperiences().size()) {
+            resumeDTO.getWorkExperiences().remove(removeWorkExpIndex.intValue());
             model.addAttribute("categories", categoryService.getAllCategories());
-            model.addAttribute("workExperiences", resumeDTO.getWorkExperiences() != null ?
-                    resumeDTO.getWorkExperiences() : Collections.singletonList(new WorkExperienceDTO()));
-            model.addAttribute("educationInfos", resumeDTO.getEducationInfos() != null ?
-                    resumeDTO.getEducationInfos() : Collections.singletonList(new EducationInfoDTO()));
+            return "resumes/createResume";
+        }
+
+        if (removeEducationIndex != null && resumeDTO.getEducationInfos() != null
+                && removeEducationIndex >= 0 && removeEducationIndex < resumeDTO.getEducationInfos().size()) {
+            resumeDTO.getEducationInfos().remove(removeEducationIndex.intValue());
+            model.addAttribute("categories", categoryService.getAllCategories());
+            return "resumes/createResume";
+        }
+
+        if (addWorkExp != null && addWorkExp) {
+            if (resumeDTO.getWorkExperiences() == null || resumeDTO.getWorkExperiences().isEmpty()) {
+                resumeDTO.setWorkExperiences(new ArrayList<>());
+                resumeDTO.getWorkExperiences().add(new WorkExperienceDTO());
+            }
+            model.addAttribute("categories", categoryService.getAllCategories());
+            return "resumes/createResume";
+        }
+
+        if (addEducation != null && addEducation) {
+            if (resumeDTO.getEducationInfos() == null || resumeDTO.getEducationInfos().isEmpty()) {
+                resumeDTO.setEducationInfos(new ArrayList<>());
+                EducationInfoDTO education = new EducationInfoDTO();
+                education.setStartDate(new Date());
+                education.setEndDate(new Date());
+                resumeDTO.getEducationInfos().add(education);
+            }
+            model.addAttribute("categories", categoryService.getAllCategories());
+            return "resumes/createResume";
+        }
+
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("categories", categoryService.getAllCategories());
+            return "resumes/createResume";
+        }
+
+        resumeService.validateCreateResume(resumeDTO, bindingResult);
+
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("categories", categoryService.getAllCategories());
             return "resumes/createResume";
         }
 
@@ -80,59 +111,38 @@ public class ResumeViewController {
         resumeDTO.setCreateDate(new Timestamp(System.currentTimeMillis()));
         resumeDTO.setUpdateTime(new Timestamp(System.currentTimeMillis()));
 
-        resumeService.createResume(resumeDTO);
-
+        resumeService.createResume(resumeDTO, bindingResult);
         return "redirect:/profile";
     }
 
     @PostMapping(value = "/create", params = {"addWorkExp"})
     public String addWorkExperience(@ModelAttribute("resumeForm") CreateResumeDTO resumeDTO,
-                                    BindingResult bindingResult,
                                     Model model) {
-        if (resumeDTO.getWorkExperiences() == null) {
+
+        if (resumeDTO.getWorkExperiences() == null || resumeDTO.getWorkExperiences().isEmpty()) {
             resumeDTO.setWorkExperiences(new ArrayList<>());
         }
         resumeDTO.getWorkExperiences().add(new WorkExperienceDTO());
 
-        try {
-            resumeService.validateCreateResume(resumeDTO);
-        } catch (CreateResumeException e) {
-            bindingResult.rejectValue(e.getFieldName(), "error.resumeForm", e.getMessage());
-        }
-
+        model.addAttribute("resumeForm", resumeDTO);
         model.addAttribute("categories", categoryService.getAllCategories());
-        model.addAttribute("workExperiences", resumeDTO.getWorkExperiences());
-        model.addAttribute("educationInfos", resumeDTO.getEducationInfos() != null ?
-                resumeDTO.getEducationInfos() : Collections.singletonList(new EducationInfoDTO()));
-
         return "resumes/createResume";
     }
 
-    @PostMapping(value = "/create", params = {"addEducation"})
+
+    @PostMapping("/addEducation")
     public String addEducation(@ModelAttribute("resumeForm") CreateResumeDTO resumeDTO,
-                               BindingResult bindingResult,
                                Model model) {
-        if (resumeDTO.getEducationInfos() == null) {
+        if (resumeDTO.getEducationInfos() == null || resumeDTO.getEducationInfos().isEmpty()) {
             resumeDTO.setEducationInfos(new ArrayList<>());
+            EducationInfoDTO education = new EducationInfoDTO();
+            education.setStartDate(new Date());
+            education.setEndDate(new Date());
+            resumeDTO.getEducationInfos().add(education);
         }
 
-        EducationInfoDTO newEducation = new EducationInfoDTO();
-        newEducation.setStartDate(new Date());
-        newEducation.setEndDate(new Date());
-
-        resumeDTO.getEducationInfos().add(newEducation);
-
-        try {
-            resumeService.validateCreateResume(resumeDTO);
-        } catch (CreateResumeException e) {
-            bindingResult.rejectValue(e.getFieldName(), "error.resumeForm", e.getMessage());
-        }
-
+        model.addAttribute("resumeForm", resumeDTO);
         model.addAttribute("categories", categoryService.getAllCategories());
-        model.addAttribute("workExperiences", resumeDTO.getWorkExperiences() != null ?
-                resumeDTO.getWorkExperiences() : Collections.singletonList(new WorkExperienceDTO()));
-        model.addAttribute("educationInfos", resumeDTO.getEducationInfos());
-
         return "resumes/createResume";
     }
 
@@ -147,33 +157,27 @@ public class ResumeViewController {
             throw new AccessDeniedException("Вы не можете редактировать это резюме");
         }
 
-        EditResumeDTO form = resumeService.convertToEditDTO(resume);
-        if (form.getEducationInfos() == null || form.getEducationInfos().isEmpty()) {
-            form.setEducationInfos(Collections.singletonList(new EditEducationInfoDTO()));
-        }
-        if (form.getWorkExperiences() == null || form.getWorkExperiences().isEmpty()) {
-            form.setWorkExperiences(Collections.singletonList(new EditWorkExperienceDTO()));
-        }
+        EditResumeDTO editResumeDto = new EditResumeDTO();
+        editResumeDto.setId(resume.getId());
+        editResumeDto.setName(resume.getName());
+        editResumeDto.setCategoryId(resume.getCategoryId());
+        editResumeDto.setSalary(resume.getSalary());
+        editResumeDto.setIsActive(resume.getIsActive());
 
-        model.addAttribute("resumeForm", form);
+        model.addAttribute("resumeForm", editResumeDto);
         model.addAttribute("categories", categoryService.getAllCategories());
         model.addAttribute("resumeId", id);
         return "resumes/editResume";
     }
 
     @PostMapping("/{id}/edit")
-    public String editResume(@PathVariable Long id,
-                             @Valid @ModelAttribute("resumeForm") EditResumeDTO form,
-                             BindingResult bindingResult,
-                             Model model, Principal principal) {
+    public String handleEditForm(
+            @PathVariable Long id,
+            @Valid @ModelAttribute("resumeForm") EditResumeDTO editResumeDto,
+            BindingResult bindingResult,
+            Model model) {
 
-        String currentUserEmail = principal.getName();
-        Long currentUserId = userService.getUserId(currentUserEmail);
-
-        ResumeDTO resume = resumeService.getResumeById(id);
-        if (!resume.getApplicantId().equals(currentUserId)) {
-            throw new AccessDeniedException("Вы не можете редактировать это резюме");
-        }
+        editResumeDto.setUpdateTime(new Timestamp(System.currentTimeMillis()));
 
         if (bindingResult.hasErrors()) {
             model.addAttribute("categories", categoryService.getAllCategories());
@@ -181,79 +185,7 @@ public class ResumeViewController {
             return "resumes/editResume";
         }
 
-        form.setUpdateTime(new java.sql.Timestamp(System.currentTimeMillis()));
-        resumeService.updateResume(id, form);
-
+        resumeService.updateResume(id, editResumeDto);
         return "redirect:/profile";
-    }
-
-    @PostMapping(value = "/{id}/edit", params = {"addWorkExp"})
-    public String addWorkExperience(@PathVariable Long id,
-                                    @ModelAttribute("resumeForm") EditResumeDTO form,
-                                    BindingResult bindingResult,
-                                    Model model, Principal principal) {
-        if (form.getWorkExperiences() == null) {
-            form.setWorkExperiences(new ArrayList<>());
-        }
-        form.getWorkExperiences().add(new EditWorkExperienceDTO());
-
-        prepareModelForEditForm(id, form, model, principal);
-        return "resumes/editResume";
-    }
-
-    @PostMapping(value = "/{id}/edit", params = {"removeWorkExp"})
-    public String removeWorkExperience(@PathVariable Long id,
-                                       @ModelAttribute("resumeForm") EditResumeDTO form,
-                                       @RequestParam("removeWorkExp") int index,
-                                       BindingResult bindingResult,
-                                       Model model, Principal principal) {
-        if (form.getWorkExperiences() != null && index >= 0 && index < form.getWorkExperiences().size()) {
-            form.getWorkExperiences().remove(index);
-        }
-
-        prepareModelForEditForm(id, form, model, principal);
-        return "resumes/editResume";
-    }
-
-    @PostMapping(value = "/{id}/edit", params = {"addEducation"})
-    public String addEducation(@PathVariable Long id,
-                               @ModelAttribute("resumeForm") EditResumeDTO form,
-                               BindingResult bindingResult,
-                               Model model, Principal principal) {
-        if (form.getEducationInfos() == null) {
-            form.setEducationInfos(new ArrayList<>());
-        }
-        form.getEducationInfos().add(new EditEducationInfoDTO());
-
-        prepareModelForEditForm(id, form, model, principal);
-        return "resumes/editResume";
-    }
-
-    @PostMapping(value = "/{id}/edit", params = {"removeEducation"})
-    public String removeEducation(@PathVariable Long id,
-                                  @ModelAttribute("resumeForm") EditResumeDTO form,
-                                  @RequestParam("removeEducation") int index,
-                                  BindingResult bindingResult,
-                                  Model model, Principal principal) {
-        if (form.getEducationInfos() != null && index >= 0 && index < form.getEducationInfos().size()) {
-            form.getEducationInfos().remove(index);
-        }
-
-        prepareModelForEditForm(id, form, model, principal);
-        return "resumes/editResume";
-    }
-
-    private void prepareModelForEditForm(Long id, EditResumeDTO form, Model model, Principal principal) {
-        String currentUserEmail = principal.getName();
-        Long currentUserId = userService.getUserId(currentUserEmail);
-
-        ResumeDTO resume = resumeService.getResumeById(id);
-        if (!resume.getApplicantId().equals(currentUserId)) {
-            throw new AccessDeniedException("Вы не можете редактировать это резюме");
-        }
-
-        model.addAttribute("resumeForm", form);
-        model.addAttribute("categories", categoryService.getAllCategories());
-        model.addAttribute("resumeId", id);
     }
 }

@@ -4,16 +4,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.JobSearch.dao.CategoryDao;
 import org.example.JobSearch.dao.ResumeDao;
-import org.example.JobSearch.dto.EditDTO.EditEducationInfoDTO;
 import org.example.JobSearch.dto.EditDTO.EditResumeDTO;
-import org.example.JobSearch.dto.EditDTO.EditWorkExperienceDTO;
 import org.example.JobSearch.dto.EducationInfoDTO;
 import org.example.JobSearch.dto.ResumeDTO;
 import org.example.JobSearch.dto.WorkExperienceDTO;
 import org.example.JobSearch.dto.create.CreateResumeDTO;
 import org.example.JobSearch.exceptions.CategoryNotFoundException;
 import org.example.JobSearch.exceptions.CreateResumeException;
-import org.example.JobSearch.exceptions.InvalidUserDataException;
 import org.example.JobSearch.exceptions.ResumeNotFoundException;
 import org.example.JobSearch.model.Resume;
 import org.example.JobSearch.service.EducationInfoService;
@@ -21,10 +18,10 @@ import org.example.JobSearch.service.ResumeService;
 import org.example.JobSearch.service.WorkExperienceService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.BindingResult;
 
 import java.sql.Timestamp;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -44,10 +41,10 @@ public class ResumeServiceImpl implements ResumeService {
 
     @Override
     @Transactional
-    public void createResume(CreateResumeDTO resumeDto) {
+    public void createResume(CreateResumeDTO resumeDto, BindingResult bindingResult) {
         log.info("Создание нового резюме для соискателя ID: {}", resumeDto.getApplicantId());
 
-        validateCreateResume(resumeDto);
+        validateCreateResume(resumeDto, bindingResult);
 
         if (!categoryDao.existsById(resumeDto.getCategoryId())) {
             log.error("Категория с ID {} не найдена", resumeDto.getCategoryId());
@@ -81,8 +78,8 @@ public class ResumeServiceImpl implements ResumeService {
         }
     }
 
-    @Override
     @Transactional
+    @Override
     public void updateResume(Long resumeId, EditResumeDTO editResumeDto) {
         log.info("Обновление резюме ID: {}", resumeId);
 
@@ -90,21 +87,8 @@ public class ResumeServiceImpl implements ResumeService {
             throw new ResumeNotFoundException("Резюме с ID не найдено: " + resumeId);
         }
 
-        if (!categoryDao.existsById(editResumeDto.getCategoryId())) {
-            log.error("Категория с ID {} не найдена", editResumeDto.getCategoryId());
-            throw new CategoryNotFoundException("Категория с ID " + editResumeDto.getCategoryId() + " не найдена");
-        }
-
         resumeDao.updateResume(resumeId, editResumeDto);
         log.info("Основная информация резюме ID {} успешно обновлена", resumeId);
-
-        if (editResumeDto.getEducationInfos() != null) {
-            updateEducationInfos(resumeId, editResumeDto.getEducationInfos());
-        }
-
-        if (editResumeDto.getWorkExperiences() != null) {
-            updateWorkExperiences(resumeId, editResumeDto.getWorkExperiences());
-        }
     }
 
     @Override
@@ -167,6 +151,7 @@ public class ResumeServiceImpl implements ResumeService {
     private ResumeDTO toDTO(Resume resume) {
         log.trace("Преобразование Resume в ResumeDTO для резюме ID: {}", resume.getId());
         ResumeDTO dto = ResumeDTO.builder()
+                .id(resume.getId())
                 .applicantId(resume.getApplicantId())
                 .categoryId(resume.getCategoryId())
                 .name(resume.getName())
@@ -185,103 +170,8 @@ public class ResumeServiceImpl implements ResumeService {
         return dto;
     }
 
-    private void updateEducationInfos(Long resumeId, List<EditEducationInfoDTO> educationDtos)  {
-        List<EducationInfoDTO> existingEducations = educationInfoService.getEducationInfoByResumeId(resumeId);
-
-        for (EditEducationInfoDTO dto : educationDtos) {
-
-            if (dto.getId() != null) {
-                boolean exists = existingEducations.stream()
-                        .anyMatch(edu -> edu.getId().equals(dto.getId()));
-
-                if (exists) {
-                    EducationInfoDTO updateDto = convertToEducationInfoDTO(dto);
-                    educationInfoService.updateEducationInfo(dto.getId(), updateDto);
-                } else {
-                    log.error("Запись об образовании с ID {} не найдена для резюме {}", dto.getId(), resumeId);
-                    throw new InvalidUserDataException("Запись об образовании не найдена: " + dto.getId());
-                }
-            } else {
-                EducationInfoDTO newDto = convertToEducationInfoDTO(dto);
-                newDto.setResumeId(resumeId);
-                educationInfoService.createEducationInfo(resumeId, newDto);
-                log.info("Добавлена новая запись об образовании для резюме {}", resumeId);
-            }
-        }
-
-        List<Long> incomingIds = educationDtos.stream()
-                .map(EditEducationInfoDTO::getId)
-                .filter(Objects::nonNull)
-                .collect(Collectors.toList());
-
-        existingEducations.stream()
-                .filter(edu -> !incomingIds.contains(edu.getId()))
-                .forEach(edu -> {
-                    educationInfoService.deleteEducationInfo(edu.getId());
-                    log.info("Удалена запись об образовании с ID {} для резюме {}", edu.getId(), resumeId);
-                });
-    }
-
-    private EducationInfoDTO convertToEducationInfoDTO(EditEducationInfoDTO dto) {
-        return EducationInfoDTO.builder()
-                .id(dto.getId())
-                .institution(dto.getInstitution())
-                .program(dto.getProgram())
-                .startDate(dto.getStartDate())
-                .endDate(dto.getEndDate())
-                .degree(dto.getDegree())
-                .build();
-    }
-
-    private void updateWorkExperiences(Long resumeId, List<EditWorkExperienceDTO> workExperienceDtos) {
-        List<WorkExperienceDTO> existingExperiences = workExperienceService.getWorkExperienceByResumeId(resumeId);
-
-        for (EditWorkExperienceDTO dto : workExperienceDtos) {
-
-            if (dto.getId() != null) {
-                boolean exists = existingExperiences.stream()
-                        .anyMatch(exp -> exp.getId().equals(dto.getId()));
-
-                if (exists) {
-                    WorkExperienceDTO updateDto = convertToWorkExperienceDTO(dto);
-                    workExperienceService.updateWorkExperience(dto.getId(), updateDto);
-                } else {
-                    log.error("Запись об опыте работы с ID {} не найдена для резюме {}", dto.getId(), resumeId);
-                    throw new InvalidUserDataException("Запись об опыте работы не найдена: " + dto.getId());
-                }
-            } else {
-                WorkExperienceDTO newDto = convertToWorkExperienceDTO(dto);
-                newDto.setResumeId(resumeId);
-                workExperienceService.createWorkExperience(resumeId, newDto);
-                log.info("Добавлена новая запись об опыте работы для резюме {}", resumeId);
-            }
-        }
-
-        List<Long> incomingIds = workExperienceDtos.stream()
-                .map(EditWorkExperienceDTO::getId)
-                .filter(Objects::nonNull)
-                .collect(Collectors.toList());
-
-        existingExperiences.stream()
-                .filter(exp -> !incomingIds.contains(exp.getId()))
-                .forEach(exp -> {
-                    workExperienceService.deleteWorkExperience(exp.getId());
-                    log.info("Удалена запись об опыте работы с ID {} для резюме {}", exp.getId(), resumeId);
-                });
-    }
-
-    private WorkExperienceDTO convertToWorkExperienceDTO(EditWorkExperienceDTO dto) {
-        return WorkExperienceDTO.builder()
-                .id(dto.getId())
-                .years(dto.getYears())
-                .companyName(dto.getCompanyName())
-                .position(dto.getPosition())
-                .responsibilities(dto.getResponsibilities())
-                .build();
-    }
-
     @Override
-    public void validateCreateResume(CreateResumeDTO resumeDto) {
+    public void validateCreateResume(CreateResumeDTO resumeDto, BindingResult bindingResult) {
         if (resumeDto.getCategoryId() == null) {
             throw new CreateResumeException("categoryId", "категории не может быть пустым");
         }
@@ -290,9 +180,6 @@ public class ResumeServiceImpl implements ResumeService {
             throw new CreateResumeException("name", "Название резюме не может быть пустым");
         }
 
-        if (resumeDto.getName().length() < 8) {
-            throw new CreateResumeException("name", "Название резюме должно содержать минимум 8 символов");
-        }
 
         if (resumeDto.getName().matches(".*\\d.*")) {
             throw new CreateResumeException("name", "Название резюме не должно содержать цифры");
@@ -307,65 +194,8 @@ public class ResumeServiceImpl implements ResumeService {
     }
 
     @Override
-    public EditResumeDTO convertToEditDTO(ResumeDTO resume) {
-
-        EditResumeDTO editResumeDTO = EditResumeDTO.builder()
-                .categoryId(resume.getCategoryId())
-                .name(resume.getName())
-                .salary(resume.getSalary())
-                .isActive(resume.getIsActive())
-                .build();
-
-        // Преобразование образования
-        if (resume.getEducationInfos() != null && !resume.getEducationInfos().isEmpty()) {
-            List<EditEducationInfoDTO> educationInfos = resume.getEducationInfos().stream()
-                    .map(this::convertToEditEducationInfoDTO)
-                    .collect(Collectors.toList());
-            editResumeDTO.setEducationInfos(educationInfos);
-        }
-
-        // Преобразование опыта работы
-        if (resume.getWorkExperiences() != null && !resume.getWorkExperiences().isEmpty()) {
-            List<EditWorkExperienceDTO> workExperiences = resume.getWorkExperiences().stream()
-                    .map(this::convertToEditWorkExperienceDTO)
-                    .collect(Collectors.toList());
-            editResumeDTO.setWorkExperiences(workExperiences);
-        }
-
-        return editResumeDTO;
-    }
-
-    private EditEducationInfoDTO convertToEditEducationInfoDTO(EducationInfoDTO dto) {
-        return EditEducationInfoDTO.builder()
-                .id(dto.getId())
-                .institution(dto.getInstitution())
-                .program(dto.getProgram())
-                .startDate(dto.getStartDate())
-                .endDate(dto.getEndDate())
-                .degree(dto.getDegree())
-                .build();
-    }
-
-    private EditWorkExperienceDTO convertToEditWorkExperienceDTO(WorkExperienceDTO dto) {
-        return EditWorkExperienceDTO.builder()
-                .id(dto.getId())
-                .years(dto.getYears())
-                .companyName(dto.getCompanyName())
-                .position(dto.getPosition())
-                .responsibilities(dto.getResponsibilities())
-                .build();
-    }
-
-    @Override
     public ResumeDTO getResumeById(Long id) {
         log.info("Получение резюме по ID: {}", id);
-        Resume resume = resumeDao.getResumeById(id);
-
-        ResumeDTO dto = toDTO(resume);
-
-        dto.setEducationInfos(educationInfoService.getEducationInfoByResumeId(id));
-        dto.setWorkExperiences(workExperienceService.getWorkExperienceByResumeId(id));
-
-        return dto;
+        return resumeDao.getResumeById(id);
     }
 }

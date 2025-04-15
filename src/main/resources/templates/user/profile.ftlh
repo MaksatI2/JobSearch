@@ -80,12 +80,18 @@
 
                     <h3>Ваши резюме</h3>
                     <#list resumes![] as resume>
+                     <#if resume.id??>
                         <div class="resume-card">
-                            <p><strong>${resume.name}</strong></p>
-                            <p>Обновлено: ${resume.updateTime}</p>
-                            <a href="#" class="button-link">Обновить</a>
-                            <a href="/resumes/${resumes.id}/edit" class="button-link">Редактировать</a>
+                             <p><strong>${resume.name!""}</strong></p>
+                              <p>Обновлено: ${resume.updateTime!""}</p>
+                             <form action="/profile/resumes/${resume.id}/refresh" method="post" class="inline-form">
+                                  <button type="submit" class="button-link refresh-button">Обновить</button>
+                             </form>
+                                   <a href="/resumes/${resume.id}/edit" class="button-link">Редактировать</a>
                         </div>
+                      <#else>
+                       <p>Не удалось загрузить резюме.</p>
+                      </#if>
                     <#else>
                         <p>У вас пока нет резюме.</p>
                     </#list>

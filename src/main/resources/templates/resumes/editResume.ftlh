@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Редактирование резюме | JobSearch</title>
-    <link rel="stylesheet" href="/static/css/createResume.css">
+    <link rel="stylesheet" href="/static/css/editResume.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 </head>
 <body>
@@ -17,6 +17,15 @@
                 <a href="/" class="nav-link">Главная</a>
                 <a href="/vacancies" class="nav-link">Вакансии</a>
                 <a href="/resumes/allResumes" class="nav-link">Резюме</a>
+                <#if Session.SPRING_SECURITY_CONTEXT??>
+                    <a href="/profile" class="nav-link">Профиль</a>
+                    <form action="/logout" method="post" class="logout-form">
+                        <button type="submit" class="logout-btn">Выйти</button>
+                    </form>
+                <#else>
+                    <a href="/auth/login" class="nav-link">Войти</a>
+                    <a href="/auth/register" class="nav-link register-btn">Регистрация</a>
+                </#if>
             </div>
         </nav>
     </div>
@@ -24,19 +33,27 @@
 
 <main class="main">
     <div class="container">
-        <div class="resume-form-container">
-            <h1 class="page-title">Редактирование резюме</h1>
+        <h1 class="page-title">Редактирование резюме</h1>
 
-            <@spring.bind "resumeForm" />
-            <#if spring.status.error>
-                <div class="global-error">
-                    <#list spring.status.errorMessages as error>
-                        <div>${error}</div>
-                    </#list>
+        <@spring.bind "resumeForm" />
+        <#if spring.status.error>
+            <div class="global-error">
+                <#list spring.status.errorMessages as error>
+                    <div>${error}</div>
+                </#list>
+            </div>
+        </#if>
+
+        <form action="/resumes/${resumeId}/edit" method="post" class="resume-form">
+            <div class="section">
+                <h2 class="section-title">Основная информация</h2>
+
+                <div class="form-group">
+                    <label for="name">Название резюме*</label>
+                    <@spring.formInput "resumeForm.name", "class='form-control' id='name'" />
+                    <@spring.showErrors "<br>", "error" />
                 </div>
-            </#if>
 
-            <form method="post" class="resume-form" action="/resumes/${resumeId}/edit">
                 <div class="form-group">
                     <label for="categoryId">Категория*</label>
                     <select class="form-control" id="categoryId" name="categoryId" required>
@@ -48,67 +65,33 @@
                             </option>
                         </#list>
                     </select>
-                    <@spring.showErrors "categoryId" "error" />
+                    <@spring.showErrors "<br>", "error" />
                 </div>
-
-                <!-- Work Experience Section -->
-                <div class="section-title">Опыт работы</div>
-                <#list resumeForm.workExperiences as workExp>
-                    <div class="form-subsection">
-                        <input type="hidden" name="workExperiences[${workExp?index}].id" value="${workExp.id!}">
-                        <div class="form-group">
-                            <label>Компания</label>
-                            <input type="text" name="workExperiences[${workExp?index}].company" value="${workExp.company!}" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Должность</label>
-                            <input type="text" name="workExperiences[${workExp?index}].position" value="${workExp.position!}" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Период</label>
-                            <input type="date" name="workExperiences[${workExp?index}].startDate" value="${workExp.startDate?date?string("yyyy-MM-dd")!}">
-                            <input type="date" name="workExperiences[${workExp?index}].endDate" value="${workExp.endDate?date?string("yyyy-MM-dd")!}">
-                        </div>
-                        <button type="submit" name="removeWorkExp" value="${workExp?index}" class="remove-btn">Удалить опыт</button>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="salary">Желаемая зарплата</label>
+                        <@spring.formInput "resumeForm.salary", "type='number' min='0' step='0.01' class='form-control' id='salary'" />
+                        <@spring.showErrors "<br>", "error" />
                     </div>
-                </#list>
-                <button type="submit" name="addWorkExp" class="add-btn">Добавить опыт работы</button>
-
-                <!-- Education Section -->
-                <div class="section-title">Образование</div>
-                <#list resumeForm.educationInfos as edu>
-                    <div class="form-subsection">
-                        <input type="hidden" name="educationInfos[${edu?index}].id" value="${edu.id!}">
-                        <div class="form-group">
-                            <label>Учебное заведение</label>
-                            <input type="text" name="educationInfos[${edu?index}].institution" value="${edu.institution!}" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Специальность</label>
-                            <input type="text" name="educationInfos[${edu?index}].major" value="${edu.major!}" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Период</label>
-                            <input type="date" name="educationInfos[${edu?index}].startDate" value="${edu.startDate?date?string("yyyy-MM-dd")!}">
-                            <input type="date" name="educationInfos[${edu?index}].endDate" value="${edu.endDate?date?string("yyyy-MM-dd")!}">
-                        </div>
-                        <button type="submit" name="removeEducation" value="${edu?index}" class="remove-btn">Удалить образование</button>
+                    <div class="form-group">
+                        <label for="isActive">Статус резюме</label>
+                        <@spring.formSingleSelect "resumeForm.isActive", {"true": "Активно", "false": "Неактивно"}, "class='form-control' id='isActive' required='required'" />
+                        <@spring.showErrors "<br>", "error" />
                     </div>
-                </#list>
-                <button type="submit" name="addEducation" class="add-btn">Добавить образование</button>
-
-                <div class="form-actions">
-                    <button type="submit" class="submit-btn">Сохранить изменения</button>
-                    <a href="/profile" class="cancel-btn">Отмена</a>
                 </div>
-            </form>
-        </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="submit-btn">Сохранить изменения</button>
+                <a href="/profile" class="cancel-btn">Отмена</a>
+            </div>
+        </form>
     </div>
 </main>
 
 <footer class="footer">
     <div class="container">
-        <p>&copy; 2025 JobSearch. Все права защищены.</p>
+        <p>© 2025 JobSearch. Все права защищены.</p>
     </div>
 </footer>
 </body>
