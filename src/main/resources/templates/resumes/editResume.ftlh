@@ -88,7 +88,6 @@
         </form>
     </div>
 </main>
-
 <footer class="footer">
     <div class="container">
         <p>© 2025 JobSearch. Все права защищены.</p>
