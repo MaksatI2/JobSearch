@@ -7,7 +7,6 @@ import org.example.JobSearch.dto.EducationInfoDTO;
 import org.example.JobSearch.dto.ResumeDTO;
 import org.example.JobSearch.dto.WorkExperienceDTO;
 import org.example.JobSearch.dto.create.CreateResumeDTO;
-import org.example.JobSearch.model.Resume;
 import org.example.JobSearch.service.*;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Controller;
@@ -187,5 +186,126 @@ public class ResumeViewController {
 
         resumeService.updateResume(id, editResumeDto);
         return "redirect:/profile";
+    }
+
+    @GetMapping("/{id}/edit")
+    public String showEditForm(@PathVariable Long id, Model model, Principal principal) {
+        ResumeDTO resume = resumeService.getResumeById(id);
+
+        String currentUserEmail = principal.getName();
+        Long currentUserId = userService.getUserId(currentUserEmail);
+
+        if (!resume.getApplicantId().equals(currentUserId)) {
+            throw new AccessDeniedException("Вы не можете редактировать это резюме");
+        }
+
+        EditResumeDTO form = resumeService.convertToEditDTO(resume);
+        if (form.getEducationInfos() == null || form.getEducationInfos().isEmpty()) {
+            form.setEducationInfos(Collections.singletonList(new EditEducationInfoDTO()));
+        }
+        if (form.getWorkExperiences() == null || form.getWorkExperiences().isEmpty()) {
+            form.setWorkExperiences(Collections.singletonList(new EditWorkExperienceDTO()));
+        }
+
+        model.addAttribute("resumeForm", form);
+        model.addAttribute("categories", categoryService.getAllCategories());
+        model.addAttribute("resumeId", id);
+        return "resumes/editResume";
+    }
+
+    @PostMapping("/{id}/edit")
+    public String editResume(@PathVariable Long id,
+                             @Valid @ModelAttribute("resumeForm") EditResumeDTO form,
+                             BindingResult bindingResult,
+                             Model model, Principal principal) {
+
+        String currentUserEmail = principal.getName();
+        Long currentUserId = userService.getUserId(currentUserEmail);
+
+        ResumeDTO resume = resumeService.getResumeById(id);
+        if (!resume.getApplicantId().equals(currentUserId)) {
+            throw new AccessDeniedException("Вы не можете редактировать это резюме");
+        }
+
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("categories", categoryService.getAllCategories());
+            model.addAttribute("resumeId", id);
+            return "resumes/editResume";
+        }
+
+        form.setUpdateTime(new java.sql.Timestamp(System.currentTimeMillis()));
+        resumeService.updateResume(id, form);
+
+        return "redirect:/profile";
+    }
+
+    @PostMapping(value = "/{id}/edit", params = {"addWorkExp"})
+    public String addWorkExperience(@PathVariable Long id,
+                                    @ModelAttribute("resumeForm") EditResumeDTO form,
+                                    BindingResult bindingResult,
+                                    Model model, Principal principal) {
+        if (form.getWorkExperiences() == null) {
+            form.setWorkExperiences(new ArrayList<>());
+        }
+        form.getWorkExperiences().add(new EditWorkExperienceDTO());
+
+        prepareModelForEditForm(id, form, model, principal);
+        return "resumes/editResume";
+    }
+
+    @PostMapping(value = "/{id}/edit", params = {"removeWorkExp"})
+    public String removeWorkExperience(@PathVariable Long id,
+                                       @ModelAttribute("resumeForm") EditResumeDTO form,
+                                       @RequestParam("removeWorkExp") int index,
+                                       BindingResult bindingResult,
+                                       Model model, Principal principal) {
+        if (form.getWorkExperiences() != null && index >= 0 && index < form.getWorkExperiences().size()) {
+            form.getWorkExperiences().remove(index);
+        }
+
+        prepareModelForEditForm(id, form, model, principal);
+        return "resumes/editResume";
+    }
+
+    @PostMapping(value = "/{id}/edit", params = {"addEducation"})
+    public String addEducation(@PathVariable Long id,
+                               @ModelAttribute("resumeForm") EditResumeDTO form,
+                               BindingResult bindingResult,
+                               Model model, Principal principal) {
+        if (form.getEducationInfos() == null) {
+            form.setEducationInfos(new ArrayList<>());
+        }
+        form.getEducationInfos().add(new EditEducationInfoDTO());
+
+        prepareModelForEditForm(id, form, model, principal);
+        return "resumes/editResume";
+    }
+
+    @PostMapping(value = "/{id}/edit", params = {"removeEducation"})
+    public String removeEducation(@PathVariable Long id,
+                                  @ModelAttribute("resumeForm") EditResumeDTO form,
+                                  @RequestParam("removeEducation") int index,
+                                  BindingResult bindingResult,
+                                  Model model, Principal principal) {
+        if (form.getEducationInfos() != null && index >= 0 && index < form.getEducationInfos().size()) {
+            form.getEducationInfos().remove(index);
+        }
+
+        prepareModelForEditForm(id, form, model, principal);
+        return "resumes/editResume";
+    }
+
+    private void prepareModelForEditForm(Long id, EditResumeDTO form, Model model, Principal principal) {
+        String currentUserEmail = principal.getName();
+        Long currentUserId = userService.getUserId(currentUserEmail);
+
+        ResumeDTO resume = resumeService.getResumeById(id);
+        if (!resume.getApplicantId().equals(currentUserId)) {
+            throw new AccessDeniedException("Вы не можете редактировать это резюме");
+        }
+
+        model.addAttribute("resumeForm", form);
+        model.addAttribute("categories", categoryService.getAllCategories());
+        model.addAttribute("resumeId", id);
     }
 }

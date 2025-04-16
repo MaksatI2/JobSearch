@@ -26,5 +26,4 @@ public interface ResumeService {
     void validateCreateResume(CreateResumeDTO resumeDto, BindingResult bindingResult);
 
     ResumeDTO getResumeById(Long id);
-
 }
