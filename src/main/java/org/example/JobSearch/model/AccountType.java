@@ -21,6 +21,11 @@ public enum AccountType {
                 return type;
             }
         }
-        throw new IllegalArgumentException("Нет AccountType с ID" + id);
+        throw new IllegalArgumentException("Нет AccountType с ID " + id);
+    }
+
+    @Override
+    public String toString() {
+        return name;
     }
 }

@@ -2,6 +2,7 @@ package org.example.JobSearch.model;
 
 import lombok.*;
 import jakarta.persistence.*;
+import org.example.JobSearch.converter.AccountTypeConverter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,16 +36,16 @@ public class User {
     @Column(length = 255)
     private String avatar;
 
-    @Column(name = "account_type")
-    private Integer accountType;
+    @Convert(converter = AccountTypeConverter.class)
+    @Column(name = "account_type", nullable = false)
+    private AccountType accountType;
 
     @Column(nullable = false)
     private Boolean enabled = true;
 
-    @OneToMany(mappedBy = "applicant")
+    @OneToMany(mappedBy = "applicant", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Resume> resumes = new ArrayList<>();
 
-    @OneToMany(mappedBy = "author")
+    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Vacancy> vacancies = new ArrayList<>();
 }
-
