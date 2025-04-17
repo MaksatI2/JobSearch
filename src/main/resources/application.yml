@@ -7,6 +7,9 @@ spring:
     static-path-pattern: /static/**
   freemarker:
     expose-session-attributes: true
+  jpa:
+    hibernate:
+      ddl-auto: validate
 
 
   datasource:
