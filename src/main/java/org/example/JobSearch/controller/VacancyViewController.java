@@ -56,6 +56,8 @@ public class VacancyViewController {
         Long currentUser = userService.getUserId(currentUserEmail);
         vacancyService.createVacancy(vacancyDTO, currentUser);
 
+        vacancyService.validateVacancyData(vacancyDTO, bindingResult);
+
         return "redirect:/profile";
     }
 
@@ -90,6 +92,8 @@ public class VacancyViewController {
         if (!vacancy.getAuthorId().equals(currentUserId)) {
             throw new AccessDeniedException("Вы не можете редактировать эту вакансию");
         }
+
+        vacancyService.validateEditVacancyData(form, bindingResult);
 
         if (bindingResult.hasErrors()) {
             model.addAttribute("categories", categoryService.getAllCategories());

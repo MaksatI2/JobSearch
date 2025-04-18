@@ -6,6 +6,8 @@ import org.example.JobSearch.dto.EditDTO.EditVacancyDTO;
 import org.example.JobSearch.dto.VacancyDTO;
 import org.example.JobSearch.dto.create.CreateVacancyDTO;
 import org.example.JobSearch.exceptions.CategoryNotFoundException;
+import org.example.JobSearch.exceptions.CreateVacancyException;
+import org.example.JobSearch.exceptions.EditVacancyException;
 import org.example.JobSearch.exceptions.VacancyNotFoundException;
 import org.example.JobSearch.model.*;
 import org.example.JobSearch.repository.*;
@@ -13,6 +15,7 @@ import org.example.JobSearch.service.VacancyService;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.BindingResult;
 
 import java.sql.Timestamp;
 import java.util.List;
@@ -181,5 +184,95 @@ public class VacancyServiceImpl implements VacancyService {
                 .isActive(dto.getIsActive())
                 .updateTime(new Timestamp(System.currentTimeMillis()))
                 .build();
+    }
+
+    @Override
+    public void validateVacancyData(CreateVacancyDTO createVacancyDto, BindingResult bindingResult) {
+        if (createVacancyDto.getSalary() != null) {
+            try {
+                Integer.parseInt(createVacancyDto.getSalary().toString());
+            } catch (NumberFormatException e) {
+                throw new CreateVacancyException("salary", "Зарплата должна содержать только цифры");
+            }
+
+            if (createVacancyDto.getSalary() < 0) {
+                throw new CreateVacancyException("salary", "Зарплата не может быть отрицательной");
+            }
+        }
+
+        if (createVacancyDto.getExpFrom() != null) {
+            try {
+                Integer.parseInt(createVacancyDto.getExpFrom().toString());
+            } catch (NumberFormatException e) {
+                throw new CreateVacancyException("expFrom", "Опыт 'от' должен содержать только цифры");
+            }
+
+            if (createVacancyDto.getExpFrom() < 0) {
+                throw new CreateVacancyException("expFrom", "Опыт 'от' не может быть отрицательным");
+            }
+        }
+
+        if (createVacancyDto.getExpTo() != null) {
+            try {
+                Integer.parseInt(createVacancyDto.getExpTo().toString());
+            } catch (NumberFormatException e) {
+                throw new CreateVacancyException("expTo", "Опыт 'до' должен содержать только цифры");
+            }
+
+            if (createVacancyDto.getExpTo() < 0) {
+                throw new CreateVacancyException("expTo", "Опыт 'до' не может быть отрицательным");
+            }
+        }
+
+        if (createVacancyDto.getExpFrom() != null && createVacancyDto.getExpTo() != null) {
+            if (createVacancyDto.getExpFrom() > createVacancyDto.getExpTo()) {
+                throw new CreateVacancyException("expFrom", "Начальный опыт не может быть больше конечного");
+            }
+        }
+    }
+
+    @Override
+    public void validateEditVacancyData(EditVacancyDTO editVacancyDto, BindingResult bindingResult) {
+        if (editVacancyDto.getSalary() != null) {
+            try {
+                Integer.parseInt(editVacancyDto.getSalary().toString());
+            } catch (NumberFormatException e) {
+                throw new EditVacancyException("salary", "Зарплата должна содержать только цифры");
+            }
+
+            if (editVacancyDto.getSalary() < 0) {
+                throw new EditVacancyException("salary", "Зарплата не может быть отрицательной");
+            }
+        }
+
+        if (editVacancyDto.getExpFrom() != null) {
+            try {
+                Integer.parseInt(editVacancyDto.getExpFrom().toString());
+            } catch (NumberFormatException e) {
+                throw new EditVacancyException("expFrom", "Опыт 'от' должен содержать только цифры");
+            }
+
+            if (editVacancyDto.getExpFrom() < 0) {
+                throw new EditVacancyException("expFrom", "Опыт 'от' не может быть отрицательным");
+            }
+        }
+
+        if (editVacancyDto.getExpTo() != null) {
+            try {
+                Integer.parseInt(editVacancyDto.getExpTo().toString());
+            } catch (NumberFormatException e) {
+                throw new EditVacancyException("expTo", "Опыт 'до' должен содержать только цифры");
+            }
+
+            if (editVacancyDto.getExpTo() < 0) {
+                throw new EditVacancyException("expTo", "Опыт 'до' не может быть отрицательным");
+            }
+        }
+
+        if (editVacancyDto.getExpFrom() != null && editVacancyDto.getExpTo() != null) {
+            if (editVacancyDto.getExpFrom() > editVacancyDto.getExpTo()) {
+                throw new EditVacancyException("expFrom", "Начальный опыт не может быть больше конечного");
+            }
+        }
     }
 }
