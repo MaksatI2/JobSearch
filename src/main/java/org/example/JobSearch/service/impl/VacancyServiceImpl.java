@@ -2,20 +2,17 @@ package org.example.JobSearch.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.example.JobSearch.dao.CategoryDao;
-import org.example.JobSearch.dao.UserDao;
-import org.example.JobSearch.dao.VacancyDao;
 import org.example.JobSearch.dto.EditDTO.EditVacancyDTO;
 import org.example.JobSearch.dto.VacancyDTO;
 import org.example.JobSearch.dto.create.CreateVacancyDTO;
-import org.example.JobSearch.dto.page.Page;
 import org.example.JobSearch.exceptions.CategoryNotFoundException;
 import org.example.JobSearch.exceptions.VacancyNotFoundException;
-import org.example.JobSearch.model.Vacancy;
+import org.example.JobSearch.model.*;
+import org.example.JobSearch.repository.*;
 import org.example.JobSearch.service.VacancyService;
-import org.example.JobSearch.util.PageUtils;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
 import java.util.List;
@@ -25,21 +22,22 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class VacancyServiceImpl implements VacancyService {
-    private final VacancyDao vacancyDao;
-    private final UserDao userDao;
-    private final CategoryDao categoryDao;
+    private final VacancyRepository vacancyRepository;
+    private final UserRepository userRepository;
+    private final CategoryRepository categoryRepository;
 
     @Override
+    @Transactional(readOnly = true)
     public List<VacancyDTO> getVacanciesByEmployer(Long employerId) {
-        List<Vacancy> vacancies = vacancyDao.getVacanciesByEmployer(employerId);
+        List<Vacancy> vacancies = vacancyRepository.findByAuthorId(employerId);
         return vacancies.stream().map(this::toDTO).toList();
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<VacancyDTO> getVacanciesByCategory(Long categoryId) {
         log.info("Поиск вакансий по категории ID: {}", categoryId);
-        List<VacancyDTO> vacancies = vacancyDao.getVacanciesByCategory(categoryId)
-                .stream().map(this::toDTO).collect(Collectors.toList());
+        List<Vacancy> vacancies = vacancyRepository.findActiveByCategoryTree(categoryId);
 
         if (vacancies.isEmpty()) {
             log.warn("Вакансии по категории ID {} не найдены", categoryId);
@@ -47,111 +45,142 @@ public class VacancyServiceImpl implements VacancyService {
         }
 
         log.debug("Найдено {} вакансий по категории ID: {}", vacancies.size(), categoryId);
-        return vacancies;
+        return vacancies.stream().map(this::toDTO).collect(Collectors.toList());
     }
 
     @Override
+    @Transactional
     public void createVacancy(CreateVacancyDTO createVacancyDto, Long employerId) {
         log.info("Создание новой вакансии работодателем ID: {}", employerId);
 
-        if (!userDao.isUserEmployer(employerId)) {
+        User employer = userRepository.findById(employerId)
+                .orElseThrow(() -> new IllegalArgumentException("Пользователь не найден"));
+
+        if (!employer.getAccountType().equals(AccountType.EMPLOYER)) {
             log.error("Попытка создания вакансии пользователем, не являющимся работодателем: {}", employerId);
             throw new AccessDeniedException("Только работодатели могут создавать вакансии");
         }
 
-        Long categoryId = createVacancyDto.getCategoryId();
+        Category category = categoryRepository.findById(createVacancyDto.getCategoryId())
+                .orElseThrow(() -> new CategoryNotFoundException("Категория не найдена"));
 
-        if (!categoryDao.existsById(categoryId)) {
-            log.error("Попытка создания вакансии с несуществующей категорией ID: {}", categoryId);
-            throw new IllegalArgumentException("Категория с ID: " + categoryId + " не существует");
-        }
+        Timestamp now = new Timestamp(System.currentTimeMillis());
 
-        VacancyDTO vacancyDto = VacancyDTO.builder()
-                .authorId(employerId)
-                .categoryId(categoryId)
+        Vacancy vacancy = Vacancy.builder()
+                .author(employer)
+                .category(category)
                 .name(createVacancyDto.getName())
                 .description(createVacancyDto.getDescription())
                 .salary(createVacancyDto.getSalary())
                 .expFrom(createVacancyDto.getExpFrom())
                 .expTo(createVacancyDto.getExpTo())
                 .isActive(createVacancyDto.getIsActive())
-                .createDate(new Timestamp(System.currentTimeMillis()))
-                .updateTime(new Timestamp(System.currentTimeMillis()))
+                .createdDate(now)
+                .updateTime(now)
                 .build();
 
-        vacancyDao.createVacancy(vacancyDto);
-        log.info("Вакансия успешно создана: {}", vacancyDto.getName());
+        vacancyRepository.save(vacancy);
+        log.info("Вакансия успешно создана: {}", vacancy.getName());
     }
 
     @Override
-    public void updateVacancy(Long vacancyId, EditVacancyDTO editvacancyDto) {
+    @Transactional
+    public void updateVacancy(Long vacancyId, EditVacancyDTO editVacancyDto) {
         log.info("Обновление вакансии ID: {}", vacancyId);
-        if (!vacancyDao.existsVacancy(vacancyId)) {
-            log.error("Вакансия для обновления не найдена ID: {}", vacancyId);
-            throw new VacancyNotFoundException("Вакансия не найдена по ID: " + vacancyId);
+
+        Vacancy vacancy = vacancyRepository.findById(vacancyId)
+                .orElseThrow(() -> new VacancyNotFoundException("Вакансия не найдена"));
+
+        if (editVacancyDto.getCategoryId() != null) {
+            Category category = categoryRepository.findById(editVacancyDto.getCategoryId())
+                    .orElseThrow(() -> new CategoryNotFoundException("Категория не найдена"));
+            vacancy.setCategory(category);
         }
 
-        Long categoryId = editvacancyDto.getCategoryId();
-
-        if (!categoryDao.existsById(categoryId)) {
-            log.error("Попытка обновления вакансии с несуществующей категорией ID: {}", categoryId);
-            throw new VacancyNotFoundException("Категория с ID: " + categoryId + " не существует");
+        if (editVacancyDto.getName() != null) {
+            vacancy.setName(editVacancyDto.getName());
         }
 
-        if (editvacancyDto.getExpFrom() > editvacancyDto.getExpTo()) {
-            log.error("Некорректный диапазон опыта: от {} до {}", editvacancyDto.getExpFrom(), editvacancyDto.getExpTo());
-            throw new IllegalArgumentException("Минимальный опыт не может быть больше максимального");
+        if (editVacancyDto.getDescription() != null) {
+            vacancy.setDescription(editVacancyDto.getDescription());
         }
 
-        vacancyDao.updateVacancy(vacancyId, editvacancyDto);
+        if (editVacancyDto.getSalary() != null) {
+            vacancy.setSalary(editVacancyDto.getSalary());
+        }
+
+        if (editVacancyDto.getExpFrom() != null) {
+            vacancy.setExpFrom(editVacancyDto.getExpFrom());
+        }
+
+        if (editVacancyDto.getExpTo() != null) {
+            vacancy.setExpTo(editVacancyDto.getExpTo());
+        }
+
+        if (editVacancyDto.getIsActive() != null) {
+            vacancy.setIsActive(editVacancyDto.getIsActive());
+        }
+
+        vacancy.setUpdateTime(new Timestamp(System.currentTimeMillis()));
+        vacancyRepository.save(vacancy);
         log.info("Вакансия ID {} успешно обновлена", vacancyId);
     }
 
     @Override
+    @Transactional
     public void deleteVacancy(Long vacancyId) {
         log.info("Удаление вакансии ID: {}", vacancyId);
-        if (vacancyDao.existsVacancy(vacancyId).equals(false)) {
+        if (!vacancyRepository.existsById(vacancyId)) {
             log.error("Вакансия для удаления не найдена ID: {}", vacancyId);
             throw new VacancyNotFoundException("Вакансия не найдена по ID: " + vacancyId);
         }
-        vacancyDao.deleteVacancy(vacancyId);
+        vacancyRepository.deleteById(vacancyId);
         log.info("Вакансия ID {} успешно удалена", vacancyId);
     }
 
-    public Page<VacancyDTO> getAllVacancies(int page, int size) {
-        log.info("Получение вакансий с пагинацией: страница {}, размер {}", page, size);
-
-        List<Vacancy> vacancies = vacancyDao.getAllVacancies(page, size);
-        long totalElements = vacancyDao.countActiveVacancies();
-
-        List<VacancyDTO> vacancyDTOs = vacancies.stream()
-                .map(this::toDTO)
-                .collect(Collectors.toList());
-
-        return PageUtils.createPage(vacancyDTOs, page, size, (int) totalElements);
+    @Override
+    @Transactional(readOnly = true)
+    public List<VacancyDTO> getAllVacancies() {
+        log.info("Получение всех активных вакансий");
+        List<Vacancy> vacancies = vacancyRepository.findAllByIsActiveTrue();
+        return vacancies.stream().map(this::toDTO).collect(Collectors.toList());
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<VacancyDTO> getRespApplToVacancy(Long applicantId) {
         log.info("Получение вакансий с откликами от соискателя ID: {}", applicantId);
-        List<VacancyDTO> vacancies = vacancyDao.getRespondedVacancies(applicantId)
-                .stream()
-                .map(this::toDTO)
-                .collect(Collectors.toList());
+        List<Vacancy> vacancies = vacancyRepository.findRespondedByApplicantId(applicantId);
+
         if (vacancies.isEmpty()) {
             log.warn("Не найдено вакансий с откликами от соискателя ID: {}", applicantId);
             throw new VacancyNotFoundException("Не найдено ни одной вакансии, на которую был отклик по ID: " + applicantId);
         }
+
         log.debug("Найдено {} вакансий с откликами от соискателя ID: {}", vacancies.size(), applicantId);
-        return vacancies;
+        return vacancies.stream().map(this::toDTO).collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public VacancyDTO getVacancyById(Long id) {
+        log.info("Поиск вакансии по ID: {}", id);
+        Vacancy vacancy = vacancyRepository.findById(id)
+                .orElseThrow(() -> new VacancyNotFoundException("Вакансия не найдена"));
+        return toDTO(vacancy);
+    }
+
+    @Override
+    @Transactional
+    public void refreshVacancy(Long vacancyId) {
+        vacancyRepository.refreshVacancy(vacancyId);
     }
 
     private VacancyDTO toDTO(Vacancy vacancy) {
-        log.trace("Преобразование Vacancy в VacancyDTO для вакансии ID: {}", vacancy.getId());
         return VacancyDTO.builder()
                 .id(vacancy.getId())
-                .authorId(vacancy.getAuthorId())
-                .categoryId(vacancy.getCategoryId())
+                .authorId(vacancy.getAuthor().getId())
+                .categoryId(vacancy.getCategory().getId())
                 .name(vacancy.getName())
                 .description(vacancy.getDescription())
                 .salary(vacancy.getSalary())
@@ -176,18 +205,4 @@ public class VacancyServiceImpl implements VacancyService {
                 .updateTime(new Timestamp(System.currentTimeMillis()))
                 .build();
     }
-
-    @Override
-    public VacancyDTO getVacancyById(Long id) {
-        log.info("Поиск вакансии по ID: {}", id);
-        Vacancy vacancy = vacancyDao.getVacancyById(id);
-        return toDTO(vacancy);
-    }
-
-    @Override
-    public void refreshVacancy(Long vacancyId) {
-        vacancyDao.refreshVacancy(vacancyId);
-    }
-
-
 }
