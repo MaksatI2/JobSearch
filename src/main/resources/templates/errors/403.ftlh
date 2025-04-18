@@ -96,7 +96,7 @@
     <#if error??>
         <div class="error-details">
             <p><strong>Дополнительная информация:</strong></p>
-            <p>${error.message!''}</p>
+            <p>${error}</p>
         </div>
     </#if>
 </div>
