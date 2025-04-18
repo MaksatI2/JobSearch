@@ -54,18 +54,4 @@ public class ProfileController {
 
         return "user/profile";
     }
-
-    @PostMapping("/vacancies/{id}/refresh")
-    public String refreshVacancy(@PathVariable Long id, Principal principal) {
-        String email = principal.getName();
-        UserDTO user = userService.getUserByEmail(email);
-
-        VacancyDTO vacancy = vacancyService.getVacancyById(id);
-        if (!vacancy.getAuthorId().equals(user.getId())) {
-            throw new AccessDeniedException("Вы можете обновлять только свои собственные вакансии.");
-        }
-
-        vacancyService.refreshVacancy(id);
-        return "redirect:/profile?refreshSuccess";
-    }
 }

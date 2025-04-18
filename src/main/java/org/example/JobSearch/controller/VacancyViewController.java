@@ -3,6 +3,7 @@ package org.example.JobSearch.controller;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.example.JobSearch.dto.EditDTO.EditVacancyDTO;
+import org.example.JobSearch.dto.UserDTO;
 import org.example.JobSearch.dto.VacancyDTO;
 import org.example.JobSearch.dto.create.CreateVacancyDTO;
 import org.example.JobSearch.service.CategoryService;
@@ -105,5 +106,19 @@ public class VacancyViewController {
         vacancyService.updateVacancy(id, form);
 
         return "redirect:/profile";
+    }
+
+    @PostMapping("/{id}/refresh")
+    public String refreshVacancy(@PathVariable Long id, Principal principal) {
+        String email = principal.getName();
+        UserDTO user = userService.getUserByEmail(email);
+
+        VacancyDTO vacancy = vacancyService.getVacancyById(id);
+        if (!vacancy.getAuthorId().equals(user.getId())) {
+            throw new AccessDeniedException("Вы можете обновлять только свои собственные вакансии.");
+        }
+
+        vacancyService.refreshVacancy(id);
+        return "redirect:/profile?refreshSuccess";
     }
 }

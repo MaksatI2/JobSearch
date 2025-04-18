@@ -132,6 +132,13 @@ public class ResumeServiceImpl implements ResumeService {
     }
 
     @Override
+    @Transactional
+    public void refreshResume(Long resumeId) {
+        resumeRepository.refreshResume(resumeId);
+    }
+
+
+    @Override
     @Transactional(readOnly = true)
     public List<ResumeDTO> getAllResumes() {
         List<Resume> resumes = resumeRepository.findByIsActiveTrue();

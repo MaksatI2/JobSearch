@@ -5,9 +5,9 @@ import lombok.RequiredArgsConstructor;
 import org.example.JobSearch.dto.EditDTO.EditResumeDTO;
 import org.example.JobSearch.dto.EducationInfoDTO;
 import org.example.JobSearch.dto.ResumeDTO;
+import org.example.JobSearch.dto.UserDTO;
 import org.example.JobSearch.dto.WorkExperienceDTO;
 import org.example.JobSearch.dto.create.CreateResumeDTO;
-import org.example.JobSearch.model.Resume;
 import org.example.JobSearch.service.*;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Controller;
@@ -236,4 +236,19 @@ public class ResumeViewController {
         resumeService.updateResume(id, editResumeDto);
         return "redirect:/profile";
     }
+
+    @PostMapping("/{id}/refresh")
+    public String refreshResume(@PathVariable Long id, Principal principal) {
+        String email = principal.getName();
+        UserDTO user = userService.getUserByEmail(email);
+
+        ResumeDTO resume = resumeService.getResumeById(id);
+        if (!resume.getApplicantId().equals(user.getId())) {
+            throw new AccessDeniedException("Вы можете обновлять только свои собственные резюме.");
+        }
+
+        resumeService.refreshResume(id);
+        return "redirect:/profile?refreshResumeSuccess";
+    }
+
 }
