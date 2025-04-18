@@ -81,6 +81,92 @@
                 </div>
             </div>
 
+            <div class="section">
+                <h2 class="section-title">Образование</h2>
+                <#if resumeForm.educationInfos?? && resumeForm.educationInfos?size gt 0>
+                    <#list resumeForm.educationInfos as edu>
+                        <div class="education-item" data-index="${edu?index}">
+                            <@spring.bind "resumeForm.educationInfos[${edu?index}]" />
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Учебное заведение*</label>
+                                    <@spring.formInput "resumeForm.educationInfos[${edu?index}].institution", "class='form-control'" />
+                                    <@spring.showErrors "<br>", "error" />
+                                </div>
+                                <div class="form-group">
+                                    <label>Степень</label>
+                                    <@spring.formInput "resumeForm.educationInfos[${edu?index}].degree", "class='form-control'" />
+                                    <@spring.showErrors "<br>", "error" />
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Программа/Специальность*</label>
+                                    <@spring.formInput "resumeForm.educationInfos[${edu?index}].program", "class='form-control'" />
+                                    <@spring.showErrors "<br>", "error" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Дата начала *</label>
+                                <@spring.formInput "resumeForm.educationInfos[${edu?index}].startDate",
+                                "class='form-control datepicker'", "date"/>
+                                <@spring.showErrors "<br>", "error"/>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Дата окончания</label>
+                                <@spring.formInput "resumeForm.educationInfos[${edu?index}].endDate",
+                                "class='form-control datepicker'", "date"/>
+                                <@spring.showErrors "<br>", "error"/>
+                            </div>
+                            <button type="submit" name="removeEducation" value="${edu?index}" class="remove-btn">Удалить</button>
+                        </div>
+                    </#list>
+                <#else>
+                    <p>Нет информации об образовании</p>
+                </#if>
+                <button type="submit" name="addEducation" value="true" class="add-btn">+ Добавить образование</button>
+            </div>
+
+            <div class="section">
+                <h2 class="section-title">Опыт работы</h2>
+                <#if resumeForm.workExperiences?? && resumeForm.workExperiences?size gt 0>
+                    <#list resumeForm.workExperiences as exp>
+                        <div class="experience-item" data-index="${exp?index}">
+                            <@spring.bind "resumeForm.workExperiences[${exp?index}]" />
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Компания*</label>
+                                    <@spring.formInput "resumeForm.workExperiences[${exp?index}].companyName", "class='form-control'" />
+                                    <@spring.showErrors "<br>", "error" />
+                                </div>
+                                <div class="form-group">
+                                    <label>Должность*</label>
+                                    <@spring.formInput "resumeForm.workExperiences[${exp?index}].position", "class='form-control'" />
+                                    <@spring.showErrors "<br>", "error" />
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Годы опыта*</label>
+                                    <@spring.formInput "resumeForm.workExperiences[${exp?index}].years", "type='number' min='0' step='0.1' class='form-control'" />
+                                    <@spring.showErrors "<br>", "error" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Обязанности и достижения</label>
+                                <@spring.formTextarea "resumeForm.workExperiences[${exp?index}].responsibilities", "class='form-control'" />
+                                <@spring.showErrors "<br>", "error" />
+                            </div>
+                            <button type="submit" name="removeWorkExp" value="${exp?index}" class="remove-btn">Удалить</button>
+                        </div>
+                    </#list>
+                <#else>
+                    <p>Нет информации об опыте работы</p>
+                </#if>
+                <button type="submit" name="addWorkExp" value="true" class="add-btn">+ Добавить опыт работы</button>
+            </div>
+
             <div class="form-actions">
                 <button type="submit" class="submit-btn">Сохранить изменения</button>
                 <a href="/profile" class="cancel-btn">Отмена</a>

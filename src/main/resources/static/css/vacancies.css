@@ -25,7 +25,6 @@ body {
     line-height: 1.6;
 }
 
-/* Header styles */
 .header {
     background-color: var(--primary);
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
@@ -109,7 +108,6 @@ body {
     background-color: rgba(255, 255, 255, 0.1);
 }
 
-/* Main content styles */
 .main {
     padding: 40px 0;
     min-height: calc(100vh - 160px);
@@ -141,7 +139,6 @@ body {
     border-radius: 2px;
 }
 
-/* Vacancy cards */
 .vacancies-grid {
     display: grid;
     grid-template-columns: 1fr;
@@ -208,7 +205,6 @@ body {
     color: var(--primary);
 }
 
-/* Buttons */
 .details-btn {
     display: inline-block;
     margin-top: 20px;
@@ -229,7 +225,6 @@ body {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-/* Empty state */
 .empty-state {
     text-align: center;
     padding: 60px 20px;
@@ -251,7 +246,6 @@ body {
     margin-bottom: 25px;
 }
 
-/* Footer */
 .footer {
     padding: 25px 0;
     text-align: center;
@@ -265,7 +259,6 @@ body {
     margin: 0 auto;
 }
 
-/* Form elements */
 .form-control {
     width: 100%;
     padding: 12px 15px;
@@ -298,7 +291,6 @@ body {
     transform: translateY(-2px);
 }
 
-/* Responsive */
 @media (max-width: 768px) {
     .navbar {
         flex-direction: column;
@@ -326,7 +318,6 @@ body {
     }
 }
 
-/* Error states */
 .error-field {
     border-color: var(--red) !important;
 }
