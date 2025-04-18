@@ -15,7 +15,7 @@ import java.util.List;
 @Repository
 public interface VacancyRepository extends JpaRepository<Vacancy, Long> {
 
-    Page<Vacancy> findAllByIsActiveTrue(Pageable pageable);
+    List<Vacancy> findAllByIsActiveTrue();
 
     long countByIsActiveTrue();
 
