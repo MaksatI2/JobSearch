@@ -5,8 +5,17 @@ spring:
     name: "JobSearch"
   mvc:
     static-path-pattern: /static/**
+    log-request-details: false
   freemarker:
     expose-session-attributes: true
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        generate_statistics: false
+        format_sql: true
+    show-sql: true
 
 
   datasource:
@@ -27,10 +36,15 @@ spring:
 
 logging:
   level:
-    root: info
+    root: error
     org:
+      hibernate:
+        type: error
+        stat: error
       springframework:
         security: debug
+    web: info
+    sql: error
 
   file:
     name: logs/spring.log

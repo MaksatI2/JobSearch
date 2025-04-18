@@ -1,9 +1,9 @@
 package org.example.JobSearch.service.impl;
 
 import lombok.RequiredArgsConstructor;
-import org.example.JobSearch.dao.CategoryDao;
 import org.example.JobSearch.dto.CategoryDTO;
 import org.example.JobSearch.model.Category;
+import org.example.JobSearch.repository.CategoryRepository;
 import org.example.JobSearch.service.CategoryService;
 import org.springframework.stereotype.Service;
 
@@ -13,11 +13,11 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class CategoryServiceImpl implements CategoryService {
-    private final CategoryDao categoryDao;
+    private final CategoryRepository categoryRepository;
 
     @Override
     public List<CategoryDTO> getAllCategories() {
-        return categoryDao.findAll().stream()
+        return categoryRepository.findAll().stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }
@@ -26,7 +26,7 @@ public class CategoryServiceImpl implements CategoryService {
         return CategoryDTO.builder()
                 .id(category.getId())
                 .name(category.getName())
-                .parentId(category.getParentId())
+                .parentId(category.getParent() != null ? category.getParent().getId() : null)
                 .build();
     }
 }

@@ -5,7 +5,6 @@ import lombok.RequiredArgsConstructor;
 import org.example.JobSearch.dto.EditDTO.EditVacancyDTO;
 import org.example.JobSearch.dto.VacancyDTO;
 import org.example.JobSearch.dto.create.CreateVacancyDTO;
-import org.example.JobSearch.dto.page.Page;
 import org.example.JobSearch.service.CategoryService;
 import org.example.JobSearch.service.UserService;
 import org.example.JobSearch.service.VacancyService;
@@ -16,6 +15,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.util.List;
 
 @Controller
 @RequestMapping("/vacancies")
@@ -26,22 +26,9 @@ public class VacancyViewController {
     private final UserService userService;
 
     @GetMapping
-    public String showVacancies(
-            @RequestParam(defaultValue = "1") int page,
-            @RequestParam(defaultValue = "20") int size,
-            Model model) {
-
-        if (page < 1) {
-            page = 1;
-        }
-
-        Page<VacancyDTO> vacanciesPage = vacancyService.getAllVacancies(page, size);
-
-        model.addAttribute("vacancies", vacanciesPage.getContent());
-        model.addAttribute("currentPage", vacanciesPage.getPage());
-        model.addAttribute("totalPages", vacanciesPage.getTotalPages());
-        model.addAttribute("pageSize", size);
-
+    public String showVacancies(Model model) {
+        List<VacancyDTO> vacancies = vacancyService.getAllVacancies();
+        model.addAttribute("vacancies", vacancies);
         return "vacancies/vacancies";
     }
 
@@ -68,6 +55,8 @@ public class VacancyViewController {
         String currentUserEmail = principal.getName();
         Long currentUser = userService.getUserId(currentUserEmail);
         vacancyService.createVacancy(vacancyDTO, currentUser);
+
+        vacancyService.validateVacancyData(vacancyDTO, bindingResult);
 
         return "redirect:/profile";
     }
@@ -104,6 +93,8 @@ public class VacancyViewController {
             throw new AccessDeniedException("Вы не можете редактировать эту вакансию");
         }
 
+        vacancyService.validateEditVacancyData(form, bindingResult);
+
         if (bindingResult.hasErrors()) {
             model.addAttribute("categories", categoryService.getAllCategories());
             model.addAttribute("vacancyId", id);
@@ -115,5 +106,4 @@ public class VacancyViewController {
 
         return "redirect:/profile";
     }
-
 }

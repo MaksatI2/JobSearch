@@ -1,7 +1,9 @@
 package org.example.JobSearch.service;
 
 
+import jakarta.validation.Valid;
 import org.example.JobSearch.dto.EditDTO.EditResumeDTO;
+import org.example.JobSearch.dto.EducationInfoDTO;
 import org.example.JobSearch.dto.ResumeDTO;
 import org.example.JobSearch.dto.create.CreateResumeDTO;
 import org.example.JobSearch.model.Resume;
@@ -27,4 +29,5 @@ public interface ResumeService {
 
     ResumeDTO getResumeById(Long id);
 
+    void validateEducation(List<EducationInfoDTO> educationInfos, BindingResult bindingResult);
 }

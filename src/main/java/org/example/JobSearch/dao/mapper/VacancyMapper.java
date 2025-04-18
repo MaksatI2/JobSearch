@@ -11,8 +11,8 @@ public class VacancyMapper implements RowMapper<Vacancy> {
     public Vacancy mapRow(ResultSet rs, int rowNum) throws SQLException {
         return Vacancy.builder()
                 .id(rs.getLong("id"))
-                .authorId(rs.getLong("author_id"))
-                .categoryId(rs.getLong("category_id"))
+//                .authorId(rs.getLong("author_id"))
+//                .categoryId(rs.getLong("category_id"))
                 .name(rs.getString("name"))
                 .description(rs.getString("description"))
                 .salary(rs.getFloat("salary"))

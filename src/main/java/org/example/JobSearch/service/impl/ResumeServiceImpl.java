@@ -2,17 +2,19 @@ package org.example.JobSearch.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.example.JobSearch.dao.CategoryDao;
-import org.example.JobSearch.dao.ResumeDao;
 import org.example.JobSearch.dto.EditDTO.EditResumeDTO;
+import org.example.JobSearch.dto.EditDTO.EditVacancyDTO;
 import org.example.JobSearch.dto.EducationInfoDTO;
 import org.example.JobSearch.dto.ResumeDTO;
+import org.example.JobSearch.dto.VacancyDTO;
 import org.example.JobSearch.dto.WorkExperienceDTO;
 import org.example.JobSearch.dto.create.CreateResumeDTO;
 import org.example.JobSearch.exceptions.CategoryNotFoundException;
 import org.example.JobSearch.exceptions.CreateResumeException;
 import org.example.JobSearch.exceptions.ResumeNotFoundException;
-import org.example.JobSearch.model.Resume;
+import org.example.JobSearch.exceptions.VacancyNotFoundException;
+import org.example.JobSearch.model.*;
+import org.example.JobSearch.repository.*;
 import org.example.JobSearch.service.EducationInfoService;
 import org.example.JobSearch.service.ResumeService;
 import org.example.JobSearch.service.WorkExperienceService;
@@ -28,14 +30,16 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class ResumeServiceImpl implements ResumeService {
-    private final ResumeDao resumeDao;
+    private final ResumeRepository resumeRepository;
+    private final CategoryRepository categoryRepository;
+    private final UserRepository userRepository;
     private final EducationInfoService educationInfoService;
     private final WorkExperienceService workExperienceService;
-    private final CategoryDao categoryDao;
 
     @Override
+    @Transactional(readOnly = true)
     public List<ResumeDTO> getResumesByApplicant(Long applicantId) {
-        List<Resume> resumes = resumeDao.getUserResumes(applicantId);
+        List<Resume> resumes = resumeRepository.findByApplicantId(applicantId);
         return resumes.stream().map(this::toDTO).toList();
     }
 
@@ -43,117 +47,133 @@ public class ResumeServiceImpl implements ResumeService {
     @Transactional
     public void createResume(CreateResumeDTO resumeDto, BindingResult bindingResult) {
         log.info("Создание нового резюме для соискателя ID: {}", resumeDto.getApplicantId());
-
         validateCreateResume(resumeDto, bindingResult);
 
-        if (!categoryDao.existsById(resumeDto.getCategoryId())) {
-            log.error("Категория с ID {} не найдена", resumeDto.getCategoryId());
-            throw new CategoryNotFoundException("Категория с ID " + resumeDto.getCategoryId() + " не найдена");
-        }
+        User applicant = userRepository.findById(resumeDto.getApplicantId())
+                .orElseThrow(() -> new IllegalArgumentException("Соискатель не найден"));
 
-        if (resumeDto.getUpdateTime() == null) {
-            resumeDto.setUpdateTime(new Timestamp(System.currentTimeMillis()));
-            log.debug("Установлено время обновления резюме: {}", resumeDto.getUpdateTime());
-        }
+        Category category = categoryRepository.findById(resumeDto.getCategoryId())
+                .orElseThrow(() -> new CategoryNotFoundException("Категория с ID " + resumeDto.getCategoryId() + " не найдена"));
 
-        Long resumeId = resumeDao.createResume(resumeDto);
-        log.info("Резюме создано с ID: {}", resumeId);
+        Timestamp now = new Timestamp(System.currentTimeMillis());
+
+        Resume resume = Resume.builder()
+                .applicant(applicant)
+                .category(category)
+                .name(resumeDto.getName())
+                .salary(resumeDto.getSalary())
+                .isActive(true)
+                .createDate(now)
+                .updateTime(now)
+                .build();
+
+        Resume savedResume = resumeRepository.save(resume);
+        log.info("Резюме создано с ID: {}", savedResume.getId());
 
         if (resumeDto.getEducationInfos() != null) {
-            log.debug("Добавление информации об образовании для резюме ID: {}", resumeId);
+            log.debug("Добавление информации об образовании для резюме ID: {}", savedResume.getId());
             for (EducationInfoDTO eduDto : resumeDto.getEducationInfos()) {
-                eduDto.setResumeId(resumeId);
-                educationInfoService.createEducationInfo(resumeId, eduDto);
+                educationInfoService.createEducationInfo(savedResume.getId(), eduDto);
             }
-            log.info("Добавлено {} записей об образовании", resumeDto.getEducationInfos().size());
         }
 
         if (resumeDto.getWorkExperiences() != null) {
-            log.debug("Добавление информации об опыте работы для резюме ID: {}", resumeId);
+            log.debug("Добавление информации об опыте работы для резюме ID: {}", savedResume.getId());
             for (WorkExperienceDTO expDto : resumeDto.getWorkExperiences()) {
-                expDto.setResumeId(resumeId);
-                workExperienceService.createWorkExperience(resumeId, expDto);
+                workExperienceService.createWorkExperience(savedResume.getId(), expDto);
             }
-            log.info("Добавлено {} записей об опыте работы", resumeDto.getWorkExperiences().size());
         }
     }
 
-    @Transactional
     @Override
+    @Transactional
     public void updateResume(Long resumeId, EditResumeDTO editResumeDto) {
         log.info("Обновление резюме ID: {}", resumeId);
 
-        if (!resumeDao.existsResume(resumeId)) {
-            throw new ResumeNotFoundException("Резюме с ID не найдено: " + resumeId);
+        Resume resume = resumeRepository.findById(resumeId)
+                .orElseThrow(() -> new ResumeNotFoundException("Резюме с ID не найдено: " + resumeId));
+
+        if (editResumeDto.getEducationInfos() != null) {
+            updateEducationInfo(resume, editResumeDto.getEducationInfos());
         }
 
-        resumeDao.updateResume(resumeId, editResumeDto);
-        log.info("Основная информация резюме ID {} успешно обновлена", resumeId);
+        if (editResumeDto.getWorkExperiences() != null) {
+            updateWorkExperience(resume, editResumeDto.getWorkExperiences());
+        }
+
+        resume.setUpdateTime(new Timestamp(System.currentTimeMillis()));
+        resumeRepository.save(resume);
+    }
+
+    private void updateEducationInfo(Resume resume, List<EducationInfoDTO> educationInfoDTOs) {
+        educationInfoService.deleteByResumeId(resume.getId());
+
+        for (EducationInfoDTO eduDto : educationInfoDTOs) {
+            educationInfoService.createEducationInfo(resume.getId(), eduDto);
+        }
+    }
+
+    private void updateWorkExperience(Resume resume, List<WorkExperienceDTO> workExperienceDTOs) {
+        workExperienceService.deleteByResumeId(resume.getId());
+
+        for (WorkExperienceDTO expDto : workExperienceDTOs) {
+            workExperienceService.createWorkExperience(resume.getId(), expDto);
+        }
     }
 
     @Override
     @Transactional
     public void deleteResume(Long resumeId) {
         log.info("Удаление резюме ID: {}", resumeId);
-        if (resumeDao.existsResume(resumeId).equals(false)) {
-            log.error("Резюме с ID {} не найдено", resumeId);
+        if (!resumeRepository.existsById(resumeId)) {
             throw new ResumeNotFoundException("Резюме с ID не найдено: " + resumeId);
         }
-        resumeDao.deleteResume(resumeId);
-        log.info("Резюме ID {} успешно удалено", resumeId);
+        resumeRepository.deleteById(resumeId);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<ResumeDTO> getAllResumes() {
-        log.info("Получение списка всех активных резюме");
-        List<Resume> resumes = resumeDao.getAllActiveResumes();
+        List<Resume> resumes = resumeRepository.findByIsActiveTrue();
         if (resumes.isEmpty()) {
-            log.warn("Активные резюме не найдены");
             throw new ResumeNotFoundException("Активные резюме не найдены");
         }
-
-        log.debug("Найдено {} активных резюме", resumes.size());
-        return resumes.stream()
-                .map(this::toDTO)
-                .collect(Collectors.toList());
+        return resumes.stream().map(this::toDTO).collect(Collectors.toList());
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<ResumeDTO> getUserResumes(Long applicantId) {
-        log.info("Получение резюме для соискателя ID: {}", applicantId);
-        List<Resume> resumes = resumeDao.getUserResumes(applicantId);
+        List<Resume> resumes = resumeRepository.findByApplicantId(applicantId);
         if (resumes.isEmpty()) {
-            log.warn("Резюме для соискателя ID {} не найдены", applicantId);
             throw new ResumeNotFoundException("Резюме для соискателя ID не найдены: " + applicantId);
         }
-
-        log.debug("Найдено {} резюме для соискателя ID {}", resumes.size(), applicantId);
-        return resumes.stream()
-                .map(this::toDTO)
-                .collect(Collectors.toList());
+        return resumes.stream().map(this::toDTO).collect(Collectors.toList());
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<ResumeDTO> getResumesByCategory(Long categoryId) {
-        log.info("Получение резюме по категории ID: {}", categoryId);
-        List<Resume> resumes = resumeDao.getActiveResumesByCategory(categoryId);
+        List<Resume> resumes = resumeRepository.findByCategoryIdAndIsActiveTrue(categoryId);
         if (resumes.isEmpty()) {
-            log.warn("Резюме по категории ID {} не найдены", categoryId);
             throw new CategoryNotFoundException("Резюме по категории ID не найдено: " + categoryId);
         }
+        return resumes.stream().map(this::toDTO).collect(Collectors.toList());
+    }
 
-        log.debug("Найдено {} резюме по категории ID {}", resumes.size(), categoryId);
-        return resumes.stream()
-                .map(this::toDTO)
-                .collect(Collectors.toList());
+    @Override
+    @Transactional(readOnly = true)
+    public ResumeDTO getResumeById(Long id) {
+        Resume resume = resumeRepository.findById(id)
+                .orElseThrow(() -> new ResumeNotFoundException("Резюме не найдено"));
+        return toDTO(resume);
     }
 
     private ResumeDTO toDTO(Resume resume) {
-        log.trace("Преобразование Resume в ResumeDTO для резюме ID: {}", resume.getId());
         ResumeDTO dto = ResumeDTO.builder()
                 .id(resume.getId())
-                .applicantId(resume.getApplicantId())
-                .categoryId(resume.getCategoryId())
+                .applicantId(resume.getApplicant().getId())
+                .categoryId(resume.getCategory().getId())
                 .name(resume.getName())
                 .salary(resume.getSalary())
                 .isActive(resume.getIsActive())
@@ -162,10 +182,7 @@ public class ResumeServiceImpl implements ResumeService {
                 .build();
 
         dto.setEducationInfos(educationInfoService.getEducationInfoByResumeId(resume.getId()));
-        log.trace("Добавлена информация об образовании для резюме ID: {}", resume.getId());
-
         dto.setWorkExperiences(workExperienceService.getWorkExperienceByResumeId(resume.getId()));
-        log.trace("Добавлена информация об опыте работы для резюме ID: {}", resume.getId());
 
         return dto;
     }
@@ -194,8 +211,33 @@ public class ResumeServiceImpl implements ResumeService {
     }
 
     @Override
-    public ResumeDTO getResumeById(Long id) {
-        log.info("Получение резюме по ID: {}", id);
-        return resumeDao.getResumeById(id);
+    public void validateEducation(List<EducationInfoDTO> educationInfos, BindingResult bindingResult) {
+        if (educationInfos == null || educationInfos.isEmpty()) {
+            return;
+        }
+
+        Timestamp now = new Timestamp(System.currentTimeMillis());
+
+        for (EducationInfoDTO eduDto : educationInfos) {
+            if (eduDto.getStartDate() == null) {
+                throw new CreateResumeException("startDate", "Дата начала обучения не может быть пустой");
+            }
+
+            if (eduDto.getEndDate() == null) {
+                throw new CreateResumeException("endDate", "Дата окончания обучения не может быть пустой");
+            }
+
+            if (eduDto.getStartDate().after(now)) {
+                throw new CreateResumeException("startDate", "Дата начала обучения не может быть в будущем");
+            }
+
+            if (eduDto.getEndDate().after(now)) {
+                throw new CreateResumeException("endDate", "Дата окончания обучения не может быть в будущем");
+            }
+
+            if (eduDto.getStartDate().after(eduDto.getEndDate())) {
+                throw new CreateResumeException("startDate", "Дата начала обучения не может быть позже даты окончания");
+            }
+        }
     }
 }

@@ -19,6 +19,8 @@ public class VacancyDTO {
     @Positive(message = "ID автора должен быть положительным числом")
     private Long authorId;
 
+    private String authorName;
+
     @NotNull(message = "ID автора вакансии не может быть пустым")
     @Positive(message = "ID автора должен быть положительным числом")
     private Long categoryId;

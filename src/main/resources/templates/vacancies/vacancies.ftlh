@@ -6,12 +6,14 @@
     <title>Вакансии | JobSearch</title>
     <link rel="stylesheet" href="/static/css/vacancies.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="icon" href="/static/images/logo-transparent.png" type="image/x-icon">
 </head>
 <body>
 <header class="header">
-    <div class="container">
         <nav class="navbar">
-            <a href="/" class="logo">JobSearch</a>
+            <a href="/" class="logo">
+                <img src="/static/images/logo-transparent.png" alt="JobSearch" class="logo-img">
+            </a>
             <div class="nav-links">
                 <a href="/" class="nav-link">Главная</a>
                 <a href="/vacancies" class="nav-link active">Вакансии</a>
@@ -29,7 +31,6 @@
                 </#if>
             </div>
         </nav>
-    </div>
 </header>
 
 <main class="main">
@@ -42,7 +43,7 @@
                     <article class="vacancy-card">
                         <div class="vacancy-header">
                             <h2 class="vacancy-title">${vacancy.name}</h2>
-                            <span class="salary">${vacancy.salary} ⃀</span>
+                            <span class="salary">${vacancy.salary} с</span>
                         </div>
                         <p class="vacancy-description">${vacancy.description}</p>
                         <div class="vacancy-meta">
@@ -51,6 +52,12 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                                 </svg>
                                 Опыт: ${vacancy.expFrom}-${vacancy.expTo} лет
+                            </span>
+                            <span class="author">
+                                <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                                </svg>
+                                Автор: ${vacancy.authorName?default("Неизвестно")}
                             </span>
                             <span class="update-time">
                                 <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
@@ -62,24 +69,6 @@
                     </article>
                 </#list>
             </div>
-
-            <#if totalPages gt 1>
-                <div class="pagination">
-                    <#if (currentPage > 1)>
-                        <a href="/vacancies?page=1&size=${pageSize}" class="page-btn">« Первая</a>
-                        <a href="/vacancies?page=${currentPage - 1}&size=${pageSize}" class="page-btn">‹ Назад</a>
-                    </#if>
-
-                    <#list 1..totalPages as i>
-                        <a href="/vacancies?page=${i}&size=${pageSize}" class="page-btn <#if i == currentPage>active</#if>">${i}</a>
-                    </#list>
-
-                    <#if (currentPage < totalPages)>
-                        <a href="/vacancies?page=${currentPage + 1}&size=${pageSize}" class="page-btn">Вперёд ›</a>
-                        <a href="/vacancies?page=${totalPages}&size=${pageSize}" class="page-btn">Последняя »</a>
-                    </#if>
-                </div>
-            </#if>
         <#else>
             <div class="empty-state">
                 <h3>Вакансии не найдены</h3>

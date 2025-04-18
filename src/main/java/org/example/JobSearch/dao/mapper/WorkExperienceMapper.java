@@ -11,8 +11,8 @@ public class WorkExperienceMapper implements RowMapper<WorkExperience> {
     public WorkExperience mapRow(ResultSet rs, int rowNum) throws SQLException {
         WorkExperience workExperience = new WorkExperience();
         workExperience.setId(rs.getLong("id"));
-        workExperience.setResumeId(rs.getLong("resume_id"));
-        workExperience.setYears(rs.getLong("years"));
+//        workExperience.setResumeId(rs.getLong("resume_id"));
+//        workExperience.setYears(rs.getLong("years"));
         workExperience.setCompanyName(rs.getString("company_name"));
         workExperience.setPosition(rs.getString("position"));
         workExperience.setResponsibilities(rs.getString("responsibilities"));

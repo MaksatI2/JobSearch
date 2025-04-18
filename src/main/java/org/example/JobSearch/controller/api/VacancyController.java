@@ -18,11 +18,11 @@ public class VacancyController {
     private final VacancyService vacancyService;
 
 
-    @PutMapping("/{id}")
-    public ResponseEntity<String> updateVacancy(@PathVariable Long id, @RequestBody @Valid EditVacancyDTO editvacancyDTO) {
-        vacancyService.updateVacancy(id, editvacancyDTO);
-        return ResponseEntity.ok("Vacancy updated successfully");
-    }
+//    @PutMapping("/{id}")
+//    public ResponseEntity<String> updateVacancy(@PathVariable Long id, @RequestBody @Valid EditVacancyDTO editvacancyDTO) {
+//        vacancyService.updateVacancy(id, editvacancyDTO);
+//        return ResponseEntity.ok("Vacancy updated successfully");
+//    }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteVacancy(@PathVariable @Valid Long id) {

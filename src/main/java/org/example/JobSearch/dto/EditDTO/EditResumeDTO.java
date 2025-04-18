@@ -1,9 +1,14 @@
 package org.example.JobSearch.dto.EditDTO;
 
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 import lombok.*;
+import org.example.JobSearch.dto.EducationInfoDTO;
+import org.example.JobSearch.dto.WorkExperienceDTO;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -32,4 +37,10 @@ public class EditResumeDTO {
     private Boolean isActive;
 
     private Timestamp updateTime;
+
+    @Valid
+    private List<EducationInfoDTO> educationInfos = new ArrayList<>();
+
+    @Valid
+    private List<WorkExperienceDTO> workExperiences = new ArrayList<>();
 }

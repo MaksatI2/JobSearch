@@ -1,11 +1,14 @@
 package org.example.JobSearch.service.impl;
 
 import lombok.RequiredArgsConstructor;
-import org.example.JobSearch.dao.WorkExperienceDao;
 import org.example.JobSearch.dto.WorkExperienceDTO;
+import org.example.JobSearch.model.Resume;
 import org.example.JobSearch.model.WorkExperience;
+import org.example.JobSearch.repository.ResumeRepository;
+import org.example.JobSearch.repository.WorkExperienceRepository;
 import org.example.JobSearch.service.WorkExperienceService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -13,23 +16,34 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class WorkExperienceServiceImpl implements WorkExperienceService {
-    private final WorkExperienceDao workExperienceDao;
+    private final WorkExperienceRepository workExperienceRepository;
+    private final ResumeRepository resumeRepository;
 
     @Override
+    @Transactional
     public void createWorkExperience(Long resumeId, WorkExperienceDTO workExperienceDto) {
+        Resume resume = resumeRepository.findById(resumeId)
+                .orElseThrow(() -> new RuntimeException("Resume not found with id: " + resumeId));
 
         WorkExperience workExperience = new WorkExperience();
+        workExperience.setResume(resume);
         workExperience.setYears(workExperienceDto.getYears());
         workExperience.setCompanyName(workExperienceDto.getCompanyName());
         workExperience.setPosition(workExperienceDto.getPosition());
         workExperience.setResponsibilities(workExperienceDto.getResponsibilities());
 
-        workExperienceDao.createWorkExperience(resumeId, workExperience);
+        workExperienceRepository.save(workExperience);
+    }
+
+    @Override
+    @Transactional
+    public void deleteByResumeId(Long resumeId) {
+        workExperienceRepository.deleteByResumeId(resumeId);
     }
 
     @Override
     public List<WorkExperienceDTO> getWorkExperienceByResumeId(Long resumeId) {
-        return workExperienceDao.getWorkExperienceByResumeId(resumeId).stream()
+        return workExperienceRepository.findByResumeId(resumeId).stream()
                 .map(this::toDTO)
                 .collect(Collectors.toList());
     }
@@ -37,7 +51,7 @@ public class WorkExperienceServiceImpl implements WorkExperienceService {
     private WorkExperienceDTO toDTO(WorkExperience workExperience) {
         return WorkExperienceDTO.builder()
                 .id(workExperience.getId())
-                .resumeId(workExperience.getResumeId())
+                .resumeId(workExperience.getResume().getId())
                 .years(workExperience.getYears())
                 .companyName(workExperience.getCompanyName())
                 .position(workExperience.getPosition())

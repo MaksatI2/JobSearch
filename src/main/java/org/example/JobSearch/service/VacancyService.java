@@ -3,7 +3,7 @@ package org.example.JobSearch.service;
 import org.example.JobSearch.dto.EditDTO.EditVacancyDTO;
 import org.example.JobSearch.dto.VacancyDTO;
 import org.example.JobSearch.dto.create.CreateVacancyDTO;
-import org.example.JobSearch.dto.page.Page;
+import org.springframework.validation.BindingResult;
 
 import java.util.List;
 
@@ -18,7 +18,7 @@ public interface VacancyService {
 
     void deleteVacancy(Long vacancyId);
 
-    Page<VacancyDTO> getAllVacancies(int page, int size);
+    List<VacancyDTO> getAllVacancies();
 
     List<VacancyDTO> getRespApplToVacancy(Long applicantId);
 
@@ -27,4 +27,8 @@ public interface VacancyService {
     EditVacancyDTO convertToEditDTO(VacancyDTO dto);
 
     void refreshVacancy(Long vacancyId);
+
+    void validateVacancyData(CreateVacancyDTO  createvacancyDto, BindingResult bindingResult);
+
+    void validateEditVacancyData(EditVacancyDTO  editVacancyDTO, BindingResult bindingResult);
 }
