@@ -11,8 +11,8 @@ public class ResumeMapper implements RowMapper<Resume> {
     public Resume mapRow(ResultSet rs, int rowNum) throws SQLException {
             return Resume.builder()
                 .id(rs.getLong("id"))
-                .applicantId(rs.getLong("applicant_id"))
-                .categoryId(rs.getLong("category_id"))
+//                .applicantId(rs.getLong("applicant_id"))
+//                .categoryId(rs.getLong("category_id"))
                 .name(rs.getString("name"))
                 .salary(rs.getFloat("salary"))
                 .isActive(rs.getBoolean("is_active"))

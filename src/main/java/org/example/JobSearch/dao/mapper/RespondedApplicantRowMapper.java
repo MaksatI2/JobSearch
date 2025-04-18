@@ -11,8 +11,8 @@ public class RespondedApplicantRowMapper implements RowMapper<RespondedApplicant
     public RespondedApplicant mapRow(ResultSet rs, int rowNum) throws SQLException {
         RespondedApplicant applicant = new RespondedApplicant();
         applicant.setId(rs.getLong("id"));
-        applicant.setResumeId(rs.getLong("resume_id"));
-        applicant.setVacancyId(rs.getLong("vacancy_id"));
+//        applicant.setResumeId(rs.getLong("resume_id"));
+//        applicant.setVacancyId(rs.getLong("vacancy_id"));
         applicant.setConfirmation(rs.getBoolean("confirmation"));
         return applicant;
     }
