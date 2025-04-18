@@ -48,15 +48,14 @@ body {
     margin: 0 auto;
 }
 
-.logo {
-    font-size: 1.8rem;
-    font-weight: 700;
-    color: var(--white);
-    text-decoration: none;
+.logo-img {
+    height: 60px;
+    width: auto;
+    max-width: 200px;
     transition: transform 0.3s ease;
 }
 
-.logo:hover {
+.logo-img:hover {
     transform: scale(1.05);
 }
 
