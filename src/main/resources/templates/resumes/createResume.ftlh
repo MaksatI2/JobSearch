@@ -5,32 +5,30 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Создание резюме | JobSearch</title>
-    <link rel="stylesheet" href="/static/css/createResume.css">
+    <link rel="stylesheet" href="/static/css/resumes/createResume.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="icon" href="/static/images/logo-transparent.png" type="image/x-icon">
 </head>
 <body>
 <header class="header">
-    <div class="container">
-        <nav class="navbar">
-            <a href="/" class="logo">JobSearch</a>
-            <div class="nav-links">
-                <a href="/" class="nav-link">Главная</a>
-                <a href="/vacancies" class="nav-link">Вакансии</a>
-                <a href="/resumes/allResumes" class="nav-link">Резюме</a>
-                <#if Session.SPRING_SECURITY_CONTEXT??>
-                    <a href="/profile" class="nav-link">Профиль</a>
-                    <form action="/logout" method="post" class="logout-form">
-                        <button type="submit" class="logout-btn">Выйти</button>
-                    </form>
-                <#else>
-                    <a href="/auth/login" class="nav-link">Войти</a>
-                    <a href="/auth/register" class="nav-link register-btn">Регистрация</a>
-                </#if>
-            </div>
-        </nav>
-    </div>
+    <nav class="navbar">
+        <img src="/static/images/logo-transparent.png" alt="JobSearch" class="logo-img">
+        <div class="nav-links">
+            <a href="/" class="nav-link">Главная</a>
+            <a href="/vacancies" class="nav-link">Вакансии</a>
+            <a href="/resumes/allResumes" class="nav-link active">Резюме</a>
+            <#if Session.SPRING_SECURITY_CONTEXT??>
+                <a href="/profile" class="nav-link">Профиль</a>
+                <form action="/logout" method="post" class="logout-form">
+                    <button type="submit" class="logout-btn">Выйти</button>
+                </form>
+            <#else>
+                <a href="/auth/login" class="nav-link">Войти</a>
+                <a href="/auth/register" class="nav-link register-btn">Регистрация</a>
+            </#if>
+        </div>
+    </nav>
 </header>
-
 <main class="main">
     <div class="container">
         <h1 class="page-title">Создание резюме</h1>
@@ -124,7 +122,7 @@
             </div>
 
             <#if !(resumeForm.workExperiences?? && resumeForm.workExperiences?has_content)>
-                <button type="submit" name="addWorkExp" value="true" class="btn-add">+ Добавить место работы</button>
+                <button type="submit" name="addWorkExp" value="true" class="btn-add">Добавить место работы</button>
             </#if>
 
             <h3 class="section-title">Образование</h3>
@@ -176,7 +174,7 @@
             </div>
 
             <#if !(resumeForm.educationInfos?? && resumeForm.educationInfos?has_content)>
-                <button type="submit" name="addEducation" value="true" class="btn-add">+ Добавить образование</button>
+                <button type="submit" name="addEducation" value="true" class="btn-add">Добавить образование</button>
             </#if>
 
             <div class="form-actions">

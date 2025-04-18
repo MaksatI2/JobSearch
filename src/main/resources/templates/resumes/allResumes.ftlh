@@ -4,14 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Активные резюме | JobSearch</title>
-    <link rel="stylesheet" href="/static/css/resumes.css">
+    <link rel="stylesheet" href="/static/css/resumes/resumes.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="icon" href="/static/images/logo-transparent.png" type="image/x-icon">
 </head>
 <body>
 <header class="header">
-    <div class="container">
         <nav class="navbar">
-            <a href="/" class="logo">JobSearch</a>
+            <img src="/static/images/logo-transparent.png" alt="JobSearch" class="logo-img">
             <div class="nav-links">
                 <a href="/" class="nav-link">Главная</a>
                 <a href="/vacancies" class="nav-link">Вакансии</a>
@@ -27,7 +27,6 @@
                 </#if>
             </div>
         </nav>
-    </div>
 </header>
 
 <main class="main">

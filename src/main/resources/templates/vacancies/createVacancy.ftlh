@@ -5,20 +5,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Создать вакансию | JobSearch</title>
-    <link rel="stylesheet" href="/static/css/vacancies.css">
+    <link rel="stylesheet" href="/static/css/vacancies/createVacancy.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="icon" href="/statiс/images/logo-transparent.png" type="image/x-icon">
 </head>
 <body>
 <header class="header">
-    <div class="container">
+    <header class="header">
         <nav class="navbar">
-            <a href="/" class="logo">JobSearch</a>
+            <img src="/static/images/logo-transparent.png" alt="JobSearch" class="logo-img">
             <div class="nav-links">
                 <a href="/" class="nav-link">Главная</a>
                 <a href="/vacancies" class="nav-link active">Вакансии</a>
-                <#if Session.SPRING_SECURITY_CONTEXT?? && Session.SPRING_SECURITY_CONTEXT.authentication.authorities?seq_contains('EMPLOYER')>
-                    <a href="/resumes/allResumes" class="nav-link">Резюме</a>
-                </#if>
+                <a href="/resumes/allResumes" class="nav-link">Резюме</a>
                 <#if Session.SPRING_SECURITY_CONTEXT??>
                     <a href="/profile" class="nav-link">Профиль</a>
                     <form action="/logout" method="post" class="logout-form">
@@ -30,8 +29,7 @@
                 </#if>
             </div>
         </nav>
-    </div>
-</header>
+    </header>
 
 <main class="main">
     <div class="container">
