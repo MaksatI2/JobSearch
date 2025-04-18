@@ -17,7 +17,7 @@ public class WorkExperienceDTO {
     @NotNull
     @Min(value = 0, message = "Количество лет опыта не может быть отрицательным")
     @Max(value = 50, message = "Количество лет опыта не может превышать 50 лет")
-    private Long years;
+    private Integer years;
 
     @NotBlank
     @Size(min = 2, max = 100, message = "Название компании должно быть от 2 до 100 символов")
