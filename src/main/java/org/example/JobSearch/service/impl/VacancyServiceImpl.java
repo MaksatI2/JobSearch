@@ -97,30 +97,6 @@ public class VacancyServiceImpl implements VacancyService {
             vacancy.setCategory(category);
         }
 
-        if (editVacancyDto.getName() != null) {
-            vacancy.setName(editVacancyDto.getName());
-        }
-
-        if (editVacancyDto.getDescription() != null) {
-            vacancy.setDescription(editVacancyDto.getDescription());
-        }
-
-        if (editVacancyDto.getSalary() != null) {
-            vacancy.setSalary(editVacancyDto.getSalary());
-        }
-
-        if (editVacancyDto.getExpFrom() != null) {
-            vacancy.setExpFrom(editVacancyDto.getExpFrom());
-        }
-
-        if (editVacancyDto.getExpTo() != null) {
-            vacancy.setExpTo(editVacancyDto.getExpTo());
-        }
-
-        if (editVacancyDto.getIsActive() != null) {
-            vacancy.setIsActive(editVacancyDto.getIsActive());
-        }
-
         vacancy.setUpdateTime(new Timestamp(System.currentTimeMillis()));
         vacancyRepository.save(vacancy);
         log.info("Вакансия ID {} успешно обновлена", vacancyId);
@@ -180,6 +156,7 @@ public class VacancyServiceImpl implements VacancyService {
         return VacancyDTO.builder()
                 .id(vacancy.getId())
                 .authorId(vacancy.getAuthor().getId())
+                .authorName(vacancy.getAuthor().getName())
                 .categoryId(vacancy.getCategory().getId())
                 .name(vacancy.getName())
                 .description(vacancy.getDescription())
