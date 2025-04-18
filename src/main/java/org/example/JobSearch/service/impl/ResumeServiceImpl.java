@@ -3,13 +3,16 @@ package org.example.JobSearch.service.impl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.JobSearch.dto.EditDTO.EditResumeDTO;
+import org.example.JobSearch.dto.EditDTO.EditVacancyDTO;
 import org.example.JobSearch.dto.EducationInfoDTO;
 import org.example.JobSearch.dto.ResumeDTO;
+import org.example.JobSearch.dto.VacancyDTO;
 import org.example.JobSearch.dto.WorkExperienceDTO;
 import org.example.JobSearch.dto.create.CreateResumeDTO;
 import org.example.JobSearch.exceptions.CategoryNotFoundException;
 import org.example.JobSearch.exceptions.CreateResumeException;
 import org.example.JobSearch.exceptions.ResumeNotFoundException;
+import org.example.JobSearch.exceptions.VacancyNotFoundException;
 import org.example.JobSearch.model.*;
 import org.example.JobSearch.repository.*;
 import org.example.JobSearch.service.EducationInfoService;
@@ -90,26 +93,32 @@ public class ResumeServiceImpl implements ResumeService {
         Resume resume = resumeRepository.findById(resumeId)
                 .orElseThrow(() -> new ResumeNotFoundException("Резюме с ID не найдено: " + resumeId));
 
-        if (editResumeDto.getCategoryId() != null) {
-            Category category = categoryRepository.findById(editResumeDto.getCategoryId())
-                    .orElseThrow(() -> new CategoryNotFoundException("Категория не найдена"));
-            resume.setCategory(category);
+        if (editResumeDto.getEducationInfos() != null) {
+            updateEducationInfo(resume, editResumeDto.getEducationInfos());
         }
 
-        if (editResumeDto.getName() != null) {
-            resume.setName(editResumeDto.getName());
-        }
-
-        if (editResumeDto.getSalary() != null) {
-            resume.setSalary(editResumeDto.getSalary());
-        }
-
-        if (editResumeDto.getIsActive() != null) {
-            resume.setIsActive(editResumeDto.getIsActive());
+        if (editResumeDto.getWorkExperiences() != null) {
+            updateWorkExperience(resume, editResumeDto.getWorkExperiences());
         }
 
         resume.setUpdateTime(new Timestamp(System.currentTimeMillis()));
         resumeRepository.save(resume);
+    }
+
+    private void updateEducationInfo(Resume resume, List<EducationInfoDTO> educationInfoDTOs) {
+        educationInfoService.deleteByResumeId(resume.getId());
+
+        for (EducationInfoDTO eduDto : educationInfoDTOs) {
+            educationInfoService.createEducationInfo(resume.getId(), eduDto);
+        }
+    }
+
+    private void updateWorkExperience(Resume resume, List<WorkExperienceDTO> workExperienceDTOs) {
+        workExperienceService.deleteByResumeId(resume.getId());
+
+        for (WorkExperienceDTO expDto : workExperienceDTOs) {
+            workExperienceService.createWorkExperience(resume.getId(), expDto);
+        }
     }
 
     @Override
@@ -199,5 +208,36 @@ public class ResumeServiceImpl implements ResumeService {
             }
         }
 
+    }
+
+    @Override
+    public void validateEducation(List<EducationInfoDTO> educationInfos, BindingResult bindingResult) {
+        if (educationInfos == null || educationInfos.isEmpty()) {
+            return;
+        }
+
+        Timestamp now = new Timestamp(System.currentTimeMillis());
+
+        for (EducationInfoDTO eduDto : educationInfos) {
+            if (eduDto.getStartDate() == null) {
+                throw new CreateResumeException("startDate", "Дата начала обучения не может быть пустой");
+            }
+
+            if (eduDto.getEndDate() == null) {
+                throw new CreateResumeException("endDate", "Дата окончания обучения не может быть пустой");
+            }
+
+            if (eduDto.getStartDate().after(now)) {
+                throw new CreateResumeException("startDate", "Дата начала обучения не может быть в будущем");
+            }
+
+            if (eduDto.getEndDate().after(now)) {
+                throw new CreateResumeException("endDate", "Дата окончания обучения не может быть в будущем");
+            }
+
+            if (eduDto.getStartDate().after(eduDto.getEndDate())) {
+                throw new CreateResumeException("startDate", "Дата начала обучения не может быть позже даты окончания");
+            }
+        }
     }
 }

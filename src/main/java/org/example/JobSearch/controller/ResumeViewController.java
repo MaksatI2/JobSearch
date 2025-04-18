@@ -99,6 +99,7 @@ public class ResumeViewController {
         }
 
         resumeService.validateCreateResume(resumeDTO, bindingResult);
+        resumeService.validateEducation(resumeDTO.getEducationInfos(), bindingResult);
 
         if (bindingResult.hasErrors()) {
             model.addAttribute("categories", categoryService.getAllCategories());
@@ -163,6 +164,8 @@ public class ResumeViewController {
         editResumeDto.setCategoryId(resume.getCategoryId());
         editResumeDto.setSalary(resume.getSalary());
         editResumeDto.setIsActive(resume.getIsActive());
+        editResumeDto.setEducationInfos(resume.getEducationInfos());
+        editResumeDto.setWorkExperiences(resume.getWorkExperiences());
 
         model.addAttribute("resumeForm", editResumeDto);
         model.addAttribute("categories", categoryService.getAllCategories());
@@ -175,7 +178,50 @@ public class ResumeViewController {
             @PathVariable Long id,
             @Valid @ModelAttribute("resumeForm") EditResumeDTO editResumeDto,
             BindingResult bindingResult,
+            @RequestParam(value = "addWorkExp", required = false) Boolean addWorkExp,
+            @RequestParam(value = "addEducation", required = false) Boolean addEducation,
+            @RequestParam(value = "removeWorkExp", required = false) Integer removeWorkExpIndex,
+            @RequestParam(value = "removeEducation", required = false) Integer removeEducationIndex,
             Model model) {
+
+        if (removeWorkExpIndex != null && editResumeDto.getWorkExperiences() != null
+            && removeWorkExpIndex >= 0 && removeWorkExpIndex < editResumeDto.getWorkExperiences().size()) {
+            editResumeDto.getWorkExperiences().remove(removeWorkExpIndex.intValue());
+            model.addAttribute("categories", categoryService.getAllCategories());
+            model.addAttribute("resumeId", id);
+            return "resumes/editResume";
+        }
+
+        if (removeEducationIndex != null && editResumeDto.getEducationInfos() != null
+            && removeEducationIndex >= 0 && removeEducationIndex < editResumeDto.getEducationInfos().size()) {
+            editResumeDto.getEducationInfos().remove(removeEducationIndex.intValue());
+            model.addAttribute("categories", categoryService.getAllCategories());
+            model.addAttribute("resumeId", id);
+            return "resumes/editResume";
+        }
+
+        if (addWorkExp != null && addWorkExp) {
+            if (editResumeDto.getWorkExperiences() == null) {
+                editResumeDto.setWorkExperiences(new ArrayList<>());
+            }
+            editResumeDto.getWorkExperiences().add(new WorkExperienceDTO());
+            model.addAttribute("categories", categoryService.getAllCategories());
+            model.addAttribute("resumeId", id);
+            return "resumes/editResume";
+        }
+
+        if (addEducation != null && addEducation) {
+            if (editResumeDto.getEducationInfos() == null) {
+                editResumeDto.setEducationInfos(new ArrayList<>());
+            }
+            EducationInfoDTO education = new EducationInfoDTO();
+            education.setStartDate(new Date());
+            education.setEndDate(new Date());
+            editResumeDto.getEducationInfos().add(education);
+            model.addAttribute("categories", categoryService.getAllCategories());
+            model.addAttribute("resumeId", id);
+            return "resumes/editResume";
+        }
 
         editResumeDto.setUpdateTime(new Timestamp(System.currentTimeMillis()));
 
@@ -184,6 +230,8 @@ public class ResumeViewController {
             model.addAttribute("resumeId", id);
             return "resumes/editResume";
         }
+
+        resumeService.validateEducation(editResumeDto.getEducationInfos(), bindingResult);
 
         resumeService.updateResume(id, editResumeDto);
         return "redirect:/profile";

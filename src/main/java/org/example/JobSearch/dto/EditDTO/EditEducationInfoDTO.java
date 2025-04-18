@@ -23,9 +23,11 @@ public class EditEducationInfoDTO {
     @Size(min = 2, max = 100, message = "Название программы должно быть от 2 до 100 символов")
     private String program;
 
+    @NotNull(message = "Дата не может быть пустым")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date startDate;
 
+    @NotNull(message = "Дата не может быть пустым")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date endDate;
 

@@ -37,6 +37,12 @@ public class EducationInfoServiceImpl implements EducationInfoService {
     }
 
     @Override
+    @Transactional
+    public void deleteByResumeId(Long resumeId) {
+        educationInfoRepository.deleteByResumeId(resumeId);
+    }
+
+    @Override
     public List<EducationInfoDTO> getEducationInfoByResumeId(Long resumeId) {
         return educationInfoRepository.findByResumeId(resumeId).stream()
                 .map(this::toDTO)

@@ -36,6 +36,12 @@ public class WorkExperienceServiceImpl implements WorkExperienceService {
     }
 
     @Override
+    @Transactional
+    public void deleteByResumeId(Long resumeId) {
+        workExperienceRepository.deleteByResumeId(resumeId);
+    }
+
+    @Override
     public List<WorkExperienceDTO> getWorkExperienceByResumeId(Long resumeId) {
         return workExperienceRepository.findByResumeId(resumeId).stream()
                 .map(this::toDTO)
