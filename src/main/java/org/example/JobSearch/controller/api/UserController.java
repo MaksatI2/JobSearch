@@ -19,11 +19,11 @@ public class UserController {
     private final UserService userService;
     private final EditUserService editUserService;
 
-    @PutMapping("/{email}")
-    public ResponseEntity<?> updateUserByEmail(@PathVariable @Valid String email, @RequestBody EditUserDTO editUserDTO) {
-            editUserService.updateUserByEmail(email, editUserDTO);
-            return ResponseEntity.ok("User updated successfully");
-    }
+//    @PutMapping("/{email}")
+//    public ResponseEntity<?> updateUserByEmail(@PathVariable @Valid String email, @RequestBody EditUserDTO editUserDTO) {
+//            editUserService.updateUserByEmail(email, editUserDTO);
+//            return ResponseEntity.ok("User updated successfully");
+//    }
 
     @PostMapping("/{userId}/avatar")
     public ResponseEntity<?> uploadUserAvatar(@PathVariable @Valid Long userId, @RequestParam MultipartFile file) {

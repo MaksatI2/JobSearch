@@ -23,11 +23,11 @@ public class ResumeController {
 //        return ResponseEntity.status(HttpStatus.CREATED).body("Resume created successfully");
 //    }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<String> updateResume(@PathVariable @Valid Long id, @RequestBody EditResumeDTO editresumeDTO) {
-        resumeService.updateResume(id, editresumeDTO);
-        return ResponseEntity.ok("Resume updated successfully");
-    }
+//    @PutMapping("/{id}")
+//    public ResponseEntity<String> updateResume(@PathVariable @Valid Long id, @RequestBody EditResumeDTO editresumeDTO) {
+//        resumeService.updateResume(id, editresumeDTO);
+//        return ResponseEntity.ok("Resume updated successfully");
+//    }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteResume(@PathVariable @Valid Long id) {
