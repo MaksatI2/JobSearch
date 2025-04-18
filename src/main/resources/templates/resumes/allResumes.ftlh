@@ -40,7 +40,7 @@
                     <article class="resume-card">
                         <div class="resume-header">
                             <h2 class="resume-title">${resume.name}</h2>
-                            <span class="salary">${resume.salary} ⃀</span>
+                            <span class="salary">${resume.salary} с</span>
                         </div>
 
                         <#if resume.workExperiences?? && resume.workExperiences?has_content>

@@ -18,7 +18,7 @@ public interface VacancyService {
 
     void deleteVacancy(Long vacancyId);
 
-    Page<VacancyDTO> getAllVacancies(int page, int size);
+    List<VacancyDTO> getAllVacancies();
 
     List<VacancyDTO> getRespApplToVacancy(Long applicantId);
 
