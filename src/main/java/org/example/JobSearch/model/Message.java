@@ -15,13 +15,15 @@ public class Message {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "responded_applicants_id", nullable = false,
+    @JoinColumn(name = "responded_applicants", nullable = false,
             foreignKey = @ForeignKey(name = "fk_responded_applicants"))
     private RespondedApplicant respondedApplicant;
 
-    @Column(nullable = false, columnDefinition = "TEXT")
-    private String content;
+    @Lob
+    @Column(columnDefinition = "TEXT")
+    private String description;
+
 
     @Column(name = "send_time", nullable = false)
-    private Timestamp timestamp;
+    private Timestamp sendTime;
 }

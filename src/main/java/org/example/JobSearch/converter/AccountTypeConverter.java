@@ -5,10 +5,10 @@ import jakarta.persistence.Converter;
 import org.example.JobSearch.model.AccountType;
 
 @Converter(autoApply = true)
-public class AccountTypeConverter implements AttributeConverter<AccountType, Long> {
+public class AccountTypeConverter implements AttributeConverter<AccountType, Integer> {
 
     @Override
-    public Long convertToDatabaseColumn(AccountType accountType) {
+    public Integer convertToDatabaseColumn(AccountType accountType) {
         if (accountType == null) {
             return null;
         }
@@ -16,7 +16,7 @@ public class AccountTypeConverter implements AttributeConverter<AccountType, Lon
     }
 
     @Override
-    public AccountType convertToEntityAttribute(Long id) {
+    public AccountType convertToEntityAttribute(Integer id) {
         if (id == null) {
             return null;
         }

@@ -53,5 +53,5 @@ public class Resume {
     private List<WorkExperience> workExperiences = new ArrayList<>();
 
     @OneToMany(mappedBy = "resume", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Vacancy> respondedVacancies = new ArrayList<>();
+    private List<RespondedApplicant> respondedApplicants = new ArrayList<>();
 }

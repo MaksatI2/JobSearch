@@ -29,9 +29,11 @@ public class Vacancy {
             foreignKey = @ForeignKey(name = "fk_vacancies_category"))
     private Category category;
 
+    @Lob
     @Column(nullable = false, columnDefinition = "TEXT")
     private String name;
 
+    @Lob
     @Column(columnDefinition = "TEXT")
     private String description;
 
