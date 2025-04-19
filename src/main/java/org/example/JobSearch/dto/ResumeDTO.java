@@ -21,6 +21,8 @@ public class ResumeDTO {
     @Positive(message = "ID соискателя должен быть положительным числом")
     private Long applicantId;
 
+    private String applicantName;
+
     @NotNull(message = "ID категории не может быть пустым")
     @Positive(message = "ID категории должен быть положительным числом")
     private Long categoryId;

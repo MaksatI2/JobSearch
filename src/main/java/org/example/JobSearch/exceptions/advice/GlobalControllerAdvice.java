@@ -40,7 +40,7 @@ public class GlobalControllerAdvice {
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ModelAndView handleNotFoundException(NoSuchElementException e) {
         ModelAndView mav = new ModelAndView("errors/404");
-        mav.addObject("error", errorService.makeResponse(e));
+        mav.addObject("error", e.getMessage());
         return mav;
     }
 
@@ -95,9 +95,7 @@ public class GlobalControllerAdvice {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ModelAndView handleAllOtherExceptions(Exception e) {
         ModelAndView mav = new ModelAndView("errors/400");
-        mav.addObject("error", errorService.makeResponse(
-                new IllegalArgumentException("Произошла ошибка при обработке запроса")
-        ));
+        mav.addObject("error",  e.getMessage());
         return mav;
     }
 }
