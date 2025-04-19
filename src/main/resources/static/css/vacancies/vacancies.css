@@ -336,3 +336,9 @@ body {
     margin-bottom: 25px;
     border-radius: 6px;
 }
+
+.vacancy-card-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+}

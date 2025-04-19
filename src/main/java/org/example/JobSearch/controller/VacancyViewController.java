@@ -108,6 +108,22 @@ public class VacancyViewController {
         return "redirect:/profile";
     }
 
+    @GetMapping("/{id}/info")
+    public String showVacancyDetails(@PathVariable Long id, Model model, Principal principal) {
+        VacancyDTO vacancy = vacancyService.getVacancyById(id);
+        model.addAttribute("vacancy", vacancy);
+
+        if (principal != null) {
+            String currentUserEmail = principal.getName();
+            Long currentUserId = userService.getUserId(currentUserEmail);
+            model.addAttribute("isAuthor", vacancy.getAuthorId().equals(currentUserId));
+        } else {
+            model.addAttribute("isAuthor", false);
+        }
+
+        return "vacancies/vacancyInfo";
+    }
+
     @PostMapping("/{id}/refresh")
     public String refreshVacancy(@PathVariable Long id, Principal principal) {
         String email = principal.getName();

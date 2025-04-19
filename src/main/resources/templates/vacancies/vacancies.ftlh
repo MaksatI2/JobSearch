@@ -40,33 +40,38 @@
         <#if vacancies?? && vacancies?has_content>
             <div class="vacancies-grid">
                 <#list vacancies as vacancy>
-                    <article class="vacancy-card">
-                        <div class="vacancy-header">
-                            <h2 class="vacancy-title">${vacancy.name}</h2>
-                            <span class="salary">${vacancy.salary} с</span>
-                        </div>
-                        <p class="vacancy-description">${vacancy.description}</p>
-                        <div class="vacancy-meta">
-                            <span class="experience">
-                                <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                </svg>
-                                Опыт: ${vacancy.expFrom}-${vacancy.expTo} лет
-                            </span>
-                            <span class="author">
-                                <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-                                </svg>
-                                Автор: ${vacancy.authorName?default("Неизвестно")}
-                            </span>
-                            <span class="update-time">
-                                <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                                </svg>
-                                ${vacancy.updateTime?string("dd.MM.yyyy")}
-                            </span>
-                        </div>
-                    </article>
+                    <a href="/vacancies/${vacancy.id}/info" class="vacancy-card-link">
+                        <article class="vacancy-card">
+                            <div class="vacancy-header">
+                                <h2 class="vacancy-title">${vacancy.name}</h2>
+                                <span class="salary">${vacancy.salary} с</span>
+                            </div>
+                            <p class="vacancy-description">${vacancy.description}</p>
+                            <div class="vacancy-meta">
+                <span class="experience">
+                    <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    Опыт: ${vacancy.expFrom}-${vacancy.expTo} лет
+                </span>
+                                <span class="author">
+                    <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                    </svg>
+                    Автор: ${vacancy.authorName?default("Неизвестно")}
+                </span>
+                                <span class="update-time">
+                    <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                    </svg>
+                    ${vacancy.updateTime?string("dd.MM.yyyy")}
+                </span>
+                            </div>
+                        </article>
+                    </a>
                 </#list>
             </div>
         <#else>

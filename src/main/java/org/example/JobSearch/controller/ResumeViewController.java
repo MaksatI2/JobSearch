@@ -10,6 +10,9 @@ import org.example.JobSearch.dto.WorkExperienceDTO;
 import org.example.JobSearch.dto.create.CreateResumeDTO;
 import org.example.JobSearch.service.*;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -18,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 import java.security.Principal;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 
 @Controller
@@ -236,6 +240,31 @@ public class ResumeViewController {
         resumeService.updateResume(id, editResumeDto);
         return "redirect:/profile";
     }
+
+    @GetMapping("/{id}/info")
+    public String viewResume(@PathVariable Long id, Model model, Principal principal) {
+
+        String currentUserEmail = principal.getName();
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Collection<? extends GrantedAuthority> authorities = userDetails.getAuthorities();
+        boolean isEmployer = authorities.stream().anyMatch(a -> a.getAuthority().equals("EMPLOYER"));
+
+        ResumeDTO resume = resumeService.getResumeById(id);
+        Long currentUserId = userService.getUserId(currentUserEmail);
+        boolean isOwner = resume.getApplicantId().equals(currentUserId);
+
+        if (!isOwner && !isEmployer) {
+            return "errors/403";
+        }
+
+        model.addAttribute("resume", resume);
+        model.addAttribute("isApplicant", isOwner);
+        model.addAttribute("educationList", resume.getEducationInfos());
+        model.addAttribute("workExperienceList", resume.getWorkExperiences());
+
+        return "resumes/resumeInfo";
+    }
+
 
     @PostMapping("/{id}/refresh")
     public String refreshResume(@PathVariable Long id, Principal principal) {

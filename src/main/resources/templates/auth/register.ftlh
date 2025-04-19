@@ -17,7 +17,9 @@
             <div class="nav-links">
                 <a href="/" class="nav-link">Главная</a>
                 <a href="/vacancies" class="nav-link">Вакансии</a>
-                <a href="/resumes/allResumes" class="nav-link">Резюме</a>
+                <#if Session.SPRING_SECURITY_CONTEXT?? && Session.SPRING_SECURITY_CONTEXT.authentication.authorities?seq_contains('EMPLOYER')>
+                    <a href="/resumes/allResumes" class="nav-link">Резюме</a>
+                </#if>
                 <#if Session.SPRING_SECURITY_CONTEXT??>
                     <a href="/profile" class="nav-link">Профиль</a>
                     <form action="/logout" method="post" class="logout-form">
@@ -25,7 +27,7 @@
                     </form>
                 <#else>
                     <a href="/auth/login" class="nav-link">Войти</a>
-                    <a href="/auth/register" class="nav-link register-btn">Регистрация</a>
+                    <a href="/auth/register" class="nav-link active register-btn">Регистрация</a>
                 </#if>
             </div>
         </nav>

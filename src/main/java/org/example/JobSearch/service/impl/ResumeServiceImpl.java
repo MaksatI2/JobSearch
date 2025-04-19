@@ -180,6 +180,7 @@ public class ResumeServiceImpl implements ResumeService {
         ResumeDTO dto = ResumeDTO.builder()
                 .id(resume.getId())
                 .applicantId(resume.getApplicant().getId())
+                .applicantName(resume.getApplicant().getName())
                 .categoryId(resume.getCategory().getId())
                 .name(resume.getName())
                 .salary(resume.getSalary())
