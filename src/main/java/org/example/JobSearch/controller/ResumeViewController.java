@@ -1,5 +1,6 @@
 package org.example.JobSearch.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.example.JobSearch.dto.EditDTO.EditResumeDTO;
@@ -242,9 +243,10 @@ public class ResumeViewController {
     }
 
     @GetMapping("/{id}/info")
-    public String viewResume(@PathVariable Long id, Model model, Principal principal) {
+    public String viewResume(@PathVariable Long id, HttpServletRequest request, Model model, Principal principal) {
 
         String currentUserEmail = principal.getName();
+        String referer = request.getHeader("Referer");
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Collection<? extends GrantedAuthority> authorities = userDetails.getAuthorities();
         boolean isEmployer = authorities.stream().anyMatch(a -> a.getAuthority().equals("EMPLOYER"));
@@ -261,6 +263,7 @@ public class ResumeViewController {
         model.addAttribute("isApplicant", isOwner);
         model.addAttribute("educationList", resume.getEducationInfos());
         model.addAttribute("workExperienceList", resume.getWorkExperiences());
+        model.addAttribute("backUrl", referer != null ? referer : "/resumes/allResumes");
 
         return "resumes/resumeInfo";
     }

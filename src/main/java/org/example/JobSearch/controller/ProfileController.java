@@ -1,6 +1,7 @@
 package org.example.JobSearch.controller;
 
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.ui.Model;
 import lombok.RequiredArgsConstructor;
@@ -31,8 +32,9 @@ public class ProfileController {
     private final ResponseService responseService;
 
     @GetMapping
-    public String showProfilePage(Model model, Principal principal) {
+    public String showProfilePage(HttpServletRequest request, Model model, Principal principal) {
         String email = principal.getName();
+        String referer = request.getHeader("Referer");
         UserDTO user = userService.getUserByEmail(email);
 
         String avatarUrl = "/api/users/" + user.getId() + "/avatar";
@@ -45,11 +47,13 @@ public class ProfileController {
                     List.of() : resumeService.getResumesByApplicant(user.getId());
             int responsesCount = responseService.getResponsesCountByApplicant(email);
             model.addAttribute("resumes", resumes);
+            model.addAttribute("backUrl", referer != null ? referer : "/profile");
             model.addAttribute("responsesCount", responsesCount);
         } else if (user.getAccountType() == AccountType.EMPLOYER) {
             List<VacancyDTO> vacancies = user.getId() == null ?
                     List.of() : vacancyService.getVacanciesByEmployer(user.getId());
             model.addAttribute("vacancies", vacancies);
+            model.addAttribute("backUrl", referer != null ? referer : "/profile");
         }
 
         return "user/profile";

@@ -1,5 +1,6 @@
 package org.example.JobSearch.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.example.JobSearch.dto.EditDTO.EditVacancyDTO;
@@ -109,14 +110,16 @@ public class VacancyViewController {
     }
 
     @GetMapping("/{id}/info")
-    public String showVacancyDetails(@PathVariable Long id, Model model, Principal principal) {
+    public String showVacancyDetails(@PathVariable Long id, HttpServletRequest request, Model model, Principal principal) {
         VacancyDTO vacancy = vacancyService.getVacancyById(id);
+        String referer = request.getHeader("Referer");
         model.addAttribute("vacancy", vacancy);
 
         if (principal != null) {
             String currentUserEmail = principal.getName();
             Long currentUserId = userService.getUserId(currentUserEmail);
             model.addAttribute("isAuthor", vacancy.getAuthorId().equals(currentUserId));
+            model.addAttribute("backUrl", referer != null ? referer : "/vacancies");
         } else {
             model.addAttribute("isAuthor", false);
         }
