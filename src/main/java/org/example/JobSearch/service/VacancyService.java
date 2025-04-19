@@ -11,7 +11,7 @@ import org.springframework.validation.BindingResult;
 import java.util.List;
 
 public interface VacancyService {
-    List<VacancyDTO> getVacanciesByEmployer(Long employerId);
+    Page<VacancyDTO> getVacanciesByEmployer(Long employerId, int page, int size);
 
     List<VacancyDTO> getVacanciesByCategory(Long categoryId);
 

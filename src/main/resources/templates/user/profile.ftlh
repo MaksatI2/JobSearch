@@ -97,6 +97,27 @@
                     <#else>
                         <p>У вас пока нет резюме.</p>
                     </#list>
+
+                    <#if totalResumePages?? && (totalResumePages > 1)>
+                        <div class="pagination">
+                            <#if (currentResumePage > 1)>
+                                <a href="/profile?resumePage=${currentResumePage - 1}" class="page-link">Предыдущая</a>
+                            </#if>
+
+                            <#list 1..totalResumePages as page>
+                                <#if page == currentResumePage>
+                                    <span class="current-page">${page}</span>
+                                <#else>
+                                    <a href="/profile?resumePage=${page}" class="page-link">${page}</a>
+                                </#if>
+                            </#list>
+
+                            <#if (currentResumePage < totalResumePages)>
+                                <a href="/profile?resumePage=${currentResumePage + 1}" class="page-link">Следующая</a>
+                            </#if>
+                        </div>
+                    </#if>
+
                 <#elseif user.accountType == "EMPLOYER">
                     <a href="/vacancies/create" class="action-button">Создать вакансию</a>
 
@@ -118,6 +139,26 @@
                     <#else>
                         <p>У вас пока нет вакансий.</p>
                     </#list>
+
+                    <#if totalVacancyPages?? && (totalVacancyPages > 1)>
+                        <div class="pagination">
+                            <#if (currentVacancyPage > 1)>
+                                <a href="/profile?vacancyPage=${currentVacancyPage - 1}" class="page-link">Предыдущая</a>
+                            </#if>
+
+                            <#list 1..totalVacancyPages as page>
+                                <#if page == currentVacancyPage>
+                                    <span class="current-page">${page}</span>
+                                <#else>
+                                    <a href="/profile?vacancyPage=${page}" class="page-link">${page}</a>
+                                </#if>
+                            </#list>
+
+                            <#if (currentVacancyPage < totalVacancyPages)>
+                                <a href="/profile?vacancyPage=${currentVacancyPage + 1}" class="page-link">Следующая</a>
+                            </#if>
+                        </div>
+                    </#if>
                 </#if>
             </div>
         </div>

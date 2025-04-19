@@ -49,7 +49,7 @@ public interface VacancyRepository extends JpaRepository<Vacancy, Long> {
 
     boolean existsById(Long id);
 
-    List<Vacancy> findByAuthorId(Long employerId);
+    Page<Vacancy> findByAuthorId(Long employerId, Pageable pageable);
 
     @Modifying
     @Query("UPDATE Vacancy v SET v.updateTime = :updateTime WHERE v.id = :id")

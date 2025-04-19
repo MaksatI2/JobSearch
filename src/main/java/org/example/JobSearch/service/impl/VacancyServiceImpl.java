@@ -13,6 +13,7 @@ import org.example.JobSearch.model.*;
 import org.example.JobSearch.repository.*;
 import org.example.JobSearch.service.VacancyService;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
@@ -31,11 +32,12 @@ public class VacancyServiceImpl implements VacancyService {
     private final UserRepository userRepository;
     private final CategoryRepository categoryRepository;
 
-    @Override
     @Transactional(readOnly = true)
-    public List<VacancyDTO> getVacanciesByEmployer(Long employerId) {
-        List<Vacancy> vacancies = vacancyRepository.findByAuthorId(employerId);
-        return vacancies.stream().map(this::toDTO).toList();
+    @Override
+    public Page<VacancyDTO> getVacanciesByEmployer(Long employerId, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Vacancy> vacanciesPage = vacancyRepository.findByAuthorId(employerId, pageable);
+        return vacanciesPage.map(this::toDTO);
     }
 
     @Transactional(readOnly = true)

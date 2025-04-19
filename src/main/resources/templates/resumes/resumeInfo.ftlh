@@ -88,7 +88,7 @@
                                         <div class="company-name">${exp.companyName}</div>
                                         <div class="position">${exp.position}</div>
                                     </div>
-                                    <div class="years">${exp.years}</div>
+                                    <div class="years">Опыт: ${exp.years} года </div>
                                 </div>
                                 <div class="responsibilities">${exp.responsibilities}</div>
                             </div>

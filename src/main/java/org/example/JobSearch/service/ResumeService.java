@@ -15,7 +15,7 @@ import org.springframework.validation.BindingResult;
 import java.util.List;
 
 public interface ResumeService {
-    List<ResumeDTO> getResumesByApplicant(Long applicantId);
+    Page<ResumeDTO> getResumesByApplicant(Long applicantId, int page, int size);
 
     void createResume(CreateResumeDTO resumeDto, BindingResult bindingResult);
     void updateResume(Long resumeId, EditResumeDTO editresumeDto);
@@ -26,7 +26,7 @@ public interface ResumeService {
 
     Page<ResumeDTO> getAllResumes(Pageable pageable);
 
-    List<ResumeDTO> getUserResumes(Long applicants_id);
+//    List<ResumeDTO> getUserResumes(Long applicants_id);
 
     List<ResumeDTO> getResumesByCategory(Long categoryId);
 

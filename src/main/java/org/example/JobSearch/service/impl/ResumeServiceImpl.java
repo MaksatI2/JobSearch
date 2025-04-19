@@ -16,6 +16,7 @@ import org.example.JobSearch.service.EducationInfoService;
 import org.example.JobSearch.service.ResumeService;
 import org.example.JobSearch.service.WorkExperienceService;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,11 +36,12 @@ public class ResumeServiceImpl implements ResumeService {
     private final EducationInfoService educationInfoService;
     private final WorkExperienceService workExperienceService;
 
-    @Override
     @Transactional(readOnly = true)
-    public List<ResumeDTO> getResumesByApplicant(Long applicantId) {
-        List<Resume> resumes = resumeRepository.findByApplicantId(applicantId);
-        return resumes.stream().map(this::toDTO).toList();
+    @Override
+    public Page<ResumeDTO> getResumesByApplicant(Long applicantId, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Resume> resumesPage = resumeRepository.findByApplicantId(applicantId, pageable);
+        return resumesPage.map(this::toDTO);
     }
 
     @Override
@@ -147,15 +149,15 @@ public class ResumeServiceImpl implements ResumeService {
         return resumes.map(this::toDTO);
     }
 
-    @Override
-    @Transactional(readOnly = true)
-    public List<ResumeDTO> getUserResumes(Long applicantId) {
-        List<Resume> resumes = resumeRepository.findByApplicantId(applicantId);
-        if (resumes.isEmpty()) {
-            throw new ResumeNotFoundException("Резюме для соискателя ID не найдены: " + applicantId);
-        }
-        return resumes.stream().map(this::toDTO).collect(Collectors.toList());
-    }
+//    @Override
+//    @Transactional(readOnly = true)
+//    public List<ResumeDTO> getUserResumes(Long applicantId) {
+//        List<Resume> resumes = resumeRepository.findByApplicantId(applicantId);
+//        if (resumes.isEmpty()) {
+//            throw new ResumeNotFoundException("Резюме для соискателя ID не найдены: " + applicantId);
+//        }
+//        return resumes.stream().map(this::toDTO).collect(Collectors.toList());
+//    }
 
     @Override
     @Transactional(readOnly = true)

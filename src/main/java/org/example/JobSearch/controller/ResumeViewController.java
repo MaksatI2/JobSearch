@@ -39,7 +39,7 @@ public class ResumeViewController {
     @GetMapping("/allResumes")
     public String getAllActiveResumes(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "2") int size,
+            @RequestParam(defaultValue = "20") int size,
             Model model) {
 
         Pageable pageable = PageRequest.of(page, size, Sort.by("updateTime").descending());

@@ -19,7 +19,7 @@ public interface ResumeRepository extends JpaRepository<Resume, Long> {
 
     List<Resume> findByCategoryIdAndIsActiveTrue(Long categoryId);
 
-    List<Resume> findByApplicantId(Long applicantId);
+    Page<Resume> findByApplicantId(Long applicantId, Pageable pageable);
 
     boolean existsById(Long id);
 
