@@ -35,11 +35,11 @@ public class ResumeController {
         return ResponseEntity.ok("Resume deleted successfully");
     }
 
-    @GetMapping("/allResumes")
-    public ResponseEntity<?> getAllResumes() {
-            List<ResumeDTO> resumes = resumeService.getAllResumes();
-            return ResponseEntity.ok(resumes);
-    }
+//    @GetMapping("/allResumes")
+//    public ResponseEntity<?> getAllResumes() {
+//            List<ResumeDTO> resumes = resumeService.getAllResumes();
+//            return ResponseEntity.ok(resumes);
+//    }
 
     @GetMapping("/UserResumes/{applicantId}")
     public ResponseEntity<?> getUserResumes(@PathVariable @Valid Long applicantId) {

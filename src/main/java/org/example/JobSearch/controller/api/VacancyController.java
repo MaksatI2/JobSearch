@@ -31,11 +31,11 @@ public class VacancyController {
     }
 
 
-    @GetMapping("/category/{categoryId}")
-    public ResponseEntity<?> getVacanciesByCategory(@PathVariable @Valid Long categoryId) {
-            List<VacancyDTO> vacancies = vacancyService.getVacanciesByCategory(categoryId);
-            return ResponseEntity.ok(vacancies);
-    }
+//    @GetMapping("/category/{categoryId}")
+//    public ResponseEntity<?> getVacanciesByCategory(@PathVariable @Valid Long categoryId) {
+//            List<VacancyDTO> vacancies = vacancyService.getVacanciesByCategory(categoryId);
+//            return ResponseEntity.ok(vacancies);
+//    }
 
     @GetMapping("/ApplToVacancy/{id}")
     public ResponseEntity<?> getRespApplToVacancy(@PathVariable @Valid Long id) {

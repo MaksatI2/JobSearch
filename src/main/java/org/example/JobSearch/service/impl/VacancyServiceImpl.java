@@ -12,6 +12,8 @@ import org.example.JobSearch.exceptions.VacancyNotFoundException;
 import org.example.JobSearch.model.*;
 import org.example.JobSearch.repository.*;
 import org.example.JobSearch.service.VacancyService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,8 +38,8 @@ public class VacancyServiceImpl implements VacancyService {
         return vacancies.stream().map(this::toDTO).toList();
     }
 
-    @Override
     @Transactional(readOnly = true)
+    @Override
     public List<VacancyDTO> getVacanciesByCategory(Long categoryId) {
         log.info("Поиск вакансий по категории ID: {}", categoryId);
         List<Vacancy> vacancies = vacancyRepository.findActiveByCategoryTree(categoryId);
@@ -118,11 +120,9 @@ public class VacancyServiceImpl implements VacancyService {
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public List<VacancyDTO> getAllVacancies() {
-        log.info("Получение всех активных вакансий");
-        List<Vacancy> vacancies = vacancyRepository.findAllByIsActiveTrue();
-        return vacancies.stream().map(this::toDTO).collect(Collectors.toList());
+    public Page<VacancyDTO> getAllVacanciesSorted(String sort, Pageable pageable) {
+        return vacancyRepository.findAllActiveSorted(sort, pageable)
+                .map(this::toDTO);
     }
 
     @Override

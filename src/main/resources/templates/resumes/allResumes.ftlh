@@ -82,18 +82,50 @@
                             </#if>
 
                             <div class="resume-meta">
-                    <span class="update-time">
-                        <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                  d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                        </svg>
-                        ${resume.updateTime?string("dd.MM.yyyy")}
-                    </span>
+                                <span class="update-time">
+                                    <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                              d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                    </svg>
+                                    ${resume.updateTime?string("dd.MM.yyyy")}
+                                </span>
                             </div>
                         </article>
                     </a>
                 </#list>
             </div>
+
+            <#if totalPages gt 1>
+                <div class="pagination">
+                    <#if currentPage gt 0>
+                        <a href="/resumes/allResumes?page=0&size=${pageSize}" class="page-link">«« Первая</a>
+                        <a href="/resumes/allResumes?page=${currentPage - 1}&size=${pageSize}" class="page-link">« Предыдущая</a>
+                    </#if>
+
+                    <#list 0..totalPages-1 as i>
+                        <#if i == currentPage>
+                            <span class="page-link active">${i + 1}</span>
+                        <#else>
+                            <a href="/resumes/allResumes?page=${i}&size=${pageSize}" class="page-link">${i + 1}</a>
+                        </#if>
+                    </#list>
+
+                    <#if currentPage lt totalPages - 1>
+                        <a href="/resumes/allResumes?page=${currentPage + 1}&size=${pageSize}" class="page-link">Следующая »</a>
+                        <a href="/resumes/allResumes?page=${totalPages - 1}&size=${pageSize}" class="page-link">Последняя »»</a>
+                    </#if>
+
+                    <div class="page-size">
+                        Элементов на странице:
+                        <select onchange="window.location.href='/resumes/allResumes?page=0&size='+this.value" class="page-size-select">
+                            <option value="5" <#if pageSize == 5>selected</#if>>5</option>
+                            <option value="10" <#if pageSize == 10>selected</#if>>10</option>
+                            <option value="20" <#if pageSize == 20>selected</#if>>20</option>
+                            <option value="50" <#if pageSize == 50>selected</#if>>50</option>
+                        </select>
+                    </div>
+                </div>
+            </#if>
         <#else>
             <div class="empty-state">
                 <h3>Резюме не найдены</h3>

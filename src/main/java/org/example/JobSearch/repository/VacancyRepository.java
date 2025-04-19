@@ -15,7 +15,14 @@ import java.util.List;
 @Repository
 public interface VacancyRepository extends JpaRepository<Vacancy, Long> {
 
-    List<Vacancy> findAllByIsActiveTrue();
+    @Query("SELECT v FROM Vacancy v WHERE v.isActive = true " +
+            "ORDER BY " +
+            "CASE WHEN :sort = 'salaryAsc' THEN v.salary END ASC, " +
+            "CASE WHEN :sort = 'salaryDesc' THEN v.salary END DESC, " +
+            "CASE WHEN :sort = 'expAsc' THEN v.expFrom END ASC, " +
+            "CASE WHEN :sort = 'expDesc' THEN v.expFrom END DESC, " +
+            "v.updateTime DESC")
+    Page<Vacancy> findAllActiveSorted(@Param("sort") String sort, Pageable pageable);
 
     long countByIsActiveTrue();
 

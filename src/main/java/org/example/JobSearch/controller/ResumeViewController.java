@@ -1,6 +1,5 @@
 package org.example.JobSearch.controller;
 
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.example.JobSearch.dto.EditDTO.EditResumeDTO;
@@ -10,6 +9,10 @@ import org.example.JobSearch.dto.UserDTO;
 import org.example.JobSearch.dto.WorkExperienceDTO;
 import org.example.JobSearch.dto.create.CreateResumeDTO;
 import org.example.JobSearch.service.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -34,8 +37,20 @@ public class ResumeViewController {
     private final UserService userService;
 
     @GetMapping("/allResumes")
-    public String getAllActiveResumes(Model model) {
-        model.addAttribute("resumes", resumeService.getAllResumes());
+    public String getAllActiveResumes(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "2") int size,
+            Model model) {
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by("updateTime").descending());
+        Page<ResumeDTO> resumesPage = resumeService.getAllResumes(pageable);
+
+        model.addAttribute("resumes", resumesPage.getContent());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", resumesPage.getTotalPages());
+        model.addAttribute("totalItems", resumesPage.getTotalElements());
+        model.addAttribute("pageSize", size);
+
         return "resumes/allResumes";
     }
 
@@ -243,10 +258,9 @@ public class ResumeViewController {
     }
 
     @GetMapping("/{id}/info")
-    public String viewResume(@PathVariable Long id, HttpServletRequest request, Model model, Principal principal) {
+    public String viewResume(@PathVariable Long id, Model model, Principal principal) {
 
         String currentUserEmail = principal.getName();
-        String referer = request.getHeader("Referer");
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Collection<? extends GrantedAuthority> authorities = userDetails.getAuthorities();
         boolean isEmployer = authorities.stream().anyMatch(a -> a.getAuthority().equals("EMPLOYER"));
@@ -263,7 +277,6 @@ public class ResumeViewController {
         model.addAttribute("isApplicant", isOwner);
         model.addAttribute("educationList", resume.getEducationInfos());
         model.addAttribute("workExperienceList", resume.getWorkExperiences());
-        model.addAttribute("backUrl", referer != null ? referer : "/resumes/allResumes");
 
         return "resumes/resumeInfo";
     }

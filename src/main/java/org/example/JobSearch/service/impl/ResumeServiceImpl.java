@@ -3,21 +3,20 @@ package org.example.JobSearch.service.impl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.JobSearch.dto.EditDTO.EditResumeDTO;
-import org.example.JobSearch.dto.EditDTO.EditVacancyDTO;
 import org.example.JobSearch.dto.EducationInfoDTO;
 import org.example.JobSearch.dto.ResumeDTO;
-import org.example.JobSearch.dto.VacancyDTO;
 import org.example.JobSearch.dto.WorkExperienceDTO;
 import org.example.JobSearch.dto.create.CreateResumeDTO;
 import org.example.JobSearch.exceptions.CategoryNotFoundException;
 import org.example.JobSearch.exceptions.CreateResumeException;
 import org.example.JobSearch.exceptions.ResumeNotFoundException;
-import org.example.JobSearch.exceptions.VacancyNotFoundException;
 import org.example.JobSearch.model.*;
 import org.example.JobSearch.repository.*;
 import org.example.JobSearch.service.EducationInfoService;
 import org.example.JobSearch.service.ResumeService;
 import org.example.JobSearch.service.WorkExperienceService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
@@ -138,14 +137,14 @@ public class ResumeServiceImpl implements ResumeService {
     }
 
 
-    @Override
     @Transactional(readOnly = true)
-    public List<ResumeDTO> getAllResumes() {
-        List<Resume> resumes = resumeRepository.findByIsActiveTrue();
+    @Override
+    public Page<ResumeDTO> getAllResumes(Pageable pageable) {
+        Page<Resume> resumes = resumeRepository.findByIsActiveTrue(pageable);
         if (resumes.isEmpty()) {
             throw new ResumeNotFoundException("Активные резюме не найдены");
         }
-        return resumes.stream().map(this::toDTO).collect(Collectors.toList());
+        return resumes.map(this::toDTO);
     }
 
     @Override

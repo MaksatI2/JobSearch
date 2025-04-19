@@ -3,6 +3,9 @@ package org.example.JobSearch.service;
 import org.example.JobSearch.dto.EditDTO.EditVacancyDTO;
 import org.example.JobSearch.dto.VacancyDTO;
 import org.example.JobSearch.dto.create.CreateVacancyDTO;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
 
 import java.util.List;
@@ -18,7 +21,7 @@ public interface VacancyService {
 
     void deleteVacancy(Long vacancyId);
 
-    List<VacancyDTO> getAllVacancies();
+    Page<VacancyDTO> getAllVacanciesSorted(String sort, Pageable pageable);
 
     List<VacancyDTO> getRespApplToVacancy(Long applicantId);
 

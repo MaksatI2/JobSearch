@@ -85,7 +85,7 @@
             </div>
 
             <div class="actions">
-                <a href="${backUrl}" class="btn btn-back">Назад к списку</a>
+                <a href="/vacancies" class="btn btn-back">Назад к списку</a>
                 <#if isAuthor>
                     <a href="/vacancies/${vacancy.id}/edit" class="btn btn-edit">Редактировать</a>
                     <form action="/vacancies/${vacancy.id}/refresh" method="post">
