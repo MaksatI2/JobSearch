@@ -105,7 +105,7 @@
     <#if error??>
         <div class="error-details">
             <p><strong>Дополнительная информация:</strong></p>
-            <p>${error.message!''}</p>
+            <p>${error}</p>
 
             <#if fieldErrors??>
                 <div class="field-errors">
