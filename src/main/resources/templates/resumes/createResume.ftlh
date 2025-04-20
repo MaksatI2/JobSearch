@@ -183,8 +183,12 @@
                 <div class="contact-item">
                     <div class="contact-input">
                         <img src="/static/images/contact/viber-logo-svgrepo-com.svg" alt="Телефон" class="contact-icon" />
-                        <@spring.formInput "resumeForm.contactInfos[0].value",
-                        "class='form-control no-label' placeholder='+996(XXX)XXXXXX'" />
+                        <input type="text"
+                               name="contactInfos[0].value"
+                               class="form-control no-label"
+                               placeholder="996XXXXXXXXX"
+                               pattern="^996\d{9}$"
+                               title="Формат: 996(XXX)XXXXXX" />
                         <input type="hidden" name="contactInfos[0].typeId" value="1" />
                     </div>
                     <@spring.showErrors "<br>", "field-error" />
@@ -193,8 +197,11 @@
                 <div class="contact-item">
                     <div class="contact-input">
                         <img src="/static/images/contact/gmail-icon-logo-svgrepo-com.svg" alt="Email" class="contact-icon" />
-                        <@spring.formInput "resumeForm.contactInfos[1].value",
-                        "class='form-control no-label' placeholder='example@domain.com' type='email'" />
+                        <input type="email"
+                               name="contactInfos[1].value"
+                               class="form-control no-label"
+                               placeholder="example@domain.com"
+                               title="Введите корректный email" />
                         <input type="hidden" name="contactInfos[1].typeId" value="2" />
                     </div>
                     <@spring.showErrors "<br>", "field-error" />
@@ -203,8 +210,12 @@
                 <div class="contact-item">
                     <div class="contact-input">
                         <img src="/static/images/contact/linkedin-icon-2-logo-svgrepo-com.svg" alt="LinkedIn" class="contact-icon" />
-                        <@spring.formInput "resumeForm.contactInfos[2].value",
-                        "class='form-control no-label' placeholder='https://linkedin.com/in/username'" />
+                        <input type="url"
+                               name="contactInfos[2].value"
+                               class="form-control no-label"
+                               placeholder="https://linkedin.com/in/username"
+                               pattern="^https://(www\.)?linkedin\.com/in/.+"
+                               title="Формат: https://linkedin.com/in/username" />
                         <input type="hidden" name="contactInfos[2].typeId" value="3" />
                     </div>
                     <@spring.showErrors "<br>", "field-error" />
@@ -213,8 +224,12 @@
                 <div class="contact-item">
                     <div class="contact-input">
                         <img src="/static/images/contact/github-icon-1-logo-svgrepo-com.svg" alt="GitHub" class="contact-icon" />
-                        <@spring.formInput "resumeForm.contactInfos[3].value",
-                        "class='form-control no-label' placeholder='https://github.com/username'" />
+                        <input type="url"
+                               name="contactInfos[3].value"
+                               class="form-control no-label"
+                               placeholder="https://github.com/username"
+                               pattern="^https://(www\.)?github\.com/.+"
+                               title="Формат: https://github.com/username" />
                         <input type="hidden" name="contactInfos[3].typeId" value="4" />
                     </div>
                     <@spring.showErrors "<br>", "field-error" />
@@ -223,8 +238,12 @@
                 <div class="contact-item">
                     <div class="contact-input">
                         <img src="/static/images/contact/telegram-logo-svgrepo-com.svg" alt="Telegram" class="contact-icon" />
-                        <@spring.formInput "resumeForm.contactInfos[4].value",
-                        "class='form-control no-label' placeholder='https://t.me/username'" />
+                        <input type="text"
+                               name="contactInfos[4].value"
+                               class="form-control no-label"
+                               placeholder="@username или 996XXXXXXXXX"
+                               pattern="^@\w{5,}$|^996\d{9}$"
+                               title="Формат: @username или 996XXXXXXXXX" />
                         <input type="hidden" name="contactInfos[4].typeId" value="5" />
                         <@spring.showErrors "<br>", "field-error" />
                     </div>
@@ -234,14 +253,17 @@
                     <div class="contact-input">
 <#--                        Да это vue, больше ничего интересного в голову не пришло)-->
                         <img src="/static/images/contact/vue-9-logo-svgrepo-com.svg" alt="WebSite" class="contact-icon" />
-                        <@spring.formInput "resumeForm.contactInfos[5].value",
-                        "class='form-control no-label' placeholder='https://yourportfolio.com'" />
+                        <input type="url"
+                               name="contactInfos[5].value"
+                               class="form-control no-label"
+                               placeholder="https://yourportfolio.com"
+                               pattern="^(https?://)?[\w.-]+\.[a-z]{2,6}.*$"
+                               title="Введите корректный URL сайта" />
                         <input type="hidden" name="contactInfos[5].typeId" value="6" />
                         <@spring.showErrors "<br>", "field-error" />
                     </div>
                 </div>
             </div>
-
 
             <div class="form-actions">
                 <button type="submit" class="submit-btn">Создать резюме</button>

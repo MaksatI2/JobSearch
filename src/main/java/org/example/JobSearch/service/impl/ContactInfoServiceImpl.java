@@ -44,6 +44,12 @@ public class ContactInfoServiceImpl implements ContactInfoService {
     }
 
     @Override
+    @Transactional
+    public void deleteByResumeId(Long resumeId) {
+        contactInfoRepository.deleteByResumeId(resumeId);
+    }
+
+    @Override
     public List<ContactInfoDTO> getContactInfoByResumeId(Long resumeId) {
         List<ContactInfo> contacts = contactInfoRepository.findByResumeId(resumeId);
         return contacts.stream()

@@ -2,11 +2,8 @@ package org.example.JobSearch.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.example.JobSearch.dto.*;
 import org.example.JobSearch.dto.EditDTO.EditResumeDTO;
-import org.example.JobSearch.dto.EducationInfoDTO;
-import org.example.JobSearch.dto.ResumeDTO;
-import org.example.JobSearch.dto.UserDTO;
-import org.example.JobSearch.dto.WorkExperienceDTO;
 import org.example.JobSearch.dto.create.CreateResumeDTO;
 import org.example.JobSearch.service.*;
 import org.springframework.data.domain.Page;
@@ -27,6 +24,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 @Controller
 @RequestMapping("/resumes")
@@ -186,6 +184,18 @@ public class ResumeViewController {
         editResumeDto.setIsActive(resume.getIsActive());
         editResumeDto.setEducationInfos(resume.getEducationInfos());
         editResumeDto.setWorkExperiences(resume.getWorkExperiences());
+
+        List<ContactInfoDTO> contactInfos = new ArrayList<>();
+        if (resume.getContactInfos() != null) {
+            contactInfos = resume.getContactInfos();
+        } else {
+            for (long i = 1; i <= 6; i++) {
+                ContactInfoDTO contact = new ContactInfoDTO();
+                contact.setTypeId(i);
+                contactInfos.add(contact);
+            }
+        }
+        editResumeDto.setContactInfos(contactInfos);
 
         model.addAttribute("resumeForm", editResumeDto);
         model.addAttribute("categories", categoryService.getAllCategories());

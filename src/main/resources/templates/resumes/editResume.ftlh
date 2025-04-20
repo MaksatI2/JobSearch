@@ -166,6 +166,76 @@
                 <button type="submit" name="addWorkExp" value="true" class="add-btn">+ Добавить опыт работы</button>
             </div>
 
+            <div id="contact-infos" class="contacts-grid">
+                <#list resumeForm.contactInfos as contact>
+                    <div class="contact-item">
+                        <div class="contact-input">
+                            <#if contact.typeId == 1>
+                                <img src="/static/images/contact/viber-logo-svgrepo-com.svg" alt="Телефон" class="contact-icon" />
+                                <input type="text"
+                                       name="contactInfos[${contact?index}].value"
+                                       class="form-control no-label"
+                                       placeholder="996XXXXXXXXX"
+                                       pattern="^996\d{9}$"
+                                       title="Формат: 996(XXX)XXXXXX"
+                                       value="${contact.value!''}" />
+                                <input type="hidden" name="contactInfos[${contact?index}].typeId" value="1" />
+                            <#elseif contact.typeId == 2>
+                                <img src="/static/images/contact/gmail-icon-logo-svgrepo-com.svg" alt="Email" class="contact-icon" />
+                                <input type="email"
+                                       name="contactInfos[${contact?index}].value"
+                                       class="form-control no-label"
+                                       placeholder="example@domain.com"
+                                       title="Введите корректный email"
+                                       value="${contact.value!''}" />
+                                <input type="hidden" name="contactInfos[${contact?index}].typeId" value="2" />
+                            <#elseif contact.typeId == 3>
+                                <img src="/static/images/contact/linkedin-icon-2-logo-svgrepo-com.svg" alt="LinkedIn" class="contact-icon" />
+                                <input type="url"
+                                       name="contactInfos[${contact?index}].value"
+                                       class="form-control no-label"
+                                       placeholder="https://linkedin.com/in/username"
+                                       pattern="^https://(www\.)?linkedin\.com/in/.+"
+                                       title="Формат: https://linkedin.com/in/username"
+                                       value="${contact.value!''}" />
+                                <input type="hidden" name="contactInfos[${contact?index}].typeId" value="3" />
+                            <#elseif contact.typeId == 4>
+                                <img src="/static/images/contact/github-icon-1-logo-svgrepo-com.svg" alt="GitHub" class="contact-icon" />
+                                <input type="url"
+                                       name="contactInfos[${contact?index}].value"
+                                       class="form-control no-label"
+                                       placeholder="https://github.com/username"
+                                       pattern="^https://(www\.)?github\.com/.+"
+                                       title="Формат: https://github.com/username"
+                                       value="${contact.value!''}" />
+                                <input type="hidden" name="contactInfos[${contact?index}].typeId" value="4" />
+                            <#elseif contact.typeId == 5>
+                                <img src="/static/images/contact/telegram-logo-svgrepo-com.svg" alt="Telegram" class="contact-icon" />
+                                <input type="text"
+                                       name="contactInfos[${contact?index}].value"
+                                       class="form-control no-label"
+                                       placeholder="@username или 996XXXXXXXXX"
+                                       pattern="^@\w{5,}$|^996\d{9}$"
+                                       title="Формат: @username или 996XXXXXXXXX"
+                                       value="${contact.value!''}" />
+                                <input type="hidden" name="contactInfos[${contact?index}].typeId" value="5" />
+                            <#elseif contact.typeId == 6>
+                                <img src="/static/images/contact/vue-9-logo-svgrepo-com.svg" alt="WebSite" class="contact-icon" />
+                                <input type="url"
+                                       name="contactInfos[${contact?index}].value"
+                                       class="form-control no-label"
+                                       placeholder="https://yourportfolio.com"
+                                       pattern="^(https?://)?[\w.-]+\.[a-z]{2,6}.*$"
+                                       title="Введите корректный URL сайта"
+                                       value="${contact.value!''}" />
+                                <input type="hidden" name="contactInfos[${contact?index}].typeId" value="6" />
+                            </#if>
+                        </div>
+                        <@spring.showErrors "<br>", "field-error" />
+                    </div>
+                </#list>
+            </div>
+
             <div class="form-actions">
                 <button type="submit" class="submit-btn">Сохранить изменения</button>
                 <a href="/profile" class="cancel-btn">Отмена</a>
