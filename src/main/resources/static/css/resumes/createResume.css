@@ -394,3 +394,43 @@ select.form-control {
         flex-direction: column;
     }
 }
+
+.contacts-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.contact-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.contact-input {
+    display: flex;
+    align-items: center;
+    background: #f8f8f8;
+    padding: 0.5rem 1rem;
+    border-radius: 10px;
+    border: 1px solid #ddd;
+}
+
+.contact-icon {
+    width: 20px;
+    height: 20px;
+    margin-right: 0.75rem;
+    opacity: 0.7;
+}
+
+.form-control.no-label {
+    border: none;
+    background: transparent;
+    flex: 1;
+    font-size: 14px;
+    outline: none;
+}
+
+.form-control.no-label::placeholder {
+    color: #999;
+}

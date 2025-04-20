@@ -49,4 +49,6 @@ public class ResumeDTO {
 
     @Valid
     private List<WorkExperienceDTO> workExperiences;
+
+    private List<ContactInfoDTO> contactInfos;
 }

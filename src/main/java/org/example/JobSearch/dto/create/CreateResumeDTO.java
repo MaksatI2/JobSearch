@@ -3,6 +3,7 @@ package org.example.JobSearch.dto.create;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 import lombok.*;
+import org.example.JobSearch.dto.ContactInfoDTO;
 import org.example.JobSearch.dto.EducationInfoDTO;
 import org.example.JobSearch.dto.WorkExperienceDTO;
 
@@ -44,4 +45,6 @@ public class CreateResumeDTO {
 
     @Valid
     private List<WorkExperienceDTO> workExperiences;
+
+    private List<ContactInfoDTO> contactInfos;
 }

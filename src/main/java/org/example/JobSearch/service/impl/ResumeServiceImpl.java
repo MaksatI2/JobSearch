@@ -2,6 +2,7 @@ package org.example.JobSearch.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.example.JobSearch.dto.ContactInfoDTO;
 import org.example.JobSearch.dto.EditDTO.EditResumeDTO;
 import org.example.JobSearch.dto.EducationInfoDTO;
 import org.example.JobSearch.dto.ResumeDTO;
@@ -12,6 +13,7 @@ import org.example.JobSearch.exceptions.CreateResumeException;
 import org.example.JobSearch.exceptions.ResumeNotFoundException;
 import org.example.JobSearch.model.*;
 import org.example.JobSearch.repository.*;
+import org.example.JobSearch.service.ContactInfoService;
 import org.example.JobSearch.service.EducationInfoService;
 import org.example.JobSearch.service.ResumeService;
 import org.example.JobSearch.service.WorkExperienceService;
@@ -35,6 +37,7 @@ public class ResumeServiceImpl implements ResumeService {
     private final UserRepository userRepository;
     private final EducationInfoService educationInfoService;
     private final WorkExperienceService workExperienceService;
+    private final ContactInfoService contactInfoService;
 
     @Transactional(readOnly = true)
     @Override
@@ -82,6 +85,15 @@ public class ResumeServiceImpl implements ResumeService {
             log.debug("Добавление информации об опыте работы для резюме ID: {}", savedResume.getId());
             for (WorkExperienceDTO expDto : resumeDto.getWorkExperiences()) {
                 workExperienceService.createWorkExperience(savedResume.getId(), expDto);
+            }
+        }
+
+        if (resumeDto.getContactInfos() != null) {
+            log.debug("Добавление контактной информации для резюме ID: {}", savedResume.getId());
+            for (ContactInfoDTO contactDto : resumeDto.getContactInfos()) {
+                if (contactDto.getValue() != null && !contactDto.getValue().isEmpty()) {
+                    contactInfoService.createContactInfo(savedResume.getId(), contactDto);
+                }
             }
         }
     }
@@ -192,6 +204,7 @@ public class ResumeServiceImpl implements ResumeService {
 
         dto.setEducationInfos(educationInfoService.getEducationInfoByResumeId(resume.getId()));
         dto.setWorkExperiences(workExperienceService.getWorkExperienceByResumeId(resume.getId()));
+        dto.setContactInfos(contactInfoService.getContactInfoByResumeId(resume.getId()));
 
         return dto;
     }

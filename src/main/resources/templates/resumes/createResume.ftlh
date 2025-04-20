@@ -177,6 +177,71 @@
                 <button type="submit" name="addEducation" value="true" class="btn-add">Добавить образование</button>
             </#if>
 
+            <h3 class="section-title">Контактная информация</h3>
+            <div id="contact-infos" class="contacts-grid">
+
+                <div class="contact-item">
+                    <div class="contact-input">
+                        <img src="/static/images/contact/viber-logo-svgrepo-com.svg" alt="Телефон" class="contact-icon" />
+                        <@spring.formInput "resumeForm.contactInfos[0].value",
+                        "class='form-control no-label' placeholder='+7 (XXX) XXX-XX-XX'" />
+                        <input type="hidden" name="contactInfos[0].typeId" value="1" />
+                    </div>
+                    <@spring.showErrors "<br>", "field-error" />
+                </div>
+
+                <div class="contact-item">
+                    <div class="contact-input">
+                        <img src="/static/images/contact/gmail-icon-logo-svgrepo-com.svg" alt="Email" class="contact-icon" />
+                        <@spring.formInput "resumeForm.contactInfos[1].value",
+                        "class='form-control no-label' placeholder='example@domain.com' type='email'" />
+                        <input type="hidden" name="contactInfos[1].typeId" value="2" />
+                    </div>
+                    <@spring.showErrors "<br>", "field-error" />
+                </div>
+
+                <div class="contact-item">
+                    <div class="contact-input">
+                        <img src="/static/images/contact/linkedin-icon-2-logo-svgrepo-com.svg" alt="LinkedIn" class="contact-icon" />
+                        <@spring.formInput "resumeForm.contactInfos[2].value",
+                        "class='form-control no-label' placeholder='https://linkedin.com/in/username'" />
+                        <input type="hidden" name="contactInfos[2].typeId" value="3" />
+                    </div>
+                    <@spring.showErrors "<br>", "field-error" />
+                </div>
+
+                <div class="contact-item">
+                    <div class="contact-input">
+                        <img src="/static/images/contact/github-icon-1-logo-svgrepo-com.svg" alt="GitHub" class="contact-icon" />
+                        <@spring.formInput "resumeForm.contactInfos[3].value",
+                        "class='form-control no-label' placeholder='https://github.com/username'" />
+                        <input type="hidden" name="contactInfos[3].typeId" value="4" />
+                    </div>
+                    <@spring.showErrors "<br>", "field-error" />
+                </div>
+
+                <div class="contact-item">
+                    <div class="contact-input">
+                        <img src="/static/images/contact/telegram-logo-svgrepo-com.svg" alt="Telegram" class="contact-icon" />
+                        <@spring.formInput "resumeForm.contactInfos[4].value",
+                        "class='form-control no-label' placeholder='https://t.me/username'" />
+                        <input type="hidden" name="contactInfos[4].typeId" value="5" />
+                        <@spring.showErrors "<br>", "field-error" />
+                    </div>
+                </div>
+
+                <div class="contact-item">
+                    <div class="contact-input">
+                        <img src="/static/images/contact/vue-9-logo-svgrepo-com.svg" alt="WebSite" class="contact-icon" />
+                        <@spring.formInput "resumeForm.contactInfos[5].value",
+                        "class='form-control no-label' placeholder='https://yourportfolio.com'" />
+                        <input type="hidden" name="contactInfos[5].typeId" value="6" />
+                        <@spring.showErrors "<br>", "field-error" />
+                    </div>
+                </div>
+            </div>
+
+
             <div class="form-actions">
                 <button type="submit" class="submit-btn">Создать резюме</button>
                 <a href="/profile" class="cancel-btn">Отмена</a>
