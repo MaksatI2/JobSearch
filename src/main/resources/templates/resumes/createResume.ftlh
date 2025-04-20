@@ -184,7 +184,7 @@
                     <div class="contact-input">
                         <img src="/static/images/contact/viber-logo-svgrepo-com.svg" alt="Телефон" class="contact-icon" />
                         <@spring.formInput "resumeForm.contactInfos[0].value",
-                        "class='form-control no-label' placeholder='+7 (XXX) XXX-XX-XX'" />
+                        "class='form-control no-label' placeholder='+996(XXX)XXXXXX'" />
                         <input type="hidden" name="contactInfos[0].typeId" value="1" />
                     </div>
                     <@spring.showErrors "<br>", "field-error" />
@@ -232,6 +232,7 @@
 
                 <div class="contact-item">
                     <div class="contact-input">
+<#--                        Да это vue, больше ничего интересного в голову не пришло)-->
                         <img src="/static/images/contact/vue-9-logo-svgrepo-com.svg" alt="WebSite" class="contact-icon" />
                         <@spring.formInput "resumeForm.contactInfos[5].value",
                         "class='form-control no-label' placeholder='https://yourportfolio.com'" />

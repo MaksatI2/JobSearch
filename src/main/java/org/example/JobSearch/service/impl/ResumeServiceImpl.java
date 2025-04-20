@@ -230,6 +230,45 @@ public class ResumeServiceImpl implements ResumeService {
             }
         }
 
+        if (resumeDto.getContactInfos() != null) {
+            List<ContactInfoDTO> contactInfos = resumeDto.getContactInfos();
+
+            for (int i = 0; i < contactInfos.size(); i++) {
+                ContactInfoDTO contact = contactInfos.get(i);
+                String value = contact.getValue();
+                Long typeId = contact.getTypeId();
+
+                if (value == null || value.trim().isEmpty()) {
+                    continue;
+                }
+
+                if (typeId == 1 && !value.matches("^996\\d{9}$")) {
+                    throw new CreateResumeException("contactInfos[" + i + "].value", "Телефон должен быть в формате 996XXXXXXXXX");
+                }
+
+                if (typeId == 2 && !value.matches("^[\\w.-]+@[\\w.-]+\\.[a-zA-Z]{2,6}$")) {
+                    throw new CreateResumeException("contactInfos[" + i + "].value", "Email некорректен");
+                }
+
+                if (typeId == 3 && !value.matches("^https://(www\\.)?linkedin\\.com/in/.+")) {
+                    throw new CreateResumeException("contactInfos[" + i + "].value", "LinkedIn должен быть в формате https://linkedin.com/in/username");
+                }
+
+                if (typeId == 4 && !value.matches("^https://(www\\.)?github\\.com/.+")) {
+                    throw new CreateResumeException("contactInfos[" + i + "].value", "GitHub должен быть в формате https://github.com/username");
+                }
+
+                if (typeId == 5 && !value.matches("^@\\w{5,}$") && !value.matches("^996\\d{9}$")) {
+                    throw new CreateResumeException("contactInfos[" + i + "].value", "Telegram должен быть в формате @username или номером 996XXXXXXXXX");
+                }
+
+                if (typeId == 6 && !value.matches("^(https?://)?[\\w.-]+\\.[a-z]{2,6}.*$")) {
+                    throw new CreateResumeException("contactInfos[" + i + "].value", "Ссылка на сайт некорректна");
+                }
+            }
+        }
+
+
     }
 
     @Override
