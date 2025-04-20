@@ -5,8 +5,8 @@ import lombok.*;
 
 @Getter
 @Setter
-@AllArgsConstructor(access = AccessLevel.PUBLIC)
-@NoArgsConstructor(access = AccessLevel.PUBLIC)
+@AllArgsConstructor
+@NoArgsConstructor
 @Builder
 public class EditWorkExperienceDTO {
 

@@ -2,9 +2,6 @@ package org.example.JobSearch.controller;
 
 
 import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.data.domain.Page;
-import org.springframework.security.access.AccessDeniedException;
-import org.springframework.ui.Model;
 import lombok.RequiredArgsConstructor;
 import org.example.JobSearch.dto.ResumeDTO;
 import org.example.JobSearch.dto.UserDTO;
@@ -14,11 +11,14 @@ import org.example.JobSearch.service.ResponseService;
 import org.example.JobSearch.service.ResumeService;
 import org.example.JobSearch.service.UserService;
 import org.example.JobSearch.service.VacancyService;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.security.Principal;
-import java.util.List;
 
 @Controller
 @RequestMapping("/profile")

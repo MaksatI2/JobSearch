@@ -8,8 +8,8 @@ import java.util.Date;
 
 @Getter
 @Setter
-@AllArgsConstructor(access = AccessLevel.PUBLIC)
-@NoArgsConstructor(access = AccessLevel.PUBLIC)
+@AllArgsConstructor
+@NoArgsConstructor
 @Builder
 public class EditEducationInfoDTO {
 

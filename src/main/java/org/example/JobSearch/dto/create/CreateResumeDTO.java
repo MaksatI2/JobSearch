@@ -12,8 +12,8 @@ import java.util.List;
 
 @Getter
 @Setter
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
-@NoArgsConstructor(access = AccessLevel.PUBLIC)
+@AllArgsConstructor
+@NoArgsConstructor
 @Builder
 public class CreateResumeDTO {
 

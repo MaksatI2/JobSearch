@@ -5,7 +5,6 @@ import org.example.JobSearch.dto.EditDTO.EditUserDTO;
 import org.example.JobSearch.dto.UserDTO;
 import org.example.JobSearch.service.EditUserService;
 import org.example.JobSearch.service.UserService;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
