@@ -19,8 +19,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     boolean existsByPhoneNumber(String phoneNumber);
 
-    Optional<User> findByPhoneNumber(String phoneNumber);
-
     @Query("SELECT u FROM User u WHERE u.email = :email AND u.accountType = :type")
     Optional<User> findEmployerByEmail(@Param("email") String email, @Param("type") AccountType type);
 
@@ -42,13 +40,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query("SELECT u FROM User u JOIN u.resumes r JOIN r.respondedApplicants v WHERE v.id = :vacancyId")
     List<User> findApplicantsByVacancyId(@Param("vacancyId") Long vacancyId);
 
-    @Query("SELECT CASE WHEN COUNT(u) > 0 THEN true ELSE false END " +
-            "FROM User u WHERE u.id = :userId AND u.accountType = :type")
-    boolean isUserOfType(@Param("userId") Long userId, @Param("type") AccountType type);
-
     @Query("SELECT u FROM User u WHERE u.accountType = :type")
     List<User> findAllByAccountType(@Param("type") AccountType type);
 
-    @Query("SELECT u.avatar FROM User u WHERE u.id = :userId")
-    Optional<String> findAvatarPathById(@Param("userId") Long userId);
 }
