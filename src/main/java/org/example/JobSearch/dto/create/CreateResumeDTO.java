@@ -21,7 +21,7 @@ public class CreateResumeDTO {
 
     private Long applicantId;
 
-    @NotNull(message = "ID категории не может быть пустым")
+    @NotNull(message = "Категория не может быть пустым")
     @Positive(message = "ID категории должен быть положительным числом")
     private Long categoryId;
 

@@ -105,6 +105,12 @@ public class VacancyServiceImpl implements VacancyService {
             vacancy.setCategory(category);
         }
 
+        vacancy.setName(editVacancyDto.getName());
+        vacancy.setDescription(editVacancyDto.getDescription());
+        vacancy.setSalary(editVacancyDto.getSalary());
+        vacancy.setExpFrom(editVacancyDto.getExpFrom());
+        vacancy.setExpTo(editVacancyDto.getExpTo());
+        vacancy.setIsActive(editVacancyDto.getIsActive());
         vacancy.setUpdateTime(new Timestamp(System.currentTimeMillis()));
         vacancyRepository.save(vacancy);
         log.info("Вакансия ID {} успешно обновлена", vacancyId);
@@ -192,35 +198,18 @@ public class VacancyServiceImpl implements VacancyService {
     @Override
     public void validateVacancyData(CreateVacancyDTO createVacancyDto, BindingResult bindingResult) {
         if (createVacancyDto.getSalary() != null) {
-            try {
-                Integer.parseInt(createVacancyDto.getSalary().toString());
-            } catch (NumberFormatException e) {
-                throw new CreateVacancyException("salary", "Зарплата должна содержать только цифры");
-            }
-
             if (createVacancyDto.getSalary() < 0) {
                 throw new CreateVacancyException("salary", "Зарплата не может быть отрицательной");
             }
         }
 
         if (createVacancyDto.getExpFrom() != null) {
-            try {
-                Integer.parseInt(createVacancyDto.getExpFrom().toString());
-            } catch (NumberFormatException e) {
-                throw new CreateVacancyException("expFrom", "Опыт 'от' должен содержать только цифры");
-            }
-
             if (createVacancyDto.getExpFrom() < 0) {
                 throw new CreateVacancyException("expFrom", "Опыт 'от' не может быть отрицательным");
             }
         }
 
         if (createVacancyDto.getExpTo() != null) {
-            try {
-                Integer.parseInt(createVacancyDto.getExpTo().toString());
-            } catch (NumberFormatException e) {
-                throw new CreateVacancyException("expTo", "Опыт 'до' должен содержать только цифры");
-            }
 
             if (createVacancyDto.getExpTo() < 0) {
                 throw new CreateVacancyException("expTo", "Опыт 'до' не может быть отрицательным");
@@ -237,11 +226,6 @@ public class VacancyServiceImpl implements VacancyService {
     @Override
     public void validateEditVacancyData(EditVacancyDTO editVacancyDto, BindingResult bindingResult) {
         if (editVacancyDto.getSalary() != null) {
-            try {
-                Integer.parseInt(editVacancyDto.getSalary().toString());
-            } catch (NumberFormatException e) {
-                throw new EditVacancyException("salary", "Зарплата должна содержать только цифры");
-            }
 
             if (editVacancyDto.getSalary() < 0) {
                 throw new EditVacancyException("salary", "Зарплата не может быть отрицательной");
@@ -249,11 +233,6 @@ public class VacancyServiceImpl implements VacancyService {
         }
 
         if (editVacancyDto.getExpFrom() != null) {
-            try {
-                Integer.parseInt(editVacancyDto.getExpFrom().toString());
-            } catch (NumberFormatException e) {
-                throw new EditVacancyException("expFrom", "Опыт 'от' должен содержать только цифры");
-            }
 
             if (editVacancyDto.getExpFrom() < 0) {
                 throw new EditVacancyException("expFrom", "Опыт 'от' не может быть отрицательным");
@@ -261,11 +240,6 @@ public class VacancyServiceImpl implements VacancyService {
         }
 
         if (editVacancyDto.getExpTo() != null) {
-            try {
-                Integer.parseInt(editVacancyDto.getExpTo().toString());
-            } catch (NumberFormatException e) {
-                throw new EditVacancyException("expTo", "Опыт 'до' должен содержать только цифры");
-            }
 
             if (editVacancyDto.getExpTo() < 0) {
                 throw new EditVacancyException("expTo", "Опыт 'до' не может быть отрицательным");

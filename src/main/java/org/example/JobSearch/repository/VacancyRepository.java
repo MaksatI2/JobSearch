@@ -24,21 +24,6 @@ public interface VacancyRepository extends JpaRepository<Vacancy, Long> {
             "v.updateTime DESC")
     Page<Vacancy> findAllActiveSorted(@Param("sort") String sort, Pageable pageable);
 
-    long countByIsActiveTrue();
-
-    @Query(value = """
-        WITH RECURSIVE category_tree(id) AS (
-            SELECT id FROM categories WHERE id = :categoryId
-            UNION ALL
-            SELECT c.id FROM categories c
-            JOIN category_tree ct ON c.parent_id = ct.id
-        )
-        SELECT v.* FROM vacancies v WHERE v.category_id IN 
-        (SELECT id FROM category_tree)
-        AND v.is_active = TRUE
-    """, nativeQuery = true)
-    List<Vacancy> findActiveByCategoryTree(@Param("categoryId") Long categoryId);
-
     @Query("""
         SELECT v FROM Vacancy v
         JOIN v.applicants ra
