@@ -171,6 +171,13 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new UserNotFoundException("Нету пользователя с таким Email"));
     }
 
+    @Override
+    public UserDTO getUserById(Long userId) {
+        return userRepository.findById(userId)
+                .map(this::convertToUserDTO)
+                .orElseThrow(() -> new UserNotFoundException("Пользователь не найден: " + userId));
+    }
+
     private UserDTO convertToUserDTO(User user) {
         String avatarUrl = user.getAvatar() == null || user.getAvatar().isEmpty() || user.getAvatar().equals(DEFAULT_AVATAR)
                 ? "/api/users/avatar/default"

@@ -15,6 +15,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -67,5 +68,57 @@ public class ProfileController {
         }
 
         return "user/profile";
+    }
+
+    @GetMapping("/viewApplicant/{userId}")
+    public String viewApplicantProfile(
+            @PathVariable Long userId,
+            Model model,
+            @RequestParam(name = "page", defaultValue = "1") int page) {
+
+        UserDTO user = userService.getUserById(userId);
+        if (user == null || user.getAccountType() != AccountType.APPLICANT) {
+            return "errors/404";
+        }
+
+        String avatarUrl = "/api/users/" + user.getId() + "/avatar";
+        user.setAvatar(avatarUrl);
+
+        model.addAttribute("user", user);
+        model.addAttribute("isViewMode", true);
+
+        int pageSize = 3;
+        Page<ResumeDTO> resumesPage = resumeService.getResumesByApplicant(userId, page - 1, pageSize);
+        model.addAttribute("resumes", resumesPage.getContent());
+        model.addAttribute("currentResumePage", page);
+        model.addAttribute("totalResumePages", resumesPage.getTotalPages());
+
+        return "user/applicantProfile";
+    }
+
+    @GetMapping("/viewEmployer/{userId}")
+    public String viewEmployerProfile(
+            @PathVariable Long userId,
+            Model model,
+            @RequestParam(name = "page", defaultValue = "1") int page) {
+
+        UserDTO user = userService.getUserById(userId);
+        if (user == null || user.getAccountType() != AccountType.EMPLOYER) {
+            return "errors/404";
+        }
+
+        String avatarUrl = "/api/users/" + user.getId() + "/avatar";
+        user.setAvatar(avatarUrl);
+
+        model.addAttribute("user", user);
+        model.addAttribute("isViewMode", true);
+
+        int pageSize = 3;
+        Page<VacancyDTO> vacanciesPage = vacancyService.getVacanciesByEmployer(userId, page - 1, pageSize);
+        model.addAttribute("vacancies", vacanciesPage.getContent());
+        model.addAttribute("currentVacancyPage", page);
+        model.addAttribute("totalVacancyPages", vacanciesPage.getTotalPages());
+
+        return "user/employerProfile";
     }
 }

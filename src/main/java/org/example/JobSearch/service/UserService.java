@@ -34,4 +34,6 @@ public interface UserService {
     boolean userExists(String email);
 
     Long getUserId(String email);
+
+    UserDTO getUserById(Long userId);
 }
