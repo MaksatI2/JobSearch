@@ -36,16 +36,17 @@ public class ResumeViewController {
     public String getAllActiveResumes(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size,
+            @RequestParam(required = false) String sort,
             Model model) {
 
-        Pageable pageable = PageRequest.of(page, size, Sort.by("updateTime").descending());
-        Page<ResumeDTO> resumesPage = resumeService.getAllResumes(pageable);
+        Page<ResumeDTO> resumesPage = resumeService.getAllResumes(sort, PageRequest.of(page, size));
 
         model.addAttribute("resumes", resumesPage.getContent());
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", resumesPage.getTotalPages());
         model.addAttribute("totalItems", resumesPage.getTotalElements());
         model.addAttribute("pageSize", size);
+        model.addAttribute("selectedSort", sort);
 
         return "resumes/allResumes";
     }

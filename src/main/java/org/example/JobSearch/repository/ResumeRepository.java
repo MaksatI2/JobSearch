@@ -1,6 +1,7 @@
 package org.example.JobSearch.repository;
 
 import org.example.JobSearch.model.Resume;
+import org.example.JobSearch.model.Vacancy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -15,7 +16,12 @@ import java.util.List;
 @Repository
 public interface ResumeRepository extends JpaRepository<Resume, Long> {
 
-    Page<Resume> findByIsActiveTrue(Pageable pageable);
+    @Query("SELECT r FROM Resume r WHERE r.isActive = true " +
+            "ORDER BY " +
+            "CASE WHEN :sort = 'salaryAsc' THEN r.salary END ASC, " +
+            "CASE WHEN :sort = 'salaryDesc' THEN r.salary END DESC," +
+            "r.updateTime DESC")
+    Page<Resume> findAllActiveSorted(@Param("sort") String sort, Pageable pageable);
 
     Page<Resume> findByApplicantId(Long applicantId, Pageable pageable);
 

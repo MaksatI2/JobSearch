@@ -22,7 +22,7 @@ public interface ResumeService {
     void deleteResume(Long resumeId);
     void refreshResume(Long resumeId);
 
-    Page<ResumeDTO> getAllResumes(Pageable pageable);
+    Page<ResumeDTO> getAllResumes(String sort,Pageable pageable);
     ResumeDTO getResumeById(Long id);
 
 //    List<ResumeDTO> getUserResumes(Long applicants_id);

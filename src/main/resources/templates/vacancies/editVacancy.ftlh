@@ -60,7 +60,7 @@
                         <option value="${category.id}" <#if vacancyForm.categoryId == category.id>selected</#if>>${category.name}</option>
                     </#list>
                 </select>
-                <@spring.showErrors "categoryId" "error" />
+                <@spring.showErrors "<br>" "error" />
             </div>
 
             <div class="form-group">

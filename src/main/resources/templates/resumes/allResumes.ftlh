@@ -33,6 +33,31 @@
     <div class="container">
         <h1 class="page-title">Список активных резюме</h1>
 
+        <div class="filters-container">
+            <form method="get" action="/resumes/allResumes" class="filter-form">
+                <input type="hidden" name="page" value="0">
+                <input type="hidden" name="size" value="${pageSize}">
+
+                <div class="filter-group">
+                    <label for="sort">Сортировка:</label>
+                    <select id="sort" name="sort" class="form-control">
+                        <option value="">По дате (новые)</option>
+                        <option value="salaryAsc" <#if selectedSort?? && selectedSort == "salaryAsc">selected</#if>>
+                            По зарплате (↑)
+                        </option>
+                        <option value="salaryDesc" <#if selectedSort?? && selectedSort == "salaryDesc">selected</#if>>
+                            По зарплате (↓)
+                        </option>
+                    </select>
+                </div>
+
+                <button type="submit" class="submit-btn">Применить</button>
+                <#if selectedSort??>
+                    <a href="/vacancies?page=0&size=${pageSize}" class="reset-btn">Сбросить</a>
+                </#if>
+            </form>
+        </div>
+
         <#if resumes?? && resumes?has_content>
             <div class="resumes-grid">
                 <#list resumes as resume>

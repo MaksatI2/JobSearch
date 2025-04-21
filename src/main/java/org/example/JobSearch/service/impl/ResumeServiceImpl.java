@@ -167,8 +167,8 @@ public class ResumeServiceImpl implements ResumeService {
 
     @Transactional(readOnly = true)
     @Override
-    public Page<ResumeDTO> getAllResumes(Pageable pageable) {
-        Page<Resume> resumes = resumeRepository.findByIsActiveTrue(pageable);
+    public Page<ResumeDTO> getAllResumes(String sort, Pageable pageable) {
+        Page<Resume> resumes = resumeRepository.findAllActiveSorted(sort,pageable);
         if (resumes.isEmpty()) {
             throw new ResumeNotFoundException("Активные резюме не найдены");
         }
