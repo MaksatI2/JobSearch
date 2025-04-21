@@ -21,10 +21,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/resumes")
@@ -185,14 +183,18 @@ public class ResumeViewController {
         editResumeDto.setEducationInfos(resume.getEducationInfos());
         editResumeDto.setWorkExperiences(resume.getWorkExperiences());
 
+        List<ContactInfoDTO> existingContacts = resume.getContactInfos() != null ? resume.getContactInfos() : new ArrayList<>();
+        Map<Long, ContactInfoDTO> contactMap = existingContacts.stream()
+                .collect(Collectors.toMap(ContactInfoDTO::getTypeId, c -> c));
+
         List<ContactInfoDTO> contactInfos = new ArrayList<>();
-        if (resume.getContactInfos() != null) {
-            contactInfos = resume.getContactInfos();
-        } else {
-            for (long i = 1; i <= 6; i++) {
-                ContactInfoDTO contact = new ContactInfoDTO();
-                contact.setTypeId(i);
-                contactInfos.add(contact);
+        for (long i = 1; i <= 6; i++) {
+            if (contactMap.containsKey(i)) {
+                contactInfos.add(contactMap.get(i));
+            } else {
+                ContactInfoDTO emptyContact = new ContactInfoDTO();
+                emptyContact.setTypeId(i);
+                contactInfos.add(emptyContact);
             }
         }
         editResumeDto.setContactInfos(contactInfos);

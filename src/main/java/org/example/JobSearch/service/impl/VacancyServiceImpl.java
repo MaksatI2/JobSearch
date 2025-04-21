@@ -40,20 +40,21 @@ public class VacancyServiceImpl implements VacancyService {
         return vacanciesPage.map(this::toDTO);
     }
 
-    @Transactional(readOnly = true)
-    @Override
-    public List<VacancyDTO> getVacanciesByCategory(Long categoryId) {
-        log.info("Поиск вакансий по категории ID: {}", categoryId);
-        List<Vacancy> vacancies = vacancyRepository.findActiveByCategoryTree(categoryId);
-
-        if (vacancies.isEmpty()) {
-            log.warn("Вакансии по категории ID {} не найдены", categoryId);
-            throw new CategoryNotFoundException("Вакансий по категории ID не найдено: " + categoryId);
-        }
-
-        log.debug("Найдено {} вакансий по категории ID: {}", vacancies.size(), categoryId);
-        return vacancies.stream().map(this::toDTO).collect(Collectors.toList());
-    }
+//    Оставил на потом при поиске по категории
+//    @Transactional(readOnly = true)
+//    @Override
+//    public List<VacancyDTO> getVacanciesByCategory(Long categoryId) {
+//        log.info("Поиск вакансий по категории ID: {}", categoryId);
+//        List<Vacancy> vacancies = vacancyRepository.findActiveByCategoryTree(categoryId);
+//
+//        if (vacancies.isEmpty()) {
+//            log.warn("Вакансии по категории ID {} не найдены", categoryId);
+//            throw new CategoryNotFoundException("Вакансий по категории ID не найдено: " + categoryId);
+//        }
+//
+//        log.debug("Найдено {} вакансий по категории ID: {}", vacancies.size(), categoryId);
+//        return vacancies.stream().map(this::toDTO).collect(Collectors.toList());
+//    }
 
     @Override
     @Transactional

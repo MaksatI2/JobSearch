@@ -13,7 +13,8 @@ import java.util.List;
 public interface VacancyService {
     Page<VacancyDTO> getVacanciesByEmployer(Long employerId, int page, int size);
 
-    List<VacancyDTO> getVacanciesByCategory(Long categoryId);
+//      оставил на потом при поиске по категории
+//    List<VacancyDTO> getVacanciesByCategory(Long categoryId);
 
     void createVacancy(CreateVacancyDTO createvacancyDto, Long employerId);
 
