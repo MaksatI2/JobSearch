@@ -46,6 +46,9 @@ public interface UserRepository extends JpaRepository<User, Long> {
             "FROM User u WHERE u.id = :userId AND u.accountType = :type")
     boolean isUserOfType(@Param("userId") Long userId, @Param("type") AccountType type);
 
+    @Query("SELECT u FROM User u WHERE u.accountType = :type")
+    List<User> findAllByAccountType(@Param("type") AccountType type);
+
     @Query("SELECT u.avatar FROM User u WHERE u.id = :userId")
     Optional<String> findAvatarPathById(@Param("userId") Long userId);
 }

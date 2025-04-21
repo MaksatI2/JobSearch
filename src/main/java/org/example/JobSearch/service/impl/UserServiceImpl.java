@@ -146,6 +146,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public List<UserDTO> getAllEmployers() {
+        List<User> employers = userRepository.findAllByAccountType(AccountType.EMPLOYER);
+        return employers.stream().map(this::convertToUserDTO).toList();
+    }
+
+    @Override
     public boolean userExists(String email) {
         return userRepository.existsByEmail(email);
     }

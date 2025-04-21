@@ -19,7 +19,6 @@ public interface UserService {
 
     UserDTO findApplicantByPhone(String phoneNumber);
     List<UserDTO> findApplicantsByName(String name);
-
     UserDTO findEmployer(String email);
     UserDTO findEmployerByPhone(String phoneNumber);
     List<UserDTO> findEmployersByName(String name);
@@ -30,6 +29,7 @@ public interface UserService {
     ResponseEntity<?> getAvatarByUserId(Long userId);
 
     List<UserDTO> getApplicantsVacancy(Long vacancyId);
+    List<UserDTO> getAllEmployers();
 
     boolean userExists(String email);
 
