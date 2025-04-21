@@ -421,3 +421,20 @@ body {
 .reset-btn:hover {
     background: #e2e8f0;
 }
+
+.company-profile-btn {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 8px 16px;
+    background-color: var(--primary);
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+    font-size: 14px;
+    transition: background-color 0.3s;
+}
+
+.company-profile-btn:hover {
+    background-color: var(--green);
+}
+

@@ -62,7 +62,7 @@
             </div>
 
             <div class="right-column">
-                <h3>Мои резюме</h3>
+                <h3>Резюме соискателя</h3>
                 <#list resumes![] as resume>
                     <#if resume.id??>
                         <div class="resume-card">

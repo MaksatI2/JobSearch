@@ -61,7 +61,7 @@
             </div>
 
             <div class="right-column">
-                <h3>Мои вакансии</h3>
+                <h3>Вакансии компании</h3>
                 <#list vacancies![] as vacancy>
                     <#if vacancy.id??>
                         <div class="vacancy-card">

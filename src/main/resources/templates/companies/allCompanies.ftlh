@@ -15,7 +15,6 @@
         <div class="nav-links">
             <a href="/" class="nav-link">Главная</a>
             <a href="/vacancies" class="nav-link">Вакансии</a>
-            <a href="/resumes/allResumes" class="nav-link">Резюме</a>
             <a href="/company/allCompanies" class="nav-link active">Компании</a>
             <#if Session.SPRING_SECURITY_CONTEXT??>
                 <a href="/profile" class="nav-link">Профиль</a>

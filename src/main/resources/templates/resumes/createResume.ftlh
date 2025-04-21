@@ -51,16 +51,15 @@
 
 
             <div class="form-group">
-                <label for="categoryId">Категория*</label>
-                <select class="form-control" id="categoryId" name="categoryId" required>
-                    <option value="">Выберите категорию</option>
-                    <#list categories as category>
-                        <option value="${category.id}"
-                                <#if resumeForm.categoryId?? && resumeForm.categoryId == category.id>selected</#if>>
-                            ${category.name}
-                        </option>
-                    </#list>
-                </select>
+                    <@spring.bind "resumeForm.categoryId"/>
+                    <select class="form-select ${spring.status.error?string('is-invalid', '')}"
+                            id="categoryId" name="${spring.status.expression}" onchange="toggleFields()">
+                        <option value="">Выберите категорию</option>
+                        <#list categories as category>
+                            <option value="${category.id}" ${(spring.stringStatusValue == category.id?string)?string("selected", "")}>${category.name}</option>
+                        </#list>
+                    </select>
+                <@spring.showErrors "<br>", "error" />
             </div>
             <div class="form-row">
                 <div class="form-group">

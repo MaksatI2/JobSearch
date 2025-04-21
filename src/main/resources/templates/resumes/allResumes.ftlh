@@ -43,43 +43,13 @@
                                 <span class="salary">${resume.salary} с</span>
                             </div>
 
-                            <#if resume.workExperiences?? && resume.workExperiences?has_content>
-                                <div class="work-experience">
-                                    <h3 class="section-title">Опыт работы</h3>
-                                    <span class="author">
-                                        <svg class="icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                              d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-                                        </svg>
-                                              ${resume.applicantName?default("Неизвестно")}
-                                    </span>
-                                    <#list resume.workExperiences as experience>
-                                        <div class="experience-item">
-                                            <p class="experience-title"><strong>${experience.companyName}</strong>
-                                                — ${experience.position}</p>
-                                            <p class="experience-details">Стаж: ${experience.years} лет</p>
-                                            <p class="experience-details">
-                                                Обязанности: ${experience.responsibilities}</p>
-                                        </div>
-                                    </#list>
-                                </div>
-                            </#if>
-
-                            <#if resume.educationInfos?? && resume.educationInfos?has_content>
-                                <div class="education">
-                                    <h3 class="section-title">Образование</h3>
-                                    <#list resume.educationInfos as education>
-                                        <div class="education-item">
-                                            <p class="education-title"><strong>${education.institution}</strong>
-                                                — ${education.program}</p>
-                                            <p class="education-details">Степень: ${education.degree}</p>
-                                            <p class="education-details">
-                                                Период: ${education.startDate?string("dd.MM.yyyy")}
-                                                – ${education.endDate?string("dd.MM.yyyy")}</p>
-                                        </div>
-                                    </#list>
-                                </div>
-                            </#if>
+                            <div class="resume-author">
+                                <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                          d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                                </svg>
+                                <span>${resume.applicantName!'Неизвестно'}</span>
+                            </div>
 
                             <div class="resume-meta">
                                 <span class="update-time">
@@ -90,6 +60,13 @@
                                     ${resume.updateTime?string("dd.MM.yyyy")}
                                 </span>
                             </div>
+                            <#if Session.SPRING_SECURITY_CONTEXT?? && !Session.SPRING_SECURITY_CONTEXT.authentication.authorities?seq_contains('APPLICANT')>
+                                <#if resume.applicantId??>
+                                    <a href="/profile/viewApplicant/${resume.applicantId}" class="applicant-profile-btn">
+                                        Профиль соискателя
+                                    </a>
+                                </#if>
+                            </#if>
                         </article>
                     </a>
                 </#list>

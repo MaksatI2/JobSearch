@@ -175,9 +175,9 @@
                                 <input type="text"
                                        name="contactInfos[${contact?index}].value"
                                        class="form-control no-label"
-                                       placeholder="996XXXXXXXXX"
+                                       placeholder="996700123456"
                                        pattern="^996\d{9}$"
-                                       title="Формат: 996(XXX)XXXXXX"
+                                       title="Формат: 996700123456"
                                        value="${contact.value!''}" />
                                 <input type="hidden" name="contactInfos[${contact?index}].typeId" value="1" />
                             <#elseif contact.typeId == 2>
@@ -214,9 +214,9 @@
                                 <input type="text"
                                        name="contactInfos[${contact?index}].value"
                                        class="form-control no-label"
-                                       placeholder="@username или 996XXXXXXXXX"
+                                       placeholder="@username или 996700123456"
                                        pattern="^@\w{5,}$|^996\d{9}$"
-                                       title="Формат: @username или 996XXXXXXXXX"
+                                       title="Формат: @username или 996700123456"
                                        value="${contact.value!''}" />
                                 <input type="hidden" name="contactInfos[${contact?index}].typeId" value="5" />
                             <#elseif contact.typeId == 6>

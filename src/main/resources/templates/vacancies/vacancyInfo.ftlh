@@ -84,6 +84,14 @@
                 </div>
             </div>
 
+            <#if Session.SPRING_SECURITY_CONTEXT?? && !Session.SPRING_SECURITY_CONTEXT.authentication.authorities?seq_contains('EMPLOYER')>
+                <#if vacancy.authorId??>
+                    <a href="/profile/viewEmployer/${vacancy.authorId}" class="company-profile-btn">
+                        Профиль компании
+                    </a>
+                </#if>
+            </#if>
+
             <div class="actions">
                 <a href="/vacancies" class="btn btn-back">Назад к списку</a>
                 <#if isAuthor>

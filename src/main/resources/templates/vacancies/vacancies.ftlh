@@ -7,7 +7,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/static/css/vacancies/vacancies.css">
     <link rel="icon" href="/static/images/logo-transparent.png" type="image/x-icon">
-
 </head>
 <body>
 <header class="header">
@@ -20,6 +19,8 @@
             <a href="/vacancies" class="nav-link active">Вакансии</a>
             <#if Session.SPRING_SECURITY_CONTEXT?? && Session.SPRING_SECURITY_CONTEXT.authentication.authorities?seq_contains('EMPLOYER')>
                 <a href="/resumes/allResumes" class="nav-link">Резюме</a>
+            <#else>
+                <a href="/company/allCompanies" class="nav-link">Компании</a>
             </#if>
             <#if Session.SPRING_SECURITY_CONTEXT??>
                 <a href="/profile" class="nav-link">Профиль</a>
@@ -109,6 +110,13 @@
                             </span>
                         </div>
                     </a>
+                    <#if Session.SPRING_SECURITY_CONTEXT?? && !Session.SPRING_SECURITY_CONTEXT.authentication.authorities?seq_contains('EMPLOYER')>
+                        <#if vacancy.authorId??>
+                            <a href="/profile/viewEmployer/${vacancy.authorId}" class="company-profile-btn">
+                                Профиль компании
+                            </a>
+                        </#if>
+                    </#if>
                 </div>
             </#list>
         </div>
