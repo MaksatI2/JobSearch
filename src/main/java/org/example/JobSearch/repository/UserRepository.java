@@ -20,22 +20,13 @@ public interface UserRepository extends JpaRepository<User, Long> {
     boolean existsByPhoneNumber(String phoneNumber);
 
     @Query("SELECT u FROM User u WHERE u.email = :email AND u.accountType = :type")
-    Optional<User> findEmployerByEmail(@Param("email") String email, @Param("type") AccountType type);
+    Optional<User> findByEmailAndType(@Param("email") String email, @Param("type") AccountType type);
 
     @Query("SELECT u FROM User u WHERE u.phoneNumber = :phoneNumber AND u.accountType = :type")
-    Optional<User> findEmployerByPhone(@Param("phoneNumber") String phoneNumber, @Param("type") AccountType type);
+    Optional<User> findByPhoneAndType(@Param("phoneNumber") String phoneNumber, @Param("type") AccountType type);
 
     @Query("SELECT u FROM User u WHERE u.name = :name AND u.accountType = :type")
-    List<User> findEmployersByName(@Param("name") String name, @Param("type") AccountType type);
-
-    @Query("SELECT u FROM User u WHERE u.email = :email AND u.accountType = :type")
-    Optional<User> findApplicantByEmail(@Param("email") String email, @Param("type") AccountType type);
-
-    @Query("SELECT u FROM User u WHERE u.phoneNumber = :phoneNumber AND u.accountType = :type")
-    Optional<User> findApplicantByPhone(@Param("phoneNumber") String phoneNumber, @Param("type") AccountType type);
-
-    @Query("SELECT u FROM User u WHERE u.name = :name AND u.accountType = :type")
-    List<User> findApplicantsByName(@Param("name") String name, @Param("type") AccountType type);
+    List<User> findByNameAndType(@Param("name") String name, @Param("type") AccountType type);
 
     @Query("SELECT u FROM User u JOIN u.resumes r JOIN r.respondedApplicants v WHERE v.id = :vacancyId")
     List<User> findApplicantsByVacancyId(@Param("vacancyId") Long vacancyId);

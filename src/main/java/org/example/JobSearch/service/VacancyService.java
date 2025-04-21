@@ -17,10 +17,9 @@ public interface VacancyService {
 //    List<VacancyDTO> getVacanciesByCategory(Long categoryId);
 
     void createVacancy(CreateVacancyDTO createvacancyDto, Long employerId);
-
     void updateVacancy(Long vacancyId, EditVacancyDTO editvacancyDto);
-
     void deleteVacancy(Long vacancyId);
+    void refreshVacancy(Long vacancyId);
 
     Page<VacancyDTO> getAllVacanciesSorted(String sort, Pageable pageable);
 
@@ -29,8 +28,6 @@ public interface VacancyService {
     VacancyDTO getVacancyById(Long id);
 
     EditVacancyDTO convertToEditDTO(VacancyDTO dto);
-
-    void refreshVacancy(Long vacancyId);
 
     void validateVacancyData(CreateVacancyDTO  createvacancyDto, BindingResult bindingResult);
 

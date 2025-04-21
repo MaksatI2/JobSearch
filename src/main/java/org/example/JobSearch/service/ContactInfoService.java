@@ -7,7 +7,6 @@ import java.util.List;
 
 public interface ContactInfoService {
     void createContactInfo(Long resumeId, ContactInfoDTO contactDto);
-
     void deleteByResumeId(Long resumeId);
 
     List<ContactInfoDTO> getContactInfoByResumeId(Long resumeId);

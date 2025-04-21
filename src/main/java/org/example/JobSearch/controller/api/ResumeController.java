@@ -47,9 +47,9 @@ public class ResumeController {
 //            return ResponseEntity.ok(resumes);
 //    }
 
-    @GetMapping("/category/{categoryId}")
-    public ResponseEntity<?> getResumesByCategory(@PathVariable @Valid Long categoryId) {
-            List<ResumeDTO> resumes = resumeService.getResumesByCategory(categoryId);
-            return ResponseEntity.ok(resumes);
-    }
+//    @GetMapping("/category/{categoryId}")
+//    public ResponseEntity<?> getResumesByCategory(@PathVariable @Valid Long categoryId) {
+//            List<ResumeDTO> resumes = resumeService.getResumesByCategory(categoryId);
+//            return ResponseEntity.ok(resumes);
+//    }
 }

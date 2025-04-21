@@ -15,7 +15,7 @@ import java.util.List;
 @RequestMapping("api/vacancies")
 @RequiredArgsConstructor
 public class VacancyController {
-    private final VacancyService vacancyService;
+//    private final VacancyService vacancyService;
 
 
 //    @PutMapping("/{id}")
@@ -24,10 +24,10 @@ public class VacancyController {
 //        return ResponseEntity.ok("Vacancy updated successfully");
 //    }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteVacancy(@PathVariable @Valid Long id) {
-        vacancyService.deleteVacancy(id);
-        return ResponseEntity.ok("Vacancy deleted successfully");
+//    @DeleteMapping("/{id}")
+//    public ResponseEntity<String> deleteVacancy(@PathVariable @Valid Long id) {
+//        vacancyService.deleteVacancy(id);
+//        return ResponseEntity.ok("Vacancy deleted successfully");
     }
 
 
@@ -37,9 +37,8 @@ public class VacancyController {
 //            return ResponseEntity.ok(vacancies);
 //    }
 
-    @GetMapping("/ApplToVacancy/{id}")
-    public ResponseEntity<?> getRespApplToVacancy(@PathVariable @Valid Long id) {
-            List<VacancyDTO> vacancies = vacancyService.getRespApplToVacancy(id);
-            return ResponseEntity.ok(vacancies);
-    }
-}
+//    @GetMapping("/ApplToVacancy/{id}")
+//    public ResponseEntity<?> getRespApplToVacancy(@PathVariable @Valid Long id) {
+//            List<VacancyDTO> vacancies = vacancyService.getRespApplToVacancy(id);
+//            return ResponseEntity.ok(vacancies);
+//    }

@@ -19,20 +19,17 @@ public interface ResumeService {
 
     void createResume(CreateResumeDTO resumeDto, BindingResult bindingResult);
     void updateResume(Long resumeId, EditResumeDTO editresumeDto);
-
     void deleteResume(Long resumeId);
-
     void refreshResume(Long resumeId);
 
     Page<ResumeDTO> getAllResumes(Pageable pageable);
+    ResumeDTO getResumeById(Long id);
 
 //    List<ResumeDTO> getUserResumes(Long applicants_id);
 
-    List<ResumeDTO> getResumesByCategory(Long categoryId);
+//    List<ResumeDTO> getResumesByCategory(Long categoryId);
 
     void validateCreateResume(CreateResumeDTO resumeDto, BindingResult bindingResult);
-
-    ResumeDTO getResumeById(Long id);
 
     void validateEducation(List<EducationInfoDTO> educationInfos, BindingResult bindingResult);
 }

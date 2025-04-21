@@ -185,15 +185,15 @@ public class ResumeServiceImpl implements ResumeService {
 //        return resumes.stream().map(this::toDTO).collect(Collectors.toList());
 //    }
 
-    @Override
-    @Transactional(readOnly = true)
-    public List<ResumeDTO> getResumesByCategory(Long categoryId) {
-        List<Resume> resumes = resumeRepository.findByCategoryIdAndIsActiveTrue(categoryId);
-        if (resumes.isEmpty()) {
-            throw new CategoryNotFoundException("Резюме по категории ID не найдено: " + categoryId);
-        }
-        return resumes.stream().map(this::toDTO).collect(Collectors.toList());
-    }
+//    @Override
+//    @Transactional(readOnly = true)
+//    public List<ResumeDTO> getResumesByCategory(Long categoryId) {
+//        List<Resume> resumes = resumeRepository.findByCategoryIdAndIsActiveTrue(categoryId);
+//        if (resumes.isEmpty()) {
+//            throw new CategoryNotFoundException("Резюме по категории ID не найдено: " + categoryId);
+//        }
+//        return resumes.stream().map(this::toDTO).collect(Collectors.toList());
+//    }
 
     @Override
     @Transactional(readOnly = true)

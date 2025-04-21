@@ -13,9 +13,9 @@ import org.springframework.web.bind.annotation.*;
 public class ResponseController {
     private final ApplicationService applicationService;
 
-    @PostMapping("/{vacancyId}")
-    public ResponseEntity<String> responseToVacancy(@PathVariable("vacancyId") Long vacancyId, @RequestBody RespondedApplicantDTO respondedApplicantDTO) {
-        applicationService.respondToVacancy(vacancyId,respondedApplicantDTO);
-        return ResponseEntity.status(HttpStatus.CREATED).body("Response submitted successfully");
-    }
+//    @PostMapping("/{vacancyId}")
+//    public ResponseEntity<String> responseToVacancy(@PathVariable("vacancyId") Long vacancyId, @RequestBody RespondedApplicantDTO respondedApplicantDTO) {
+//        applicationService.respondToVacancy(vacancyId,respondedApplicantDTO);
+//        return ResponseEntity.status(HttpStatus.CREATED).body("Response submitted successfully");
+//    }
 }
