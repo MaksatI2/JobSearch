@@ -29,6 +29,8 @@ public interface ResumeService {
 
 //    List<ResumeDTO> getResumesByCategory(Long categoryId);
 
+    Resume getResumeEntityById(Long id);
+
     void validateCreateResume(CreateResumeDTO resumeDto, BindingResult bindingResult);
 
     void validateEducation(List<EducationInfoDTO> educationInfos, BindingResult bindingResult);

@@ -8,15 +8,13 @@ import org.example.JobSearch.dto.EducationInfoDTO;
 import org.example.JobSearch.dto.ResumeDTO;
 import org.example.JobSearch.dto.WorkExperienceDTO;
 import org.example.JobSearch.dto.create.CreateResumeDTO;
-import org.example.JobSearch.exceptions.CategoryNotFoundException;
 import org.example.JobSearch.exceptions.CreateResumeException;
 import org.example.JobSearch.exceptions.ResumeNotFoundException;
-import org.example.JobSearch.model.*;
-import org.example.JobSearch.repository.*;
-import org.example.JobSearch.service.ContactInfoService;
-import org.example.JobSearch.service.EducationInfoService;
-import org.example.JobSearch.service.ResumeService;
-import org.example.JobSearch.service.WorkExperienceService;
+import org.example.JobSearch.model.Category;
+import org.example.JobSearch.model.Resume;
+import org.example.JobSearch.model.User;
+import org.example.JobSearch.repository.ResumeRepository;
+import org.example.JobSearch.service.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -26,18 +24,24 @@ import org.springframework.validation.BindingResult;
 
 import java.sql.Timestamp;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class ResumeServiceImpl implements ResumeService {
     private final ResumeRepository resumeRepository;
-    private final CategoryRepository categoryRepository;
-    private final UserRepository userRepository;
     private final EducationInfoService educationInfoService;
     private final WorkExperienceService workExperienceService;
     private final ContactInfoService contactInfoService;
+    private final UserService userService;
+    private final CategoryService categoryService;
+
+    @Override
+    @Transactional(readOnly = true)
+    public Resume getResumeEntityById(Long id) {
+        return resumeRepository.findById(id)
+                .orElseThrow(() -> new ResumeNotFoundException("Резюме не найдено с ID: " + id));
+    }
 
     @Transactional(readOnly = true)
     @Override
@@ -53,11 +57,9 @@ public class ResumeServiceImpl implements ResumeService {
         log.info("Создание нового резюме для соискателя ID: {}", resumeDto.getApplicantId());
         validateCreateResume(resumeDto, bindingResult);
 
-        User applicant = userRepository.findById(resumeDto.getApplicantId())
-                .orElseThrow(() -> new IllegalArgumentException("Соискатель не найден"));
+        User applicant = userService.getUserId(resumeDto.getApplicantId());
 
-        Category category = categoryRepository.findById(resumeDto.getCategoryId())
-                .orElseThrow(() -> new CategoryNotFoundException("Категория с ID " + resumeDto.getCategoryId() + " не найдена"));
+        Category category = categoryService.getCategoryById(resumeDto.getCategoryId());
 
         Timestamp now = new Timestamp(System.currentTimeMillis());
 
@@ -174,26 +176,6 @@ public class ResumeServiceImpl implements ResumeService {
         }
         return resumes.map(this::toDTO);
     }
-
-//    @Override
-//    @Transactional(readOnly = true)
-//    public List<ResumeDTO> getUserResumes(Long applicantId) {
-//        List<Resume> resumes = resumeRepository.findByApplicantId(applicantId);
-//        if (resumes.isEmpty()) {
-//            throw new ResumeNotFoundException("Резюме для соискателя ID не найдены: " + applicantId);
-//        }
-//        return resumes.stream().map(this::toDTO).collect(Collectors.toList());
-//    }
-
-//    @Override
-//    @Transactional(readOnly = true)
-//    public List<ResumeDTO> getResumesByCategory(Long categoryId) {
-//        List<Resume> resumes = resumeRepository.findByCategoryIdAndIsActiveTrue(categoryId);
-//        if (resumes.isEmpty()) {
-//            throw new CategoryNotFoundException("Резюме по категории ID не найдено: " + categoryId);
-//        }
-//        return resumes.stream().map(this::toDTO).collect(Collectors.toList());
-//    }
 
     @Override
     @Transactional(readOnly = true)

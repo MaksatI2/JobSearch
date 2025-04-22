@@ -5,7 +5,6 @@ import org.example.JobSearch.dto.EducationInfoDTO;
 import org.example.JobSearch.model.EducationInfo;
 import org.example.JobSearch.model.Resume;
 import org.example.JobSearch.repository.EducationInfoRepository;
-import org.example.JobSearch.repository.ResumeRepository;
 import org.example.JobSearch.service.EducationInfoService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,15 +16,14 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class EducationInfoServiceImpl implements EducationInfoService {
     private final EducationInfoRepository educationInfoRepository;
-    private final ResumeRepository resumeRepository;
 
     @Override
     @Transactional
     public void createEducationInfo(Long resumeId, EducationInfoDTO educationInfoDto) {
-        Resume resume = resumeRepository.findById(resumeId)
-                .orElseThrow(() -> new RuntimeException("Resume not found with id: " + resumeId));
-
         EducationInfo educationInfo = new EducationInfo();
+
+        Resume resume = new Resume();
+        resume.setId(resumeId);
         educationInfo.setResume(resume);
         educationInfo.setInstitution(educationInfoDto.getInstitution());
         educationInfo.setProgram(educationInfoDto.getProgram());

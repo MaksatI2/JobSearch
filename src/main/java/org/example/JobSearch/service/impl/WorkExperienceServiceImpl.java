@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.example.JobSearch.dto.WorkExperienceDTO;
 import org.example.JobSearch.model.Resume;
 import org.example.JobSearch.model.WorkExperience;
-import org.example.JobSearch.repository.ResumeRepository;
 import org.example.JobSearch.repository.WorkExperienceRepository;
 import org.example.JobSearch.service.WorkExperienceService;
 import org.springframework.stereotype.Service;
@@ -17,15 +16,14 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class WorkExperienceServiceImpl implements WorkExperienceService {
     private final WorkExperienceRepository workExperienceRepository;
-    private final ResumeRepository resumeRepository;
 
     @Override
     @Transactional
     public void createWorkExperience(Long resumeId, WorkExperienceDTO workExperienceDto) {
-        Resume resume = resumeRepository.findById(resumeId)
-                .orElseThrow(() -> new RuntimeException("Resume not found with id: " + resumeId));
-
         WorkExperience workExperience = new WorkExperience();
+
+        Resume resume = new Resume();
+        resume.setId(resumeId);
         workExperience.setResume(resume);
         workExperience.setYears(workExperienceDto.getYears());
         workExperience.setCompanyName(workExperienceDto.getCompanyName());

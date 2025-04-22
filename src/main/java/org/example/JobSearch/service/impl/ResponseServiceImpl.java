@@ -2,13 +2,11 @@ package org.example.JobSearch.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.example.JobSearch.model.RespondedApplicant;
-import org.example.JobSearch.model.Resume;
-import org.example.JobSearch.model.Vacancy;
 import org.example.JobSearch.repository.RespondedApplicantRepository;
-import org.example.JobSearch.repository.ResumeRepository;
-import org.example.JobSearch.repository.UserRepository;
-import org.example.JobSearch.repository.VacancyRepository;
+import org.example.JobSearch.service.ResumeService;
 import org.example.JobSearch.service.ResponseService;
+import org.example.JobSearch.service.UserService;
+import org.example.JobSearch.service.VacancyService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,9 +15,9 @@ import org.springframework.transaction.annotation.Transactional;
 public class ResponseServiceImpl implements ResponseService {
 
     private final RespondedApplicantRepository respondedApplicantRepository;
-    private final UserRepository userRepository;
-    private final ResumeRepository resumeRepository;
-    private final VacancyRepository vacancyRepository;
+    private final ResumeService resumeService;
+    private final VacancyService vacancyService;
+    private final UserService userService;
 
     @Override
     @Transactional
@@ -28,14 +26,9 @@ public class ResponseServiceImpl implements ResponseService {
             throw new IllegalStateException("Уже откликались на эту вакансию.");
         }
 
-        Resume resume = resumeRepository.findById(resumeId)
-                .orElseThrow(() -> new IllegalArgumentException("Резюме не найдено"));
-        Vacancy vacancy = vacancyRepository.findById(vacancyId)
-                .orElseThrow(() -> new IllegalArgumentException("Вакансия не найдена"));
-
         RespondedApplicant response = new RespondedApplicant();
-        response.setResume(resume);
-        response.setVacancy(vacancy);
+        response.setResume(resumeService.getResumeEntityById(resumeId));
+        response.setVacancy(vacancyService.getVacancyEntityById(vacancyId));
         response.setConfirmation(false);
         respondedApplicantRepository.save(response);
     }
@@ -43,10 +36,7 @@ public class ResponseServiceImpl implements ResponseService {
     @Override
     @Transactional(readOnly = true)
     public int getResponsesCountByApplicant(String email) {
-        Long applicantId = userRepository.findByEmail(email)
-                .orElseThrow(() -> new IllegalArgumentException("Пользователь не найден"))
-                .getId();
-
+        Long applicantId = userService.getUserId(email);
         return respondedApplicantRepository.countByApplicantId(applicantId);
     }
 }
