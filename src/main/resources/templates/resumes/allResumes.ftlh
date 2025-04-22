@@ -100,8 +100,8 @@
             <#if totalPages gt 1>
                 <div class="pagination">
                     <#if currentPage gt 0>
-                        <a href="/resumes/allResumes?page=0&size=${pageSize}" class="page-link">«« Первая</a>
-                        <a href="/resumes/allResumes?page=${currentPage - 1}&size=${pageSize}" class="page-link">« Предыдущая</a>
+                        <a href="/resumes/allResumes?page=0&size=${pageSize}" class="page-link">««</a>
+                        <a href="/resumes/allResumes?page=${currentPage - 1}&size=${pageSize}" class="page-link">«</a>
                     </#if>
 
                     <#list 0..totalPages-1 as i>
@@ -113,8 +113,8 @@
                     </#list>
 
                     <#if currentPage lt totalPages - 1>
-                        <a href="/resumes/allResumes?page=${currentPage + 1}&size=${pageSize}" class="page-link">Следующая »</a>
-                        <a href="/resumes/allResumes?page=${totalPages - 1}&size=${pageSize}" class="page-link">Последняя »»</a>
+                        <a href="/resumes/allResumes?page=${currentPage + 1}&size=${pageSize}" class="page-link">»</a>
+                        <a href="/resumes/allResumes?page=${totalPages - 1}&size=${pageSize}" class="page-link">»»</a>
                     </#if>
 
                     <div class="page-size">

@@ -2,6 +2,8 @@ package org.example.JobSearch.repository;
 
 import org.example.JobSearch.model.AccountType;
 import org.example.JobSearch.model.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -32,6 +34,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     List<User> findApplicantsByVacancyId(@Param("vacancyId") Long vacancyId);
 
     @Query("SELECT u FROM User u WHERE u.accountType = :type")
-    List<User> findAllByAccountType(@Param("type") AccountType type);
+    Page<User> findAllByAccountType(@Param("type") AccountType type, Pageable pageable);
+
 
 }

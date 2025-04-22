@@ -80,19 +80,19 @@
                 <#if totalResumePages?? && (totalResumePages > 1)>
                     <div class="pagination">
                         <#if (currentResumePage > 1)>
-                            <a href="/profile/applicant?page=${currentResumePage - 1}" class="page-link">Предыдущая</a>
+                            <a href="/profile/viewApplicant/${userId}?page=${currentResumePage - 1}" class="page-link">Предыдущая</a>
                         </#if>
 
                         <#list 1..totalResumePages as page>
                             <#if page == currentResumePage>
                                 <span class="current-page">${page}</span>
                             <#else>
-                                <a href="/profile/applicant?page=${page}" class="page-link">${page}</a>
+                                <a href="/profile/viewApplicant/${userId}?page=${page}" class="page-link">${page}</a>
                             </#if>
                         </#list>
 
                         <#if (currentResumePage < totalResumePages)>
-                            <a href="/profile/applicant?page=${currentResumePage + 1}" class="page-link">Следующая</a>
+                            <a href="/profile/viewApplicant/${userId}?page=${currentResumePage + 1}" class="page-link">»</a>
                         </#if>
                     </div>
                 </#if>

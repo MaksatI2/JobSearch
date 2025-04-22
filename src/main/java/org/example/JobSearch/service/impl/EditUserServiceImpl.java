@@ -32,6 +32,7 @@ public class EditUserServiceImpl implements EditUserService {
 
         existingUser.setName(editUserDTO.getName());
         existingUser.setSurname(editUserDTO.getSurname());
+        existingUser.setAge(editUserDTO.getAge());
         existingUser.setPhoneNumber(editUserDTO.getPhoneNumber());
 
         userRepository.save(existingUser);

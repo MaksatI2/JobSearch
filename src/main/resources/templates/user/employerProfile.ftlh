@@ -79,19 +79,19 @@
                 <#if totalVacancyPages?? && (totalVacancyPages > 1)>
                     <div class="pagination">
                         <#if (currentVacancyPage > 1)>
-                            <a href="/profile/employer?page=${currentVacancyPage - 1}" class="page-link">Предыдущая</a>
+                            <a href="/profile/viewEmployer/${userId}?page=${currentVacancyPage - 1}" class="page-link">«</a>
                         </#if>
 
                         <#list 1..totalVacancyPages as page>
                             <#if page == currentVacancyPage>
                                 <span class="current-page">${page}</span>
                             <#else>
-                                <a href="/profile/employer?page=${page}" class="page-link">${page}</a>
+                                <a href="/profile/viewEmployer/${userId}?page=${page}" class="page-link">${page}</a>
                             </#if>
                         </#list>
 
                         <#if (currentVacancyPage < totalVacancyPages)>
-                            <a href="/profile/employer?page=${currentVacancyPage + 1}" class="page-link">Следующая</a>
+                            <a href="/profile/viewEmployer/${userId}?page=${currentVacancyPage + 1}" class="page-link">»</a>
                         </#if>
                     </div>
                 </#if>

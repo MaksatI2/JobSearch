@@ -13,6 +13,8 @@ import org.example.JobSearch.model.User;
 import org.example.JobSearch.repository.UserRepository;
 import org.example.JobSearch.service.UserService;
 import org.example.JobSearch.util.FileUtil;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -154,9 +156,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserDTO> getAllEmployers() {
-        List<User> employers = userRepository.findAllByAccountType(AccountType.EMPLOYER);
-        return employers.stream().map(this::convertToUserDTO).toList();
+    public Page<UserDTO> getAllEmployers(Pageable pageable) {
+        Page<User> employers = userRepository.findAllByAccountType(AccountType.EMPLOYER, pageable);
+        return employers.map(this::convertToUserDTO);
     }
 
     @Override

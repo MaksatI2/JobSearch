@@ -255,3 +255,50 @@ h1::after {
         margin-bottom: 15px;
     }
 }
+
+.company-card-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+}
+
+.pagination {
+    margin: 30px 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.page-link {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    color: #4FA399;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.page-link:hover {
+    background-color: #f5f5f5;
+}
+
+.page-link.active {
+    background-color: #4FA399;
+    color: white;
+    border-color: #4FA399;
+}
+
+.page-size {
+    margin-left: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.page-size-select {
+    padding: 6px 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}

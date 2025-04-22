@@ -104,7 +104,7 @@
                     <#if totalResumePages?? && (totalResumePages > 1)>
                         <div class="pagination">
                             <#if (currentResumePage > 1)>
-                                <a href="/profile?resumePage=${currentResumePage - 1}" class="page-link">Предыдущая</a>
+                                <a href="/profile?resumePage=${currentResumePage - 1}" class="page-link">«</a>
                             </#if>
 
                             <#list 1..totalResumePages as page>
@@ -116,7 +116,7 @@
                             </#list>
 
                             <#if (currentResumePage < totalResumePages)>
-                                <a href="/profile?resumePage=${currentResumePage + 1}" class="page-link">Следующая</a>
+                                <a href="/profile?resumePage=${currentResumePage + 1}" class="page-link">»</a>
                             </#if>
                         </div>
                     </#if>
@@ -146,7 +146,7 @@
                     <#if totalVacancyPages?? && (totalVacancyPages > 1)>
                         <div class="pagination">
                             <#if (currentVacancyPage > 1)>
-                                <a href="/profile?vacancyPage=${currentVacancyPage - 1}" class="page-link">Предыдущая</a>
+                                <a href="/profile?vacancyPage=${currentVacancyPage - 1}" class="page-link">«</a>
                             </#if>
 
                             <#list 1..totalVacancyPages as page>
@@ -158,7 +158,7 @@
                             </#list>
 
                             <#if (currentVacancyPage < totalVacancyPages)>
-                                <a href="/profile?vacancyPage=${currentVacancyPage + 1}" class="page-link">Следующая</a>
+                                <a href="/profile?vacancyPage=${currentVacancyPage + 1}" class="page-link">»</a>
                             </#if>
                         </div>
                     </#if>

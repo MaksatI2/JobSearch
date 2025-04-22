@@ -128,9 +128,9 @@
             <div class="pagination">
                 <#if currentPage gt 0>
                     <a href="/vacancies?page=0&size=${pageSize}<#if selectedCategory??>&categoryId=${selectedCategory}</#if><#if selectedSort??>&sort=${selectedSort}</#if>"
-                       class="page-link">«« Первая</a>
+                       class="page-link">««</a>
                     <a href="/vacancies?page=${currentPage - 1}&size=${pageSize}<#if selectedCategory??>&categoryId=${selectedCategory}</#if><#if selectedSort??>&sort=${selectedSort}</#if>"
-                       class="page-link">« Предыдущая</a>
+                       class="page-link">«</a>
                 </#if>
 
                 <#list 0..totalPages-1 as i>
@@ -144,9 +144,9 @@
 
                 <#if currentPage lt totalPages - 1>
                     <a href="/vacancies?page=${currentPage + 1}&size=${pageSize}<#if selectedCategory??>&categoryId=${selectedCategory}</#if><#if selectedSort??>&sort=${selectedSort}</#if>"
-                       class="page-link">Следующая »</a>
+                       class="page-link">»</a>
                     <a href="/vacancies?page=${totalPages - 1}&size=${pageSize}<#if selectedCategory??>&categoryId=${selectedCategory}</#if><#if selectedSort??>&sort=${selectedSort}</#if>"
-                       class="page-link">Последняя »»</a>
+                       class="page-link">»»</a>
                 </#if>
 
                 <div class="page-size">
