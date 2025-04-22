@@ -10,28 +10,27 @@ import org.example.JobSearch.repository.ContactInfoRepository;
 import org.example.JobSearch.repository.ContactTypeRepository;
 import org.example.JobSearch.repository.ResumeRepository;
 import org.example.JobSearch.service.ContactInfoService;
+import org.example.JobSearch.service.ContactTypeService;
+import org.example.JobSearch.service.ResumeService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+@RequiredArgsConstructor
 @Slf4j
 @Service
-@RequiredArgsConstructor
 public class ContactInfoServiceImpl implements ContactInfoService {
     private final ContactInfoRepository contactInfoRepository;
-    private final ContactTypeRepository contactTypeRepository;
-    private final ResumeRepository resumeRepository;
+    private final ResumeService resumeService;
+    private final ContactTypeService contactTypeService;
 
     @Override
     @Transactional
     public void createContactInfo(Long resumeId, ContactInfoDTO contactDto) {
-        Resume resume = resumeRepository.findById(resumeId)
-                .orElseThrow(() -> new IllegalArgumentException("Резюме с ID " + resumeId + " не найдено"));
-
-        ContactType type = contactTypeRepository.findById(contactDto.getTypeId())
-                .orElseThrow(() -> new IllegalArgumentException("Неверный ID типа контакта: " + contactDto.getTypeId()));
+        Resume resume = resumeService.getResumeEntityById(resumeId);
+        ContactType type = contactTypeService.getById(contactDto.getTypeId());
 
         ContactInfo contact = new ContactInfo();
         contact.setResume(resume);
@@ -39,7 +38,6 @@ public class ContactInfoServiceImpl implements ContactInfoService {
         contact.setValue(contactDto.getValue());
 
         contactInfoRepository.save(contact);
-
         log.debug("Создан контакт типа {} для резюме ID: {}", type.getName(), resumeId);
     }
 
@@ -51,8 +49,7 @@ public class ContactInfoServiceImpl implements ContactInfoService {
 
     @Override
     public List<ContactInfoDTO> getContactInfoByResumeId(Long resumeId) {
-        List<ContactInfo> contacts = contactInfoRepository.findByResumeId(resumeId);
-        return contacts.stream()
+        return contactInfoRepository.findByResumeId(resumeId).stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }
