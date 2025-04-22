@@ -3,18 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <title>Редактирование аватарки профиля</title>
-    <link rel="stylesheet" href="/static/css/editAvatar.css">
+    <link rel="stylesheet" href="/static/css/user/editAvatar.css">
+    <link rel="icon" href="/static/images/logo-transparent.png" type="image/x-icon">
 </head>
 <body>
 <header class="header">
     <div class="container">
         <nav class="navbar">
-            <a href="/" class="logo">JobSearch</a>
+            <img src="/static/images/logo-transparent.png" alt="JobSearch" class="logo-img">
             <div class="nav-links">
                 <a href="/" class="nav-link">Главная</a>
                 <a href="/vacancies" class="nav-link">Вакансии</a>
                 <#if Session.SPRING_SECURITY_CONTEXT?? && Session.SPRING_SECURITY_CONTEXT.authentication.authorities?seq_contains('EMPLOYER')>
                     <a href="/resumes/allResumes" class="nav-link">Резюме</a>
+                <#else>
+                    <a href="/company/allCompanies" class="nav-link">Компании</a>
                 </#if>
                 <#if Session.SPRING_SECURITY_CONTEXT??>
                     <a href="/profile" class="nav-link active">Профиль</a>

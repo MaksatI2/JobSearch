@@ -53,8 +53,12 @@ public class SecurityConfig {
                                 "/favicon.ico",
                                 "/error",
                                 "/vacancies",
+                                "/vacancies/*/info",
                                 "/vacancies/category/**"
                         ).permitAll()
+                        .requestMatchers("/profile/viewApplicant/*").hasAuthority("EMPLOYER")
+                        .requestMatchers("/profile/viewEmployer/*").hasAuthority("APPLICANT")
+                        .requestMatchers("/resumes/*/info").hasAnyAuthority("EMPLOYER", "APPLICANT")
                         .requestMatchers("/resumes/allResumes").hasAuthority("EMPLOYER")
                         .requestMatchers("/resumes/**").hasAuthority("APPLICANT")
                         .requestMatchers("/users/applicants/**").hasAuthority("APPLICANT")

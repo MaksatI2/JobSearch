@@ -26,24 +26,4 @@ public class ErrorServiceImpl implements ErrorService {
                 .timestamp(Instant.now().toString())
                 .build();
     }
-
-
-    @Override
-    public ErrorResponseBody makeResponse(BindingResult bindingResult) {
-        Map<String, List> reasons = new HashMap<>();
-        bindingResult.getFieldErrors().stream()
-                .filter(err -> err.getDefaultMessage() != null)
-                .forEach(err -> {
-                    List<String> errors = new ArrayList<>();
-                    errors.add(err.getDefaultMessage());
-                    if (reasons.containsKey(err.getField())) {
-                        reasons.put(err.getField(), errors);
-                    }
-                });
-        return ErrorResponseBody.builder()
-                .title("Ошибка проверки")
-                .reasons(reasons)
-                .build();
-
-    }
 }

@@ -2,45 +2,53 @@ package org.example.JobSearch.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.example.JobSearch.dto.ContactInfoDTO;
 import org.example.JobSearch.dto.EditDTO.EditResumeDTO;
-import org.example.JobSearch.dto.EditDTO.EditVacancyDTO;
 import org.example.JobSearch.dto.EducationInfoDTO;
 import org.example.JobSearch.dto.ResumeDTO;
-import org.example.JobSearch.dto.VacancyDTO;
 import org.example.JobSearch.dto.WorkExperienceDTO;
 import org.example.JobSearch.dto.create.CreateResumeDTO;
-import org.example.JobSearch.exceptions.CategoryNotFoundException;
 import org.example.JobSearch.exceptions.CreateResumeException;
 import org.example.JobSearch.exceptions.ResumeNotFoundException;
-import org.example.JobSearch.exceptions.VacancyNotFoundException;
-import org.example.JobSearch.model.*;
-import org.example.JobSearch.repository.*;
-import org.example.JobSearch.service.EducationInfoService;
-import org.example.JobSearch.service.ResumeService;
-import org.example.JobSearch.service.WorkExperienceService;
+import org.example.JobSearch.model.Category;
+import org.example.JobSearch.model.Resume;
+import org.example.JobSearch.model.User;
+import org.example.JobSearch.repository.ResumeRepository;
+import org.example.JobSearch.service.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
 
 import java.sql.Timestamp;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class ResumeServiceImpl implements ResumeService {
     private final ResumeRepository resumeRepository;
-    private final CategoryRepository categoryRepository;
-    private final UserRepository userRepository;
     private final EducationInfoService educationInfoService;
     private final WorkExperienceService workExperienceService;
+    private final ContactInfoService contactInfoService;
+    private final UserService userService;
+    private final CategoryService categoryService;
 
     @Override
     @Transactional(readOnly = true)
-    public List<ResumeDTO> getResumesByApplicant(Long applicantId) {
-        List<Resume> resumes = resumeRepository.findByApplicantId(applicantId);
-        return resumes.stream().map(this::toDTO).toList();
+    public Resume getResumeEntityById(Long id) {
+        return resumeRepository.findById(id)
+                .orElseThrow(() -> new ResumeNotFoundException("Резюме не найдено с ID: " + id));
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public Page<ResumeDTO> getResumesByApplicant(Long applicantId, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Resume> resumesPage = resumeRepository.findByApplicantId(applicantId, pageable);
+        return resumesPage.map(this::toDTO);
     }
 
     @Override
@@ -49,11 +57,9 @@ public class ResumeServiceImpl implements ResumeService {
         log.info("Создание нового резюме для соискателя ID: {}", resumeDto.getApplicantId());
         validateCreateResume(resumeDto, bindingResult);
 
-        User applicant = userRepository.findById(resumeDto.getApplicantId())
-                .orElseThrow(() -> new IllegalArgumentException("Соискатель не найден"));
+        User applicant = userService.getUserId(resumeDto.getApplicantId());
 
-        Category category = categoryRepository.findById(resumeDto.getCategoryId())
-                .orElseThrow(() -> new CategoryNotFoundException("Категория с ID " + resumeDto.getCategoryId() + " не найдена"));
+        Category category = categoryService.getCategoryById(resumeDto.getCategoryId());
 
         Timestamp now = new Timestamp(System.currentTimeMillis());
 
@@ -83,6 +89,15 @@ public class ResumeServiceImpl implements ResumeService {
                 workExperienceService.createWorkExperience(savedResume.getId(), expDto);
             }
         }
+
+        if (resumeDto.getContactInfos() != null) {
+            log.debug("Добавление контактной информации для резюме ID: {}", savedResume.getId());
+            for (ContactInfoDTO contactDto : resumeDto.getContactInfos()) {
+                if (contactDto.getValue() != null && !contactDto.getValue().isEmpty()) {
+                    contactInfoService.createContactInfo(savedResume.getId(), contactDto);
+                }
+            }
+        }
     }
 
     @Override
@@ -101,8 +116,22 @@ public class ResumeServiceImpl implements ResumeService {
             updateWorkExperience(resume, editResumeDto.getWorkExperiences());
         }
 
+        if (editResumeDto.getContactInfos() != null) {
+            updateContactInfo(resume, editResumeDto.getContactInfos());
+        }
+
         resume.setUpdateTime(new Timestamp(System.currentTimeMillis()));
         resumeRepository.save(resume);
+    }
+
+    private void updateContactInfo(Resume resume, List<ContactInfoDTO> contactInfoDTOs) {
+        contactInfoService.deleteByResumeId(resume.getId());
+
+        for (ContactInfoDTO contactDto : contactInfoDTOs) {
+            if (contactDto.getValue() != null && !contactDto.getValue().isEmpty()) {
+                contactInfoService.createContactInfo(resume.getId(), contactDto);
+            }
+        }
     }
 
     private void updateEducationInfo(Resume resume, List<EducationInfoDTO> educationInfoDTOs) {
@@ -132,33 +161,19 @@ public class ResumeServiceImpl implements ResumeService {
     }
 
     @Override
+    @Transactional
+    public void refreshResume(Long resumeId) {
+        resumeRepository.refreshResume(resumeId);
+    }
+
     @Transactional(readOnly = true)
-    public List<ResumeDTO> getAllResumes() {
-        List<Resume> resumes = resumeRepository.findByIsActiveTrue();
+    @Override
+    public Page<ResumeDTO> getAllResumes(String sort, Pageable pageable) {
+        Page<Resume> resumes = resumeRepository.findAllActiveSorted(sort,pageable);
         if (resumes.isEmpty()) {
             throw new ResumeNotFoundException("Активные резюме не найдены");
         }
-        return resumes.stream().map(this::toDTO).collect(Collectors.toList());
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public List<ResumeDTO> getUserResumes(Long applicantId) {
-        List<Resume> resumes = resumeRepository.findByApplicantId(applicantId);
-        if (resumes.isEmpty()) {
-            throw new ResumeNotFoundException("Резюме для соискателя ID не найдены: " + applicantId);
-        }
-        return resumes.stream().map(this::toDTO).collect(Collectors.toList());
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public List<ResumeDTO> getResumesByCategory(Long categoryId) {
-        List<Resume> resumes = resumeRepository.findByCategoryIdAndIsActiveTrue(categoryId);
-        if (resumes.isEmpty()) {
-            throw new CategoryNotFoundException("Резюме по категории ID не найдено: " + categoryId);
-        }
-        return resumes.stream().map(this::toDTO).collect(Collectors.toList());
+        return resumes.map(this::toDTO);
     }
 
     @Override
@@ -173,6 +188,7 @@ public class ResumeServiceImpl implements ResumeService {
         ResumeDTO dto = ResumeDTO.builder()
                 .id(resume.getId())
                 .applicantId(resume.getApplicant().getId())
+                .applicantName(resume.getApplicant().getName())
                 .categoryId(resume.getCategory().getId())
                 .name(resume.getName())
                 .salary(resume.getSalary())
@@ -183,6 +199,7 @@ public class ResumeServiceImpl implements ResumeService {
 
         dto.setEducationInfos(educationInfoService.getEducationInfoByResumeId(resume.getId()));
         dto.setWorkExperiences(workExperienceService.getWorkExperienceByResumeId(resume.getId()));
+        dto.setContactInfos(contactInfoService.getContactInfoByResumeId(resume.getId()));
 
         return dto;
     }
@@ -208,6 +225,49 @@ public class ResumeServiceImpl implements ResumeService {
             }
         }
 
+        if (resumeDto.getContactInfos() != null) {
+            List<ContactInfoDTO> contactInfos = resumeDto.getContactInfos();
+
+            for (int i = 0; i < contactInfos.size(); i++) {
+                ContactInfoDTO contact = contactInfos.get(i);
+                String value = contact.getValue();
+                Long typeId = contact.getTypeId();
+
+                if (value == null || value.trim().isEmpty()) {
+                    continue;
+                }
+
+                if (typeId == 1 && !value.matches("^996\\d{9}$")) {
+                    throw new CreateResumeException("contactInfos[" + i + "].value",
+                            "Телефон должен быть в формате 996XXXXXXXXX");
+                }
+
+                if (typeId == 2 && !value.matches("^[\\w.-]+@[\\w.-]+\\.[a-zA-Z]{2,6}$")) {
+                    throw new CreateResumeException("contactInfos[" + i + "].value",
+                            "Email некорректен");
+                }
+
+                if (typeId == 3 && !value.matches("^https://(www\\.)?linkedin\\.com/in/.+")) {
+                    throw new CreateResumeException("contactInfos[" + i + "].value",
+                            "LinkedIn должен быть в формате https://linkedin.com/in/username");
+                }
+
+                if (typeId == 4 && !value.matches("^https://(www\\.)?github\\.com/.+")) {
+                    throw new CreateResumeException("contactInfos[" + i + "].value",
+                            "GitHub должен быть в формате https://github.com/username");
+                }
+
+                if (typeId == 5 && !value.matches("^@\\w{5,}$") && !value.matches("^996\\d{9}$")) {
+                    throw new CreateResumeException("contactInfos[" + i + "].value",
+                            "Telegram должен быть в формате @username или номером 996XXXXXXXXX");
+                }
+
+                if (typeId == 6 && !value.matches("^(https?://)?[\\w.-]+\\.[a-z]{2,6}.*$")) {
+                    throw new CreateResumeException("contactInfos[" + i + "].value",
+                            "Ссылка на сайт некорректна");
+                }
+            }
+        }
     }
 
     @Override

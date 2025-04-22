@@ -33,20 +33,20 @@ public class EducationInfoDao {
         return jdbcTemplate.query(sql, new EducationInfoMapper(), resumeId);
     }
 
-    public void updateEducationInfo(Long id, EducationInfo educationInfo) {
-        String sql = """
-        INSERT education_info 
-        SET institution_name = ?, program = ?, start_date = ?, end_date = ?, degree = ?
-        WHERE id = ?
-        """;
-        jdbcTemplate.update(sql,
-                educationInfo.getInstitution(),
-                educationInfo.getProgram(),
-                educationInfo.getStartDate(),
-                educationInfo.getEndDate(),
-                educationInfo.getDegree(),
-                id);
-    }
+//    public void updateEducationInfo(Long id, EducationInfo educationInfo) {
+//        String sql = """
+//        INSERT education_info
+//        SET institution_name = ?, program = ?, start_date = ?, end_date = ?, degree = ?
+//        WHERE id = ?
+//        """;
+//        jdbcTemplate.update(sql,
+//                educationInfo.getInstitution(),
+//                educationInfo.getProgram(),
+//                educationInfo.getStartDate(),
+//                educationInfo.getEndDate(),
+//                educationInfo.getDegree(),
+//                id);
+//    }
 
     public void deleteEducationInfo(Long id) {
         String sql = "DELETE FROM education_info WHERE id = ?";

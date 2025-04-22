@@ -4,82 +4,130 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Активные резюме | JobSearch</title>
-    <link rel="stylesheet" href="/static/css/resumes.css">
+    <link rel="stylesheet" href="/static/css/resumes/resumes.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="icon" href="/static/images/logo-transparent.png" type="image/x-icon">
 </head>
 <body>
 <header class="header">
-    <div class="container">
-        <nav class="navbar">
-            <a href="/" class="logo">JobSearch</a>
-            <div class="nav-links">
-                <a href="/" class="nav-link">Главная</a>
-                <a href="/vacancies" class="nav-link">Вакансии</a>
-                <a href="/resumes/allResumes" class="nav-link active">Резюме</a>
-                <#if Session.SPRING_SECURITY_CONTEXT??>
-                    <a href="/profile" class="nav-link">Профиль</a>
-                    <form action="/logout" method="post" class="logout-form">
-                        <button type="submit" class="logout-btn">Выйти</button>
-                    </form>
-                <#else>
-                    <a href="/auth/login" class="nav-link">Войти</a>
-                    <a href="/auth/register" class="nav-link register-btn">Регистрация</a>
-                </#if>
-            </div>
-        </nav>
-    </div>
+    <nav class="navbar">
+        <img src="/static/images/logo-transparent.png" alt="JobSearch" class="logo-img">
+        <div class="nav-links">
+            <a href="/" class="nav-link">Главная</a>
+            <a href="/vacancies" class="nav-link">Вакансии</a>
+            <a href="/resumes/allResumes" class="nav-link active">Резюме</a>
+            <#if Session.SPRING_SECURITY_CONTEXT??>
+                <a href="/profile" class="nav-link">Профиль</a>
+                <form action="/logout" method="post" class="logout-form">
+                    <button type="submit" class="logout-btn">Выйти</button>
+                </form>
+            <#else>
+                <a href="/auth/login" class="nav-link">Войти</a>
+                <a href="/auth/register" class="nav-link register-btn">Регистрация</a>
+            </#if>
+        </div>
+    </nav>
 </header>
 
 <main class="main">
     <div class="container">
         <h1 class="page-title">Список активных резюме</h1>
 
+        <div class="filters-container">
+            <form method="get" action="/resumes/allResumes" class="filter-form">
+                <input type="hidden" name="page" value="0">
+                <input type="hidden" name="size" value="${pageSize}">
+
+                <div class="filter-group">
+                    <label for="sort">Сортировка:</label>
+                    <select id="sort" name="sort" class="form-control">
+                        <option value="">По дате (новые)</option>
+                        <option value="salaryAsc" <#if selectedSort?? && selectedSort == "salaryAsc">selected</#if>>
+                            По зарплате (↑)
+                        </option>
+                        <option value="salaryDesc" <#if selectedSort?? && selectedSort == "salaryDesc">selected</#if>>
+                            По зарплате (↓)
+                        </option>
+                    </select>
+                </div>
+
+                <button type="submit" class="submit-btn">Применить</button>
+                <#if selectedSort??>
+                    <a href="/vacancies?page=0&size=${pageSize}" class="reset-btn">Сбросить</a>
+                </#if>
+            </form>
+        </div>
+
         <#if resumes?? && resumes?has_content>
             <div class="resumes-grid">
                 <#list resumes as resume>
-                    <article class="resume-card">
-                        <div class="resume-header">
-                            <h2 class="resume-title">${resume.name}</h2>
-                            <span class="salary">${resume.salary} с</span>
-                        </div>
-
-                        <#if resume.workExperiences?? && resume.workExperiences?has_content>
-                            <div class="work-experience">
-                                <h3 class="section-title">Опыт работы</h3>
-                                <#list resume.workExperiences as experience>
-                                    <div class="experience-item">
-                                        <p class="experience-title"><strong>${experience.companyName}</strong> — ${experience.position}</p>
-                                        <p class="experience-details">Стаж: ${experience.years} лет</p>
-                                        <p class="experience-details">Обязанности: ${experience.responsibilities}</p>
-                                    </div>
-                                </#list>
+                    <a href="/resumes/${resume.id}/info" class="resume-link">
+                        <article class="resume-card">
+                            <div class="resume-header">
+                                <h2 class="resume-title">${resume.name}</h2>
+                                <span class="salary">${resume.salary} с</span>
                             </div>
-                        </#if>
 
-                        <#if resume.educationInfos?? && resume.educationInfos?has_content>
-                            <div class="education">
-                                <h3 class="section-title">Образование</h3>
-                                <#list resume.educationInfos as education>
-                                    <div class="education-item">
-                                        <p class="education-title"><strong>${education.institution}</strong> — ${education.program}</p>
-                                        <p class="education-details">Степень: ${education.degree}</p>
-                                        <p class="education-details">Период: ${education.startDate?string("dd.MM.yyyy")} – ${education.endDate?string("dd.MM.yyyy")}</p>
-                                    </div>
-                                </#list>
-                            </div>
-                        </#if>
-
-                        <div class="resume-meta">
-                            <span class="update-time">
+                            <div class="resume-author">
                                 <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                          d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
                                 </svg>
-                                ${resume.updateTime?string("dd.MM.yyyy")}
-                            </span>
-                        </div>
-                    </article>
+                                <span>${resume.applicantName!'Неизвестно'}</span>
+                            </div>
+
+                            <div class="resume-meta">
+                                <span class="update-time">
+                                    <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                              d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                    </svg>
+                                    ${resume.updateTime?string("dd.MM.yyyy")}
+                                </span>
+                            </div>
+                            <#if Session.SPRING_SECURITY_CONTEXT?? && !Session.SPRING_SECURITY_CONTEXT.authentication.authorities?seq_contains('APPLICANT')>
+                                <#if resume.applicantId??>
+                                    <a href="/profile/viewApplicant/${resume.applicantId}" class="applicant-profile-btn">
+                                        Профиль соискателя
+                                    </a>
+                                </#if>
+                            </#if>
+                        </article>
+                    </a>
                 </#list>
             </div>
+
+            <#if totalPages gt 1>
+                <div class="pagination">
+                    <#if currentPage gt 0>
+                        <a href="/resumes/allResumes?page=0&size=${pageSize}" class="page-link">««</a>
+                        <a href="/resumes/allResumes?page=${currentPage - 1}&size=${pageSize}" class="page-link">«</a>
+                    </#if>
+
+                    <#list 0..totalPages-1 as i>
+                        <#if i == currentPage>
+                            <span class="page-link active">${i + 1}</span>
+                        <#else>
+                            <a href="/resumes/allResumes?page=${i}&size=${pageSize}" class="page-link">${i + 1}</a>
+                        </#if>
+                    </#list>
+
+                    <#if currentPage lt totalPages - 1>
+                        <a href="/resumes/allResumes?page=${currentPage + 1}&size=${pageSize}" class="page-link">»</a>
+                        <a href="/resumes/allResumes?page=${totalPages - 1}&size=${pageSize}" class="page-link">»»</a>
+                    </#if>
+
+                    <div class="page-size">
+                        Элементов на странице:
+                        <select onchange="window.location.href='/resumes/allResumes?page=0&size='+this.value" class="page-size-select">
+                            <option value="5" <#if pageSize == 5>selected</#if>>5</option>
+                            <option value="10" <#if pageSize == 10>selected</#if>>10</option>
+                            <option value="20" <#if pageSize == 20>selected</#if>>20</option>
+                            <option value="50" <#if pageSize == 50>selected</#if>>50</option>
+                        </select>
+                    </div>
+                </div>
+            </#if>
         <#else>
             <div class="empty-state">
                 <h3>Резюме не найдены</h3>

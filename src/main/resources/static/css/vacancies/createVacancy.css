@@ -53,6 +53,7 @@ body {
     transform: scale(1.05);
 }
 
+
 .nav-links {
     display: flex;
     align-items: center;
@@ -111,7 +112,9 @@ body {
 .main {
     padding: 40px 0;
     min-height: calc(100vh - 160px);
+    background-color: var(--primary-extra-light);
 }
+
 
 .container {
     max-width: 1200px;
@@ -139,111 +142,93 @@ body {
     border-radius: 2px;
 }
 
-.vacancies-grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 25px;
-}
-
-.vacancy-card {
+.vacancy-form {
     background-color: var(--white);
     border-radius: 12px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-    padding: 25px;
-    transition: all 0.3s ease;
-    border-left: 4px solid var(--primary);
+    padding: 30px;
+    margin-bottom: 40px;
 }
 
-.vacancy-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+.form-group {
+    margin-bottom: 25px;
 }
 
-.vacancy-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 15px;
-}
-
-.vacancy-title {
-    font-size: 1.3rem;
-    font-weight: 700;
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
     color: var(--dark);
-    margin-right: 15px;
 }
 
-.salary {
-    font-size: 1.3rem;
-    font-weight: 700;
-    color: var(--primary-dark);
-    white-space: nowrap;
-}
-
-.vacancy-description {
-    color: var(--gray);
-    margin-bottom: 20px;
-    line-height: 1.7;
-}
-
-.vacancy-meta {
-    display: flex;
-    flex-wrap: wrap;
+.form-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 20px;
-    margin-top: 20px;
-    font-size: 0.9rem;
-    color: var(--gray);
+    margin-bottom: 25px;
 }
 
-.vacancy-meta span {
-    display: flex;
-    align-items: center;
-}
-
-.icon {
-    margin-right: 6px;
-    color: var(--primary);
-}
-
-.details-btn {
-    display: inline-block;
-    margin-top: 20px;
-    padding: 10px 20px;
-    background-color: var(--primary);
-    color: var(--white);
-    text-decoration: none;
+.form-control {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #CBD5E0;
     border-radius: 6px;
-    font-weight: 600;
-    transition: all 0.3s ease;
-    border: none;
-    cursor: pointer;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+    font-family: 'Inter', sans-serif;
 }
 
-.details-btn:hover {
+.form-control:focus {
+    border-color: var(--primary);
+    outline: none;
+    box-shadow: 0 0 0 3px var(--primary-extra-light);
+}
+
+select.form-control {
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 1em;
+}
+
+.submit-btn {
+    background-color: var(--primary);
+    color: white;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 10px;
+}
+
+.submit-btn:hover {
     background-color: var(--primary-dark);
     transform: translateY(-2px);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-.empty-state {
-    text-align: center;
-    padding: 60px 20px;
-    background-color: var(--white);
-    border-radius: 12px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-    max-width: 600px;
-    margin: 0 auto;
+.error-field {
+    border-color: var(--red) !important;
 }
 
-.empty-state h3 {
-    font-size: 1.5rem;
-    margin-bottom: 15px;
-    color: var(--primary-dark);
+.error {
+    color: var(--red);
+    font-size: 0.85rem;
+    margin-top: 5px;
+    display: block;
 }
 
-.empty-state p {
-    color: var(--gray);
+.global-error {
+    background-color: #FFF5F5;
+    color: var(--red);
+    border: 1px solid #FED7D7;
+    padding: 15px;
     margin-bottom: 25px;
+    border-radius: 6px;
 }
 
 .footer {
@@ -259,38 +244,6 @@ body {
     margin: 0 auto;
 }
 
-.form-control {
-    width: 100%;
-    padding: 12px 15px;
-    border: 1px solid #CBD5E0;
-    border-radius: 6px;
-    font-size: 1rem;
-    transition: border-color 0.3s ease;
-}
-
-.form-control:focus {
-    border-color: var(--primary);
-    outline: none;
-    box-shadow: 0 0 0 3px var(--primary-extra-light);
-}
-
-.submit-btn {
-    background-color: var(--primary);
-    color: white;
-    padding: 12px 24px;
-    border: none;
-    border-radius: 6px;
-    font-size: 1rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.submit-btn:hover {
-    background-color: var(--primary-dark);
-    transform: translateY(-2px);
-}
-
 @media (max-width: 768px) {
     .navbar {
         flex-direction: column;
@@ -304,35 +257,11 @@ body {
         flex-wrap: wrap;
     }
 
-    .vacancy-header {
-        flex-direction: column;
+    .form-row {
+        grid-template-columns: 1fr;
     }
 
-    .salary {
-        margin-top: 10px;
+    .vacancy-form {
+        padding: 20px;
     }
-
-    .vacancy-meta {
-        flex-direction: column;
-        gap: 12px;
-    }
-}
-
-.error-field {
-    border-color: var(--red) !important;
-}
-
-.error {
-    color: var(--red);
-    font-size: 0.85rem;
-    margin-top: 5px;
-}
-
-.global-error {
-    background-color: #FFF5F5;
-    color: var(--red);
-    border: 1px solid #FED7D7;
-    padding: 15px;
-    margin-bottom: 25px;
-    border-radius: 6px;
 }

@@ -14,8 +14,6 @@ spring:
     properties:
       hibernate:
         generate_statistics: false
-        format_sql: true
-    show-sql: true
 
 
   datasource:

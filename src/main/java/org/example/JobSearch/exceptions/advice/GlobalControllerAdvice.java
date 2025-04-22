@@ -5,14 +5,13 @@ import org.example.JobSearch.exceptions.*;
 import org.example.JobSearch.service.ErrorService;
 import org.springframework.beans.TypeMismatchException;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.ui.Model;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.http.converter.HttpMessageNotReadableException;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -27,7 +26,7 @@ public class GlobalControllerAdvice {
     @ResponseStatus(HttpStatus.FORBIDDEN)
     public ModelAndView handleAccessDenied(AccessDeniedException e) {
         ModelAndView mav = new ModelAndView("errors/403");
-        mav.addObject("error", errorService.makeResponse(e));
+        mav.addObject("error", e.getMessage());
         return mav;
     }
 
@@ -41,7 +40,7 @@ public class GlobalControllerAdvice {
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ModelAndView handleNotFoundException(NoSuchElementException e) {
         ModelAndView mav = new ModelAndView("errors/404");
-        mav.addObject("error", errorService.makeResponse(e));
+        mav.addObject("error", e.getMessage());
         return mav;
     }
 
@@ -96,9 +95,7 @@ public class GlobalControllerAdvice {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ModelAndView handleAllOtherExceptions(Exception e) {
         ModelAndView mav = new ModelAndView("errors/400");
-        mav.addObject("error", errorService.makeResponse(
-                new IllegalArgumentException("Произошла ошибка при обработке запроса")
-        ));
+        mav.addObject("error",  e.getMessage());
         return mav;
     }
 }

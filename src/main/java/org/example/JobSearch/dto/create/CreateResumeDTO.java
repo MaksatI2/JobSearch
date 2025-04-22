@@ -3,6 +3,7 @@ package org.example.JobSearch.dto.create;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 import lombok.*;
+import org.example.JobSearch.dto.ContactInfoDTO;
 import org.example.JobSearch.dto.EducationInfoDTO;
 import org.example.JobSearch.dto.WorkExperienceDTO;
 
@@ -11,8 +12,8 @@ import java.util.List;
 
 @Getter
 @Setter
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
-@NoArgsConstructor(access = AccessLevel.PUBLIC)
+@AllArgsConstructor
+@NoArgsConstructor
 @Builder
 public class CreateResumeDTO {
 
@@ -20,7 +21,7 @@ public class CreateResumeDTO {
 
     private Long applicantId;
 
-    @NotNull(message = "ID категории не может быть пустым")
+    @NotNull(message = "Категория не может быть пустым")
     @Positive(message = "ID категории должен быть положительным числом")
     private Long categoryId;
 
@@ -44,4 +45,6 @@ public class CreateResumeDTO {
 
     @Valid
     private List<WorkExperienceDTO> workExperiences;
+
+    private List<ContactInfoDTO> contactInfos;
 }

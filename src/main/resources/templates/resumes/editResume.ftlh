@@ -5,30 +5,29 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Редактирование резюме | JobSearch</title>
-    <link rel="stylesheet" href="/static/css/editResume.css">
+    <link rel="stylesheet" href="/static/css/resumes/editResume.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="icon" href="/static/images/logo-transparent.png" type="image/x-icon">
 </head>
 <body>
 <header class="header">
-    <div class="container">
-        <nav class="navbar">
-            <a href="/" class="logo">JobSearch</a>
-            <div class="nav-links">
-                <a href="/" class="nav-link">Главная</a>
-                <a href="/vacancies" class="nav-link">Вакансии</a>
-                <a href="/resumes/allResumes" class="nav-link">Резюме</a>
-                <#if Session.SPRING_SECURITY_CONTEXT??>
-                    <a href="/profile" class="nav-link">Профиль</a>
-                    <form action="/logout" method="post" class="logout-form">
-                        <button type="submit" class="logout-btn">Выйти</button>
-                    </form>
-                <#else>
-                    <a href="/auth/login" class="nav-link">Войти</a>
-                    <a href="/auth/register" class="nav-link register-btn">Регистрация</a>
-                </#if>
-            </div>
-        </nav>
-    </div>
+    <nav class="navbar">
+        <img src="/static/images/logo-transparent.png" alt="JobSearch" class="logo-img">
+        <div class="nav-links">
+            <a href="/" class="nav-link">Главная</a>
+            <a href="/vacancies" class="nav-link">Вакансии</a>
+            <a href="/resumes/allResumes" class="nav-link active">Резюме</a>
+            <#if Session.SPRING_SECURITY_CONTEXT??>
+                <a href="/profile" class="nav-link">Профиль</a>
+                <form action="/logout" method="post" class="logout-form">
+                    <button type="submit" class="logout-btn">Выйти</button>
+                </form>
+            <#else>
+                <a href="/auth/login" class="nav-link">Войти</a>
+                <a href="/auth/register" class="nav-link register-btn">Регистрация</a>
+            </#if>
+        </div>
+    </nav>
 </header>
 
 <main class="main">
@@ -165,6 +164,76 @@
                     <p>Нет информации об опыте работы</p>
                 </#if>
                 <button type="submit" name="addWorkExp" value="true" class="add-btn">+ Добавить опыт работы</button>
+            </div>
+
+            <div id="contact-infos" class="contacts-grid">
+                <#list resumeForm.contactInfos as contact>
+                    <div class="contact-item">
+                        <div class="contact-input">
+                            <#if contact.typeId == 1>
+                                <img src="/static/images/contact/viber-logo-svgrepo-com.svg" alt="Телефон" class="contact-icon" />
+                                <input type="text"
+                                       name="contactInfos[${contact?index}].value"
+                                       class="form-control no-label"
+                                       placeholder="996700123456"
+                                       pattern="^996\d{9}$"
+                                       title="Формат: 996700123456"
+                                       value="${contact.value!''}" />
+                                <input type="hidden" name="contactInfos[${contact?index}].typeId" value="1" />
+                            <#elseif contact.typeId == 2>
+                                <img src="/static/images/contact/gmail-icon-logo-svgrepo-com.svg" alt="Email" class="contact-icon" />
+                                <input type="email"
+                                       name="contactInfos[${contact?index}].value"
+                                       class="form-control no-label"
+                                       placeholder="example@domain.com"
+                                       title="Введите корректный email"
+                                       value="${contact.value!''}" />
+                                <input type="hidden" name="contactInfos[${contact?index}].typeId" value="2" />
+                            <#elseif contact.typeId == 3>
+                                <img src="/static/images/contact/linkedin-icon-2-logo-svgrepo-com.svg" alt="LinkedIn" class="contact-icon" />
+                                <input type="url"
+                                       name="contactInfos[${contact?index}].value"
+                                       class="form-control no-label"
+                                       placeholder="https://linkedin.com/in/username"
+                                       pattern="^https://(www\.)?linkedin\.com/in/.+"
+                                       title="Формат: https://linkedin.com/in/username"
+                                       value="${contact.value!''}" />
+                                <input type="hidden" name="contactInfos[${contact?index}].typeId" value="3" />
+                            <#elseif contact.typeId == 4>
+                                <img src="/static/images/contact/github-icon-1-logo-svgrepo-com.svg" alt="GitHub" class="contact-icon" />
+                                <input type="url"
+                                       name="contactInfos[${contact?index}].value"
+                                       class="form-control no-label"
+                                       placeholder="https://github.com/username"
+                                       pattern="^https://(www\.)?github\.com/.+"
+                                       title="Формат: https://github.com/username"
+                                       value="${contact.value!''}" />
+                                <input type="hidden" name="contactInfos[${contact?index}].typeId" value="4" />
+                            <#elseif contact.typeId == 5>
+                                <img src="/static/images/contact/telegram-logo-svgrepo-com.svg" alt="Telegram" class="contact-icon" />
+                                <input type="text"
+                                       name="contactInfos[${contact?index}].value"
+                                       class="form-control no-label"
+                                       placeholder="@username или 996700123456"
+                                       pattern="^@\w{5,}$|^996\d{9}$"
+                                       title="Формат: @username или 996700123456"
+                                       value="${contact.value!''}" />
+                                <input type="hidden" name="contactInfos[${contact?index}].typeId" value="5" />
+                            <#elseif contact.typeId == 6>
+                                <img src="/static/images/contact/vue-9-logo-svgrepo-com.svg" alt="WebSite" class="contact-icon" />
+                                <input type="url"
+                                       name="contactInfos[${contact?index}].value"
+                                       class="form-control no-label"
+                                       placeholder="https://yourportfolio.com"
+                                       pattern="^(https?://)?[\w.-]+\.[a-z]{2,6}.*$"
+                                       title="Введите корректный URL сайта"
+                                       value="${contact.value!''}" />
+                                <input type="hidden" name="contactInfos[${contact?index}].typeId" value="6" />
+                            </#if>
+                        </div>
+                        <@spring.showErrors "<br>", "field-error" />
+                    </div>
+                </#list>
             </div>
 
             <div class="form-actions">

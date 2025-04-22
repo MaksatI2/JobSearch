@@ -35,21 +35,21 @@ public class ResumeController {
         return ResponseEntity.ok("Resume deleted successfully");
     }
 
-    @GetMapping("/allResumes")
-    public ResponseEntity<?> getAllResumes() {
-            List<ResumeDTO> resumes = resumeService.getAllResumes();
-            return ResponseEntity.ok(resumes);
-    }
+//    @GetMapping("/allResumes")
+//    public ResponseEntity<?> getAllResumes() {
+//            List<ResumeDTO> resumes = resumeService.getAllResumes();
+//            return ResponseEntity.ok(resumes);
+//    }
 
-    @GetMapping("/UserResumes/{applicantId}")
-    public ResponseEntity<?> getUserResumes(@PathVariable @Valid Long applicantId) {
-            List<ResumeDTO> resumes = resumeService.getUserResumes(applicantId);
-            return ResponseEntity.ok(resumes);
-    }
+//    @GetMapping("/UserResumes/{applicantId}")
+//    public ResponseEntity<?> getUserResumes(@PathVariable @Valid Long applicantId) {
+//            List<ResumeDTO> resumes = resumeService.getUserResumes(applicantId);
+//            return ResponseEntity.ok(resumes);
+//    }
 
-    @GetMapping("/category/{categoryId}")
-    public ResponseEntity<?> getResumesByCategory(@PathVariable @Valid Long categoryId) {
-            List<ResumeDTO> resumes = resumeService.getResumesByCategory(categoryId);
-            return ResponseEntity.ok(resumes);
-    }
+//    @GetMapping("/category/{categoryId}")
+//    public ResponseEntity<?> getResumesByCategory(@PathVariable @Valid Long categoryId) {
+//            List<ResumeDTO> resumes = resumeService.getResumesByCategory(categoryId);
+//            return ResponseEntity.ok(resumes);
+//    }
 }

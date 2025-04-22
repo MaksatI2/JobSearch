@@ -7,27 +7,31 @@ import org.example.JobSearch.dto.EducationInfoDTO;
 import org.example.JobSearch.dto.ResumeDTO;
 import org.example.JobSearch.dto.create.CreateResumeDTO;
 import org.example.JobSearch.model.Resume;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
 
 import java.util.List;
 
 public interface ResumeService {
-    List<ResumeDTO> getResumesByApplicant(Long applicantId);
+    Page<ResumeDTO> getResumesByApplicant(Long applicantId, int page, int size);
 
     void createResume(CreateResumeDTO resumeDto, BindingResult bindingResult);
     void updateResume(Long resumeId, EditResumeDTO editresumeDto);
-
     void deleteResume(Long resumeId);
+    void refreshResume(Long resumeId);
 
-    List<ResumeDTO> getAllResumes();
+    Page<ResumeDTO> getAllResumes(String sort,Pageable pageable);
+    ResumeDTO getResumeById(Long id);
 
-    List<ResumeDTO> getUserResumes(Long applicants_id);
+//    List<ResumeDTO> getUserResumes(Long applicants_id);
 
-    List<ResumeDTO> getResumesByCategory(Long categoryId);
+//    List<ResumeDTO> getResumesByCategory(Long categoryId);
+
+    Resume getResumeEntityById(Long id);
 
     void validateCreateResume(CreateResumeDTO resumeDto, BindingResult bindingResult);
-
-    ResumeDTO getResumeById(Long id);
 
     void validateEducation(List<EducationInfoDTO> educationInfos, BindingResult bindingResult);
 }

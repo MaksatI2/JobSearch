@@ -82,6 +82,14 @@
             font-size: 0.9rem;
             text-align: left;
         }
+        .field-errors {
+            margin-top: 1rem;
+        }
+
+        .field-error {
+            color: #dc2626;
+            margin-bottom: 0.5rem;
+        }
     </style>
 </head>
 <body>
@@ -96,7 +104,15 @@
     <#if error??>
         <div class="error-details">
             <p><strong>Дополнительная информация:</strong></p>
-            <p>${error.message!''}</p>
+            <p>${error}</p>
+
+            <#if fieldErrors??>
+                <div class="field-errors">
+                    <#list fieldErrors as field, message>
+                        <div class="field-error"><strong>${field}:</strong> ${message}</div>
+                    </#list>
+                </div>
+            </#if>
         </div>
     </#if>
 </div>

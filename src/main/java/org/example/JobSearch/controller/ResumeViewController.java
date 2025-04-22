@@ -2,14 +2,18 @@ package org.example.JobSearch.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.example.JobSearch.dto.*;
 import org.example.JobSearch.dto.EditDTO.EditResumeDTO;
-import org.example.JobSearch.dto.EducationInfoDTO;
-import org.example.JobSearch.dto.ResumeDTO;
-import org.example.JobSearch.dto.WorkExperienceDTO;
 import org.example.JobSearch.dto.create.CreateResumeDTO;
-import org.example.JobSearch.model.Resume;
 import org.example.JobSearch.service.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -17,8 +21,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Date;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/resumes")
@@ -29,8 +33,21 @@ public class ResumeViewController {
     private final UserService userService;
 
     @GetMapping("/allResumes")
-    public String getAllActiveResumes(Model model) {
-        model.addAttribute("resumes", resumeService.getAllResumes());
+    public String getAllActiveResumes(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size,
+            @RequestParam(required = false) String sort,
+            Model model) {
+
+        Page<ResumeDTO> resumesPage = resumeService.getAllResumes(sort, PageRequest.of(page, size));
+
+        model.addAttribute("resumes", resumesPage.getContent());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", resumesPage.getTotalPages());
+        model.addAttribute("totalItems", resumesPage.getTotalElements());
+        model.addAttribute("pageSize", size);
+        model.addAttribute("selectedSort", sort);
+
         return "resumes/allResumes";
     }
 
@@ -167,6 +184,22 @@ public class ResumeViewController {
         editResumeDto.setEducationInfos(resume.getEducationInfos());
         editResumeDto.setWorkExperiences(resume.getWorkExperiences());
 
+        List<ContactInfoDTO> existingContacts = resume.getContactInfos() != null ? resume.getContactInfos() : new ArrayList<>();
+        Map<Long, ContactInfoDTO> contactMap = existingContacts.stream()
+                .collect(Collectors.toMap(ContactInfoDTO::getTypeId, c -> c));
+
+        List<ContactInfoDTO> contactInfos = new ArrayList<>();
+        for (long i = 1; i <= 6; i++) {
+            if (contactMap.containsKey(i)) {
+                contactInfos.add(contactMap.get(i));
+            } else {
+                ContactInfoDTO emptyContact = new ContactInfoDTO();
+                emptyContact.setTypeId(i);
+                contactInfos.add(emptyContact);
+            }
+        }
+        editResumeDto.setContactInfos(contactInfos);
+
         model.addAttribute("resumeForm", editResumeDto);
         model.addAttribute("categories", categoryService.getAllCategories());
         model.addAttribute("resumeId", id);
@@ -236,4 +269,58 @@ public class ResumeViewController {
         resumeService.updateResume(id, editResumeDto);
         return "redirect:/profile";
     }
+
+    @GetMapping("/{id}/info")
+    public String viewResume(@PathVariable Long id, Model model, Principal principal) {
+
+        String currentUserEmail = principal.getName();
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Collection<? extends GrantedAuthority> authorities = userDetails.getAuthorities();
+        boolean isEmployer = authorities.stream().anyMatch(a -> a.getAuthority().equals("EMPLOYER"));
+
+        ResumeDTO resume = resumeService.getResumeById(id);
+        Long currentUserId = userService.getUserId(currentUserEmail);
+        boolean isOwner = resume.getApplicantId().equals(currentUserId);
+
+        if (!isOwner && !isEmployer) {
+            return "errors/403";
+        }
+
+        model.addAttribute("resume", resume);
+        model.addAttribute("isApplicant", isOwner);
+        model.addAttribute("educationList", resume.getEducationInfos());
+        model.addAttribute("workExperienceList", resume.getWorkExperiences());
+
+        return "resumes/resumeInfo";
+    }
+
+
+    @PostMapping("/{id}/refresh")
+    public String refreshResume(@PathVariable Long id, Principal principal) {
+        String email = principal.getName();
+        UserDTO user = userService.getUserByEmail(email);
+
+        ResumeDTO resume = resumeService.getResumeById(id);
+        if (!resume.getApplicantId().equals(user.getId())) {
+            throw new AccessDeniedException("Вы можете обновлять только свои собственные резюме.");
+        }
+
+        resumeService.refreshResume(id);
+        return "redirect:/profile?refreshResumeSuccess";
+    }
+
+    @PostMapping("/{id}/delete")
+    public String deleteResume(@PathVariable Long id, Principal principal) {
+        String email = principal.getName();
+        UserDTO user = userService.getUserByEmail(email);
+
+        ResumeDTO resume = resumeService.getResumeById(id);
+        if (!resume.getApplicantId().equals(user.getId())) {
+            throw new AccessDeniedException("Вы можете удалять только свои собственные резюме.");
+        }
+
+        resumeService.deleteResume(id);
+        return "redirect:/profile?deleteSuccess";
+    }
+
 }

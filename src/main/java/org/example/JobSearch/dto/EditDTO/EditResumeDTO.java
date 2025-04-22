@@ -3,6 +3,7 @@ package org.example.JobSearch.dto.EditDTO;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 import lombok.*;
+import org.example.JobSearch.dto.ContactInfoDTO;
 import org.example.JobSearch.dto.EducationInfoDTO;
 import org.example.JobSearch.dto.WorkExperienceDTO;
 
@@ -12,8 +13,8 @@ import java.util.List;
 
 @Getter
 @Setter
-@AllArgsConstructor(access = AccessLevel.PUBLIC)
-@NoArgsConstructor(access = AccessLevel.PUBLIC)
+@AllArgsConstructor
+@NoArgsConstructor
 @Builder
 public class EditResumeDTO {
 
@@ -43,4 +44,6 @@ public class EditResumeDTO {
 
     @Valid
     private List<WorkExperienceDTO> workExperiences = new ArrayList<>();
+
+    private List<ContactInfoDTO> contactInfos;
 }

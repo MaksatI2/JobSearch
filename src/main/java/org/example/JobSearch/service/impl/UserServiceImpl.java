@@ -13,10 +13,13 @@ import org.example.JobSearch.model.User;
 import org.example.JobSearch.repository.UserRepository;
 import org.example.JobSearch.service.UserService;
 import org.example.JobSearch.util.FileUtil;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -31,8 +34,15 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
 
     @Override
+    @Transactional(readOnly = true)
+    public User getUserId(Long id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException("Пользователь не найден с ID: " + id));
+    }
+
+    @Override
     public UserDTO findApplicant(String email) {
-        User user = userRepository.findApplicantByEmail(email, AccountType.APPLICANT)
+        User user = userRepository.findByEmailAndType(email, AccountType.APPLICANT)
                 .orElseThrow(() -> new UserNotFoundException("Соискатель с email не найден: " + email));
         return convertToUserDTO(user);
     }
@@ -46,7 +56,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDTO findApplicantByPhone(String phoneNumber) {
-        User user = userRepository.findApplicantByPhone(phoneNumber, AccountType.APPLICANT)
+        User user = userRepository.findByPhoneAndType(phoneNumber, AccountType.APPLICANT)
                 .orElseThrow(() -> new UserNotFoundException("Соискатель с телефоном не найден: " + phoneNumber));
         return convertToUserDTO(user);
     }
@@ -56,7 +66,7 @@ public class UserServiceImpl implements UserService {
         if (name == null || name.isEmpty()) {
             throw new InvalidUserDataException("Имя не может быть пустым");
         }
-        List<User> users = userRepository.findApplicantsByName(name, AccountType.APPLICANT);
+        List<User> users = userRepository.findByNameAndType(name, AccountType.APPLICANT);
         if (users.isEmpty()) {
             throw new UserNotFoundException("Соискатели с именем не найдены: " + name);
         }
@@ -65,14 +75,14 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDTO findEmployer(String email) {
-        User user = userRepository.findEmployerByEmail(email, AccountType.EMPLOYER)
+        User user = userRepository.findByEmailAndType(email, AccountType.EMPLOYER)
                 .orElseThrow(() -> new UserNotFoundException("Работодатель с email не найден: " + email));
         return convertToUserDTO(user);
     }
 
     @Override
     public UserDTO findEmployerByPhone(String phoneNumber) {
-        User user = userRepository.findEmployerByPhone(phoneNumber, AccountType.EMPLOYER)
+        User user = userRepository.findByPhoneAndType(phoneNumber, AccountType.EMPLOYER)
                 .orElseThrow(() -> new UserNotFoundException("Работодатель с телефоном не найден: " + phoneNumber));
         return convertToUserDTO(user);
     }
@@ -82,7 +92,7 @@ public class UserServiceImpl implements UserService {
         if (name == null || name.isEmpty()) {
             throw new InvalidUserDataException("Имя не может быть пустым");
         }
-        List<User> users = userRepository.findEmployersByName(name, AccountType.EMPLOYER);
+        List<User> users = userRepository.findByNameAndType(name, AccountType.EMPLOYER);
         if (users.isEmpty()) {
             throw new UserNotFoundException("Работодатели с именем не найдены: " + name);
         }
@@ -146,6 +156,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public Page<UserDTO> getAllEmployers(Pageable pageable) {
+        Page<User> employers = userRepository.findAllByAccountType(AccountType.EMPLOYER, pageable);
+        return employers.map(this::convertToUserDTO);
+    }
+
+    @Override
     public boolean userExists(String email) {
         return userRepository.existsByEmail(email);
     }
@@ -163,6 +179,13 @@ public class UserServiceImpl implements UserService {
         return userRepository.findByEmail(email)
                 .map(User::getId)
                 .orElseThrow(() -> new UserNotFoundException("Нету пользователя с таким Email"));
+    }
+
+    @Override
+    public UserDTO getUserById(Long userId) {
+        return userRepository.findById(userId)
+                .map(this::convertToUserDTO)
+                .orElseThrow(() -> new UserNotFoundException("Пользователь не найден: " + userId));
     }
 
     private UserDTO convertToUserDTO(User user) {

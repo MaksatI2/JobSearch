@@ -5,50 +5,47 @@ import lombok.extern.slf4j.Slf4j;
 import org.example.JobSearch.dto.EditDTO.EditVacancyDTO;
 import org.example.JobSearch.dto.VacancyDTO;
 import org.example.JobSearch.dto.create.CreateVacancyDTO;
-import org.example.JobSearch.exceptions.CategoryNotFoundException;
 import org.example.JobSearch.exceptions.CreateVacancyException;
 import org.example.JobSearch.exceptions.EditVacancyException;
 import org.example.JobSearch.exceptions.VacancyNotFoundException;
-import org.example.JobSearch.model.*;
-import org.example.JobSearch.repository.*;
+import org.example.JobSearch.model.AccountType;
+import org.example.JobSearch.model.Category;
+import org.example.JobSearch.model.User;
+import org.example.JobSearch.model.Vacancy;
+import org.example.JobSearch.repository.VacancyRepository;
+import org.example.JobSearch.service.CategoryService;
+import org.example.JobSearch.service.UserService;
 import org.example.JobSearch.service.VacancyService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
 
 import java.sql.Timestamp;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class VacancyServiceImpl implements VacancyService {
     private final VacancyRepository vacancyRepository;
-    private final UserRepository userRepository;
-    private final CategoryRepository categoryRepository;
+    private final UserService userService;
+    private final CategoryService categoryService;
 
-    @Override
     @Transactional(readOnly = true)
-    public List<VacancyDTO> getVacanciesByEmployer(Long employerId) {
-        List<Vacancy> vacancies = vacancyRepository.findByAuthorId(employerId);
-        return vacancies.stream().map(this::toDTO).toList();
+    @Override
+    public Page<VacancyDTO> getVacanciesByEmployer(Long employerId, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Vacancy> vacanciesPage = vacancyRepository.findByAuthorId(employerId, pageable);
+        return vacanciesPage.map(this::toDTO);
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public List<VacancyDTO> getVacanciesByCategory(Long categoryId) {
-        log.info("Поиск вакансий по категории ID: {}", categoryId);
-        List<Vacancy> vacancies = vacancyRepository.findActiveByCategoryTree(categoryId);
-
-        if (vacancies.isEmpty()) {
-            log.warn("Вакансии по категории ID {} не найдены", categoryId);
-            throw new CategoryNotFoundException("Вакансий по категории ID не найдено: " + categoryId);
-        }
-
-        log.debug("Найдено {} вакансий по категории ID: {}", vacancies.size(), categoryId);
-        return vacancies.stream().map(this::toDTO).collect(Collectors.toList());
+    public Vacancy getVacancyEntityById(Long id) {
+        return vacancyRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Вакансия не найдена"));
     }
 
     @Override
@@ -56,16 +53,14 @@ public class VacancyServiceImpl implements VacancyService {
     public void createVacancy(CreateVacancyDTO createVacancyDto, Long employerId) {
         log.info("Создание новой вакансии работодателем ID: {}", employerId);
 
-        User employer = userRepository.findById(employerId)
-                .orElseThrow(() -> new IllegalArgumentException("Пользователь не найден"));
+        User employer = userService.getUserId(employerId);
 
         if (!employer.getAccountType().equals(AccountType.EMPLOYER)) {
             log.error("Попытка создания вакансии пользователем, не являющимся работодателем: {}", employerId);
             throw new AccessDeniedException("Только работодатели могут создавать вакансии");
         }
 
-        Category category = categoryRepository.findById(createVacancyDto.getCategoryId())
-                .orElseThrow(() -> new CategoryNotFoundException("Категория не найдена"));
+        Category category = categoryService.getCategoryById(createVacancyDto.getCategoryId());
 
         Timestamp now = new Timestamp(System.currentTimeMillis());
 
@@ -95,11 +90,16 @@ public class VacancyServiceImpl implements VacancyService {
                 .orElseThrow(() -> new VacancyNotFoundException("Вакансия не найдена"));
 
         if (editVacancyDto.getCategoryId() != null) {
-            Category category = categoryRepository.findById(editVacancyDto.getCategoryId())
-                    .orElseThrow(() -> new CategoryNotFoundException("Категория не найдена"));
+            Category category = categoryService.getCategoryById(editVacancyDto.getCategoryId());
             vacancy.setCategory(category);
         }
 
+        vacancy.setName(editVacancyDto.getName());
+        vacancy.setDescription(editVacancyDto.getDescription());
+        vacancy.setSalary(editVacancyDto.getSalary());
+        vacancy.setExpFrom(editVacancyDto.getExpFrom());
+        vacancy.setExpTo(editVacancyDto.getExpTo());
+        vacancy.setIsActive(editVacancyDto.getIsActive());
         vacancy.setUpdateTime(new Timestamp(System.currentTimeMillis()));
         vacancyRepository.save(vacancy);
         log.info("Вакансия ID {} успешно обновлена", vacancyId);
@@ -118,26 +118,9 @@ public class VacancyServiceImpl implements VacancyService {
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public List<VacancyDTO> getAllVacancies() {
-        log.info("Получение всех активных вакансий");
-        List<Vacancy> vacancies = vacancyRepository.findAllByIsActiveTrue();
-        return vacancies.stream().map(this::toDTO).collect(Collectors.toList());
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public List<VacancyDTO> getRespApplToVacancy(Long applicantId) {
-        log.info("Получение вакансий с откликами от соискателя ID: {}", applicantId);
-        List<Vacancy> vacancies = vacancyRepository.findRespondedByApplicantId(applicantId);
-
-        if (vacancies.isEmpty()) {
-            log.warn("Не найдено вакансий с откликами от соискателя ID: {}", applicantId);
-            throw new VacancyNotFoundException("Не найдено ни одной вакансии, на которую был отклик по ID: " + applicantId);
-        }
-
-        log.debug("Найдено {} вакансий с откликами от соискателя ID: {}", vacancies.size(), applicantId);
-        return vacancies.stream().map(this::toDTO).collect(Collectors.toList());
+    public Page<VacancyDTO> getAllVacanciesSorted(String sort, Pageable pageable) {
+        return vacancyRepository.findAllActiveSorted(sort, pageable)
+                .map(this::toDTO);
     }
 
     @Override
@@ -189,36 +172,18 @@ public class VacancyServiceImpl implements VacancyService {
     @Override
     public void validateVacancyData(CreateVacancyDTO createVacancyDto, BindingResult bindingResult) {
         if (createVacancyDto.getSalary() != null) {
-            try {
-                Integer.parseInt(createVacancyDto.getSalary().toString());
-            } catch (NumberFormatException e) {
-                throw new CreateVacancyException("salary", "Зарплата должна содержать только цифры");
-            }
-
             if (createVacancyDto.getSalary() < 0) {
                 throw new CreateVacancyException("salary", "Зарплата не может быть отрицательной");
             }
         }
 
         if (createVacancyDto.getExpFrom() != null) {
-            try {
-                Integer.parseInt(createVacancyDto.getExpFrom().toString());
-            } catch (NumberFormatException e) {
-                throw new CreateVacancyException("expFrom", "Опыт 'от' должен содержать только цифры");
-            }
-
             if (createVacancyDto.getExpFrom() < 0) {
                 throw new CreateVacancyException("expFrom", "Опыт 'от' не может быть отрицательным");
             }
         }
 
         if (createVacancyDto.getExpTo() != null) {
-            try {
-                Integer.parseInt(createVacancyDto.getExpTo().toString());
-            } catch (NumberFormatException e) {
-                throw new CreateVacancyException("expTo", "Опыт 'до' должен содержать только цифры");
-            }
-
             if (createVacancyDto.getExpTo() < 0) {
                 throw new CreateVacancyException("expTo", "Опыт 'до' не может быть отрицательным");
             }
@@ -234,36 +199,18 @@ public class VacancyServiceImpl implements VacancyService {
     @Override
     public void validateEditVacancyData(EditVacancyDTO editVacancyDto, BindingResult bindingResult) {
         if (editVacancyDto.getSalary() != null) {
-            try {
-                Integer.parseInt(editVacancyDto.getSalary().toString());
-            } catch (NumberFormatException e) {
-                throw new EditVacancyException("salary", "Зарплата должна содержать только цифры");
-            }
-
             if (editVacancyDto.getSalary() < 0) {
                 throw new EditVacancyException("salary", "Зарплата не может быть отрицательной");
             }
         }
 
         if (editVacancyDto.getExpFrom() != null) {
-            try {
-                Integer.parseInt(editVacancyDto.getExpFrom().toString());
-            } catch (NumberFormatException e) {
-                throw new EditVacancyException("expFrom", "Опыт 'от' должен содержать только цифры");
-            }
-
             if (editVacancyDto.getExpFrom() < 0) {
                 throw new EditVacancyException("expFrom", "Опыт 'от' не может быть отрицательным");
             }
         }
 
         if (editVacancyDto.getExpTo() != null) {
-            try {
-                Integer.parseInt(editVacancyDto.getExpTo().toString());
-            } catch (NumberFormatException e) {
-                throw new EditVacancyException("expTo", "Опыт 'до' должен содержать только цифры");
-            }
-
             if (editVacancyDto.getExpTo() < 0) {
                 throw new EditVacancyException("expTo", "Опыт 'до' не может быть отрицательным");
             }
