@@ -39,4 +39,10 @@ public class ResponseServiceImpl implements ResponseService {
         Long applicantId = userService.getUserId(email);
         return respondedApplicantRepository.countByApplicantId(applicantId);
     }
+
+    @Transactional(readOnly = true)
+    @Override
+    public int getResponsesCountByVacancy(Long vacancyId) {
+        return respondedApplicantRepository.countByVacancyId(vacancyId);
+    }
 }

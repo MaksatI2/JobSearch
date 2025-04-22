@@ -21,6 +21,7 @@ public interface VacancyRepository extends JpaRepository<Vacancy, Long> {
             "CASE WHEN :sort = 'salaryDesc' THEN v.salary END DESC, " +
             "CASE WHEN :sort = 'expAsc' THEN v.expFrom END ASC, " +
             "CASE WHEN :sort = 'expDesc' THEN v.expFrom END DESC, " +
+            "CASE WHEN :sort = 'responsesDesc' THEN (SELECT COUNT(ra) FROM RespondedApplicant ra WHERE ra.vacancy = v) END DESC, " +
             "v.updateTime DESC")
     Page<Vacancy> findAllActiveSorted(@Param("sort") String sort, Pageable pageable);
 

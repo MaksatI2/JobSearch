@@ -60,6 +60,9 @@
                         <option value="expDesc" <#if selectedSort?? && selectedSort == "expDesc">selected</#if>>
                             По опыту (↓)
                         </option>
+                        <option value="responsesDesc" <#if selectedSort?? && selectedSort == "responsesDesc">selected</#if>>
+                            По количеству откликов (↓)
+                        </option>
                     </select>
                 </div>
 
