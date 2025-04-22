@@ -309,4 +309,18 @@ public class ResumeViewController {
         return "redirect:/profile?refreshResumeSuccess";
     }
 
+    @PostMapping("/{id}/delete")
+    public String deleteResume(@PathVariable Long id, Principal principal) {
+        String email = principal.getName();
+        UserDTO user = userService.getUserByEmail(email);
+
+        ResumeDTO resume = resumeService.getResumeById(id);
+        if (!resume.getApplicantId().equals(user.getId())) {
+            throw new AccessDeniedException("Вы можете удалять только свои собственные резюме.");
+        }
+
+        resumeService.deleteResume(id);
+        return "redirect:/profile?deleteSuccess";
+    }
+
 }

@@ -263,3 +263,10 @@ body {
 .form-control.no-label::placeholder {
     color: #999;
 }
+
+.error {
+    color: var(--red);
+    font-size: 0.85rem;
+    margin-top: 5px;
+    display: block;
+}

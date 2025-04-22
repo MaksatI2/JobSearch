@@ -182,6 +182,13 @@
                         Редактировать
                     </a>
                 </#if>
+                <#if isApplicant>
+                    <div class="right-actions">
+                        <form action="/resumes/${resume.id}/delete" method="post">
+                            <button type="submit" class="btn btn-delete">Удалить</button>
+                        </form>
+                    </div>
+                </#if>
                 <#if Session.SPRING_SECURITY_CONTEXT?? && !Session.SPRING_SECURITY_CONTEXT.authentication.authorities?seq_contains('APPLICANT')>
                     <#if resume.applicantId??>
                         <a href="/profile/viewApplicant/${resume.applicantId}" class="applicant-profile-btn">

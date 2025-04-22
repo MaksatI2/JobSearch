@@ -16,9 +16,9 @@
             <div class="nav-links">
                 <a href="/" class="nav-link">Главная</a>
                 <a href="/vacancies" class="nav-link">Вакансии</a>
-                <a href="/company/allCompanies" class="nav-link">Компании</a>
+                <a href="/resumes/allResumes" class="nav-link active">Резюме</a>
                 <#if Session.SPRING_SECURITY_CONTEXT??>
-                    <a href="/profile" class="nav-link active">Профиль</a>
+                    <a href="/profile" class="nav-link">Профиль</a>
                     <form action="/logout" method="post" class="logout-form">
                         <button type="submit" class="logout-btn">Выйти</button>
                     </form>

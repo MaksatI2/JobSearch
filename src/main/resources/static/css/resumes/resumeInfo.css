@@ -478,3 +478,12 @@ body {
 .applicant-profile-btn:hover {
     background-color: var(--green);
 }
+
+.btn-delete {
+    background-color: #ff4444;
+    color: var(--white);
+}
+
+.btn-delete:hover {
+    transform: translateY(-2px);
+}

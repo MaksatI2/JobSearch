@@ -12,14 +12,12 @@ import org.example.JobSearch.exceptions.EditVacancyException;
 import org.example.JobSearch.service.CategoryService;
 import org.example.JobSearch.service.UserService;
 import org.example.JobSearch.service.VacancyService;
-import org.springframework.beans.propertyeditors.CustomNumberEditor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
@@ -178,9 +176,17 @@ public class VacancyViewController {
         return "redirect:/profile?refreshSuccess";
     }
 
-    @InitBinder
-    public void initBinder(WebDataBinder binder) {
-        binder.registerCustomEditor(Long.class, new CustomNumberEditor(Long.class, true));
-    }
+    @PostMapping("/{id}/delete")
+    public String deleteVacancy(@PathVariable Long id, Principal principal) {
+        String email = principal.getName();
+        UserDTO user = userService.getUserByEmail(email);
 
+        VacancyDTO vacancy = vacancyService.getVacancyById(id);
+        if (!vacancy.getAuthorId().equals(user.getId())) {
+            throw new AccessDeniedException("Вы можете удалять только свои собственные вакансии.");
+        }
+
+        vacancyService.deleteVacancy(id);
+        return "redirect:/profile?deleteSuccess";
+    }
 }

@@ -99,6 +99,9 @@
                     <form action="/vacancies/${vacancy.id}/refresh" method="post">
                         <button type="submit" class="btn btn-refresh">Обновить</button>
                     </form>
+                    <form action="/vacancies/${vacancy.id}/delete" method="post">
+                        <button type="submit" class="btn btn-delete">Удалить</button>
+                    </form>
                 </#if>
             </div>
         </div>

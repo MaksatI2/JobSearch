@@ -7,11 +7,8 @@ import org.example.JobSearch.model.ContactInfo;
 import org.example.JobSearch.model.ContactType;
 import org.example.JobSearch.model.Resume;
 import org.example.JobSearch.repository.ContactInfoRepository;
-import org.example.JobSearch.repository.ContactTypeRepository;
-import org.example.JobSearch.repository.ResumeRepository;
 import org.example.JobSearch.service.ContactInfoService;
 import org.example.JobSearch.service.ContactTypeService;
-import org.example.JobSearch.service.ResumeService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,13 +20,14 @@ import java.util.stream.Collectors;
 @Service
 public class ContactInfoServiceImpl implements ContactInfoService {
     private final ContactInfoRepository contactInfoRepository;
-    private final ResumeService resumeService;
     private final ContactTypeService contactTypeService;
 
     @Override
     @Transactional
     public void createContactInfo(Long resumeId, ContactInfoDTO contactDto) {
-        Resume resume = resumeService.getResumeEntityById(resumeId);
+        Resume resume = new Resume();
+        resume.setId(resumeId);
+
         ContactType type = contactTypeService.getById(contactDto.getTypeId());
 
         ContactInfo contact = new ContactInfo();

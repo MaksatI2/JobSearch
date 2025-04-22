@@ -123,21 +123,6 @@ public class VacancyServiceImpl implements VacancyService {
                 .map(this::toDTO);
     }
 
-//    @Override
-//    @Transactional(readOnly = true)
-//    public List<VacancyDTO> getRespApplToVacancy(Long applicantId) {
-//        log.info("Получение вакансий с откликами от соискателя ID: {}", applicantId);
-//        List<Vacancy> vacancies = vacancyRepository.findRespondedByApplicantId(applicantId);
-//
-//        if (vacancies.isEmpty()) {
-//            log.warn("Не найдено вакансий с откликами от соискателя ID: {}", applicantId);
-//            throw new VacancyNotFoundException("Не найдено ни одной вакансии, на которую был отклик по ID: " + applicantId);
-//        }
-//
-//        log.debug("Найдено {} вакансий с откликами от соискателя ID: {}", vacancies.size(), applicantId);
-//        return vacancies.stream().map(this::toDTO).collect(Collectors.toList());
-//    }
-
     @Override
     @Transactional(readOnly = true)
     public VacancyDTO getVacancyById(Long id) {

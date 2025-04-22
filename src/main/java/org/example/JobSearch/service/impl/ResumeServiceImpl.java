@@ -166,7 +166,6 @@ public class ResumeServiceImpl implements ResumeService {
         resumeRepository.refreshResume(resumeId);
     }
 
-
     @Transactional(readOnly = true)
     @Override
     public Page<ResumeDTO> getAllResumes(String sort, Pageable pageable) {
