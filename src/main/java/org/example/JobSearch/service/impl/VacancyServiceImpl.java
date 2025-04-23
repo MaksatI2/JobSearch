@@ -138,6 +138,13 @@ public class VacancyServiceImpl implements VacancyService {
         vacancyRepository.refreshVacancy(vacancyId);
     }
 
+    @Transactional(readOnly = true)
+    @Override
+    public Page<VacancyDTO> getVacanciesWithResponsesByAuthorId(Long authorId, Pageable pageable) {
+        Page<Vacancy> vacanciesPage = vacancyRepository.findVacanciesWithResponsesByAuthorId(authorId, pageable);
+        return vacanciesPage.map(this::toDTO);
+    }
+
     private VacancyDTO toDTO(Vacancy vacancy) {
         return VacancyDTO.builder()
                 .id(vacancy.getId())

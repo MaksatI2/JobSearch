@@ -189,4 +189,36 @@ public class VacancyViewController {
         vacancyService.deleteVacancy(id);
         return "redirect:/profile?deleteSuccess";
     }
+
+    @GetMapping("/{userId}/response")
+    public String showVacanciesWithResponses(
+            @PathVariable Long userId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            Model model,
+            Principal principal) {
+        if (principal != null) {
+            String currentUserEmail = principal.getName();
+            Long currentUserId = userService.getUserId(currentUserEmail);
+
+            if (!currentUserId.equals(userId)) {
+                throw new AccessDeniedException("Вы можете просматривать только свои вакансии с откликами");
+            }
+
+            Page<VacancyDTO> vacanciesPage = vacancyService.getVacanciesWithResponsesByAuthorId(
+                    userId,
+                    PageRequest.of(page, size)
+            );
+
+            model.addAttribute("vacancies", vacanciesPage.getContent());
+            model.addAttribute("currentPage", page);
+            model.addAttribute("totalPages", vacanciesPage.getTotalPages());
+            model.addAttribute("pageSize", size);
+            model.addAttribute("userId", userId);
+
+            return "vacancies/vacanciesResponses";
+        } else {
+            return "redirect:/auth/login";
+        }
+    }
 }

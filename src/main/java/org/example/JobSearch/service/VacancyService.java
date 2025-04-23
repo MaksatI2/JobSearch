@@ -30,6 +30,9 @@ public interface VacancyService {
 
     VacancyDTO getVacancyById(Long id);
 
+    @Transactional(readOnly = true)
+    Page<VacancyDTO> getVacanciesWithResponsesByAuthorId(Long authorId, Pageable pageable);
+
     EditVacancyDTO convertToEditDTO(VacancyDTO dto);
 
     void validateVacancyData(CreateVacancyDTO  createvacancyDto, BindingResult bindingResult);
