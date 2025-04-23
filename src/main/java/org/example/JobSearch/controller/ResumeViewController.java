@@ -41,6 +41,11 @@ public class ResumeViewController {
 
         Page<ResumeDTO> resumesPage = resumeService.getAllResumes(sort, PageRequest.of(page, size));
 
+        resumesPage.getContent().forEach(resume -> {
+            String avatarUrl = "/api/users/" + resume.getId() + "/avatar";
+            resume.setApplicantAvatar(avatarUrl);
+        });
+
         model.addAttribute("resumes", resumesPage.getContent());
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", resumesPage.getTotalPages());
@@ -285,6 +290,9 @@ public class ResumeViewController {
         if (!isOwner && !isEmployer) {
             return "errors/403";
         }
+
+        String avatarUrl = "/api/users/" + resume.getApplicantId() + "/avatar";
+        resume.setApplicantAvatar(avatarUrl);
 
         model.addAttribute("resume", resume);
         model.addAttribute("isApplicant", isOwner);

@@ -189,6 +189,8 @@ public class ResumeServiceImpl implements ResumeService {
                 .id(resume.getId())
                 .applicantId(resume.getApplicant().getId())
                 .applicantName(resume.getApplicant().getName())
+                .applicantAge(resume.getApplicant().getAge())
+                .applicantAvatar(resume.getApplicant().getAvatar())
                 .categoryId(resume.getCategory().getId())
                 .name(resume.getName())
                 .salary(resume.getSalary())
