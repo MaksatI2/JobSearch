@@ -52,6 +52,10 @@
         <div class="upload-container">
             <h3>Загрузить новый аватар</h3>
             <form action="/profile/avatar" method="post" enctype="multipart/form-data" class="avatar-form">
+                <#if _csrf??>
+                    <input type="hidden" name="${(_csrf.parameterName)!'csrf-param-name'}"
+                           value="${(_csrf.token)!'csrf-token'}"/>
+                </#if>
                 <input type="hidden" name="userId" value="${userId}">
                 <div class="file-input-wrapper">
                     <span class="file-label">
@@ -66,15 +70,6 @@
                 </div>
                 <button type="submit" class="btn-save-avatar">Сохранить аватар</button>
             </form>
-        </div>
-
-        <div class="avatar-requirements">
-            <h4>Требования к изображению:</h4>
-            <ul>
-                <li>Максимальный размер файла: 5МБ</li>
-                <li>Поддерживаемые форматы: JPG,JPEG</li>
-                <li>Рекомендуемый размер: 300x300 пикселей</li>
-            </ul>
         </div>
     </div>
 </section>

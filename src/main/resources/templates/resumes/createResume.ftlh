@@ -48,6 +48,10 @@
         </#if>
 
         <form action="/resumes/create" method="post" class="vacancy-form">
+            <#if _csrf??>
+                <input type="hidden" name="${(_csrf.parameterName)!'csrf-param-name'}"
+                       value="${(_csrf.token)!'csrf-token'}"/>
+            </#if>
             <div class="form-group">
                 <label for="name">Название резюме *</label>
                 <@spring.formInput "resumeForm.name", "class='form-control' id='name'" />

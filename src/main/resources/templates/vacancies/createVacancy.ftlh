@@ -49,6 +49,10 @@
         </#if>
 
         <form action="/vacancies/create" method="post" class="vacancy-form">
+            <#if _csrf??>
+                <input type="hidden" name="${(_csrf.parameterName)!'csrf-param-name'}"
+                       value="${(_csrf.token)!'csrf-token'}"/>
+            </#if>
             <div class="form-group">
                 <label for="name">Название вакансии</label>
                 <@spring.formInput "vacancyForm.name", "class='form-control' + ((spring.status.error && spring.status.errors['name']?has_content)?then(' error-field', ''))", "id='name'" />

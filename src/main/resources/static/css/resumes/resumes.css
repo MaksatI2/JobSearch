@@ -347,3 +347,29 @@ body {
 .reset-btn:hover {
     background: #e2e8f0;
 }
+
+.avatar-small {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 8px;
+}
+
+.age {
+    margin-left: 8px;
+    color: #666;
+    font-size: 14px;
+}
+
+.resume-author {
+    display: flex;
+    align-items: center;
+    margin: 8px 0;
+    font-size: 14px;
+    color: #444;
+}
+
+.resume-author .icon {
+    margin-right: 8px;
+}

@@ -49,6 +49,10 @@
         </#if>
 
         <form action="/resumes/${resumeId}/edit" method="post" class="resume-form">
+            <#if _csrf??>
+                <input type="hidden" name="${(_csrf.parameterName)!'csrf-param-name'}"
+                       value="${(_csrf.token)!'csrf-token'}"/>
+            </#if>
             <div class="section">
                 <h2 class="section-title">Основная информация</h2>
 

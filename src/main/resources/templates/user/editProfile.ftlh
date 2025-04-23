@@ -55,6 +55,10 @@
         </#if>
 
         <form action="/profile/edit" method="post" class="profile-form">
+            <#if _csrf??>
+                <input type="hidden" name="${(_csrf.parameterName)!'csrf-param-name'}"
+                       value="${(_csrf.token)!'csrf-token'}"/>
+            </#if>
             <div class="form-row">
                 <div class="form-group">
                     <label for="name">Имя</label>
