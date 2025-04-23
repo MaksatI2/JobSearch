@@ -301,7 +301,6 @@ body {
     text-decoration: underline;
 }
 
-/* Footer Styles */
 .footer {
     background-color: var(--primary);
     color: var(--white);
@@ -310,7 +309,6 @@ body {
     font-size: 0.9rem;
 }
 
-/* Responsive Styles */
 @media (max-width: 768px) {
     .navbar {
         flex-direction: column;

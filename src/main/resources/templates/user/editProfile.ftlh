@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Редактирование профиля | JobSearch</title>
     <link rel="stylesheet" href="/static/css/user/editProfile.css">
+    <link rel="stylesheet" href="/static/css/header.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="icon" href="/static/images/logo-transparent.png" type="image/x-icon">
 </head>

@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>Редактирование аватарки профиля</title>
     <link rel="stylesheet" href="/static/css/user/editAvatar.css">
+    <link rel="stylesheet" href="/static/css/header.css">
     <link rel="icon" href="/static/images/logo-transparent.png" type="image/x-icon">
 </head>
 <body>

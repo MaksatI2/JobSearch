@@ -7,6 +7,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="icon" href="/static/images/logo-transparent.png" type="image/x-icon">
     <link rel="stylesheet" href="/static/css/companies/allCompanies.css">
+    <link rel="stylesheet" href="/static/css/header.css">
 </head>
 <body>
 <header class="header">
