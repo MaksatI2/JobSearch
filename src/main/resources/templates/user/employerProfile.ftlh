@@ -19,9 +19,13 @@
                 <a href="/company/allCompanies" class="nav-link active">Компании</a>
                 <#if Session.SPRING_SECURITY_CONTEXT??>
                     <a href="/profile" class="nav-link">Профиль</a>
-                    <form action="/logout" method="post" class="logout-form">
-                        <button type="submit" class="logout-btn">Выйти</button>
-                    </form>
+                    <#if _csrf??>
+                        <form action="/logout" method="post">
+                            <input type="hidden" name="${(_csrf.parameterName)!'csrf'}"
+                                   value="${(_csrf.token)!'--no-token--'}"/>
+                            <button type="submit" class="logout-btn" id="logout">Выйти</button>
+                        </form>
+                    </#if>
                 <#else>
                     <a href="/auth/login" class="nav-link">Войти</a>
                     <a href="/auth/register" class="nav-link register-btn">Регистрация</a>
