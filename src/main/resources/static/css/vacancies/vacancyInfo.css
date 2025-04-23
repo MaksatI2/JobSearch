@@ -1,13 +1,8 @@
 :root {
     --primary: #4FA399;
-    --primary-light: #6ABBB1;
     --primary-dark: #3A827A;
-    --primary-extra-light: #E0F2F0;
-    --dark: #2D3748;
     --gray: #718096;
-    --light-gray: #EDF2F7;
     --white: #FFFFFF;
-    --red: #E53E3E;
     --green: #38A169;
     --yellow: #D69E2E;
 }
@@ -164,29 +159,6 @@ body {
 .btn-refresh:hover {
     background-color: #2d8559;
     transform: translateY(-2px);
-}
-
-@media (max-width: 768px) {
-    .vacancy-header {
-        flex-direction: column;
-    }
-
-    .salary {
-        margin-top: 15px;
-    }
-
-    .vacancy-title, .salary {
-        font-size: 1.5rem;
-    }
-
-    .actions {
-        flex-direction: column;
-    }
-
-    .btn {
-        width: 100%;
-        text-align: center;
-    }
 }
 
 .company-profile-btn {

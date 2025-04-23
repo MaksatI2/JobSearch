@@ -208,38 +208,3 @@ body {
     transform: translateY(-2px);
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
 }
-
-@media (max-width: 768px) {
-    .navbar {
-        flex-direction: column;
-        padding: 15px;
-    }
-
-    .nav-links {
-        margin-top: 20px;
-        width: 100%;
-        justify-content: space-around;
-        flex-wrap: wrap;
-        gap: 15px;
-    }
-
-    .edit-avatar-section {
-        padding: 20px;
-        margin: 20px 15px;
-    }
-
-    .edit-avatar-section h2 {
-        font-size: 1.8rem;
-    }
-
-    .current-avatar {
-        width: 120px;
-        height: 120px;
-    }
-
-    .file-label,
-    .file-input,
-    .btn-save-avatar {
-        max-width: 100%;
-    }
-}

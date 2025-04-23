@@ -5,11 +5,9 @@
     --primary-extra-light: #E0F2F0;
     --dark: #2D3748;
     --gray: #718096;
-    --light-gray: #EDF2F7;
     --white: #FFFFFF;
     --red: #E53E3E;
     --green: #38A169;
-    --yellow: #D69E2E;
 }
 
 * {
@@ -122,26 +120,6 @@ body {
     color: var(--primary);
 }
 
-.details-btn {
-    display: inline-block;
-    margin-top: 20px;
-    padding: 10px 20px;
-    background-color: var(--primary);
-    color: var(--white);
-    text-decoration: none;
-    border-radius: 6px;
-    font-weight: 600;
-    transition: all 0.3s ease;
-    border: none;
-    cursor: pointer;
-}
-
-.details-btn:hover {
-    background-color: var(--primary-dark);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
 .empty-state {
     text-align: center;
     padding: 60px 20px;
@@ -162,6 +140,7 @@ body {
     color: var(--gray);
     margin-bottom: 25px;
 }
+
 .form-control {
     width: 100%;
     padding: 12px 15px;
@@ -192,52 +171,6 @@ body {
 .submit-btn:hover {
     background-color: var(--primary-dark);
     transform: translateY(-2px);
-}
-
-@media (max-width: 768px) {
-    .navbar {
-        flex-direction: column;
-        padding: 15px;
-    }
-
-    .nav-links {
-        margin-top: 20px;
-        width: 100%;
-        justify-content: space-around;
-        flex-wrap: wrap;
-    }
-
-    .vacancy-header {
-        flex-direction: column;
-    }
-
-    .salary {
-        margin-top: 10px;
-    }
-
-    .vacancy-meta {
-        flex-direction: column;
-        gap: 12px;
-    }
-}
-
-.error-field {
-    border-color: var(--red) !important;
-}
-
-.error {
-    color: var(--red);
-    font-size: 0.85rem;
-    margin-top: 5px;
-}
-
-.global-error {
-    background-color: #FFF5F5;
-    color: var(--red);
-    border: 1px solid #FED7D7;
-    padding: 15px;
-    margin-bottom: 25px;
-    border-radius: 6px;
 }
 
 .vacancy-card-link {
@@ -313,7 +246,7 @@ body {
 }
 
 .reset-btn {
-    background: var(--light-gray);
+    background: #EDF2F7;
     color: var(--dark);
     padding: 10px 15px;
     border-radius: 6px;
@@ -340,4 +273,3 @@ body {
 .company-profile-btn:hover {
     background-color: var(--green);
 }
-

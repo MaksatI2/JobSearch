@@ -90,20 +90,23 @@
                     <h3>Ваши резюме</h3>
                     <#list resumes![] as resume>
                      <#if resume.id??>
-                        <div class="resume-card">
-                            <p><strong>${resume.name!""}</strong></p>
-                              <p>Обновлено: ${resume.updateTime!""}</p>
+                         <a href="/resumes/${resume.id}/info" class="resume-card-link">
+                             <div class="resume-card">
+                                 <p><strong>${resume.name!""}</strong></p>
+                                 <p>Обновлено: ${resume.updateTime!""}</p>
+                             </div>
+                         </a>
+                         <div class="resume-card-buttons">
                              <form action="/resumes/${resume.id}/refresh" method="post" class="inline-form">
                                  <#if _csrf??>
                                      <input type="hidden" name="${(_csrf.parameterName)!'csrf-param-name'}"
                                             value="${(_csrf.token)!'csrf-token'}"/>
                                  </#if>
-                                  <button type="submit" class="button-link refresh-button">Обновить</button>
+                                 <button type="submit" class="button-link refresh-button">Обновить</button>
                              </form>
-                                   <a href="/resumes/${resume.id}/edit" class="button-link">Редактировать</a>
-                            <a href="/resumes/${resume.id}/info" class="button-link">Подробнее</a>
-                        </div>
-                      <#else>
+                             <a href="/resumes/${resume.id}/edit" class="button-link">Редактировать</a>
+                         </div>
+                     <#else>
                        <p>Не удалось загрузить резюме.</p>
                       </#if>
                     <#else>
@@ -137,19 +140,20 @@
                     <h3>Ваши вакансии</h3>
                     <#list vacancies![] as vacancy>
                         <#if vacancy.id??>
-                            <div class="vacancy-card">
-                                <p><strong>${vacancy.name}</strong></p>
-                                <p>Обновлено: ${vacancy.updateTime}</p>
-                                <form action="/vacancies/${vacancy.id}/refresh" method="post" class="inline-form">
-                                    <#if _csrf??>
-                                        <input type="hidden" name="${(_csrf.parameterName)!'csrf-param-name'}"
-                                               value="${(_csrf.token)!'csrf-token'}"/>
-                                    </#if>
-                                    <button type="submit" class="button-link refresh-button">Обновить</button>
-                                </form>
-                                <a href="/vacancies/${vacancy.id}/edit" class="button-link">Редактировать</a>
-                                <a href="/vacancies/${vacancy.id}/info" class="button-link">Подробнее</a>
-                            </div>
+                            <a href="/vacancies/${vacancy.id}/info" class="vacancy-card-link">
+                                <div class="vacancy-card">
+                                    <p><strong>${vacancy.name}</strong></p>
+                                    <p>Обновлено: ${vacancy.updateTime}</p>
+                                    <form action="/vacancies/${vacancy.id}/refresh" method="post" class="inline-form">
+                                        <#if _csrf??>
+                                            <input type="hidden" name="${(_csrf.parameterName)!'csrf-param-name'}"
+                                                   value="${(_csrf.token)!'csrf-token'}"/>
+                                        </#if>
+                                        <button type="submit" class="button-link refresh-button">Обновить</button>
+                                    </form>
+                                    <a href="/vacancies/${vacancy.id}/edit" class="button-link">Редактировать</a>
+                                </div>
+                            </a>
                         <#else>
                             <p>Не удалось загрузить вакансию.</p>
                         </#if>

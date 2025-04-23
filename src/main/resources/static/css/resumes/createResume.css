@@ -9,7 +9,6 @@
     --white: #FFFFFF;
     --red: #E53E3E;
     --green: #38A169;
-    --yellow: #D69E2E;
 }
 
 * {
@@ -276,32 +275,6 @@ select.form-control {
 
 .logout-form {
     display: inline;
-}
-
-@media (max-width: 768px) {
-    .navbar {
-        flex-direction: column;
-        padding: 15px;
-    }
-
-    .nav-links {
-        margin-top: 20px;
-        width: 100%;
-        justify-content: space-around;
-        flex-wrap: wrap;
-    }
-
-    .form-row {
-        grid-template-columns: 1fr;
-    }
-
-    .vacancy-form {
-        padding: 20px;
-    }
-
-    .form-actions {
-        flex-direction: column;
-    }
 }
 
 .contacts-grid {

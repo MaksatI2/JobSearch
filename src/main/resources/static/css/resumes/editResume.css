@@ -130,23 +130,6 @@ body {
     border-radius: 6px;
 }
 
-@media (max-width: 768px) {
-    .form-row {
-        flex-direction: column;
-    }
-
-    .navbar {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 10px;
-    }
-
-    .nav-links {
-        flex-direction: column;
-        width: 100%;
-    }
-}
-
 .contacts-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;

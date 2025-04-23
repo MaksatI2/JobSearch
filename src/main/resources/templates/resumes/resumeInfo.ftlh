@@ -197,13 +197,12 @@
                         </svg>
                         Редактировать
                     </a>
-                </#if>
-                <#if isApplicant>
-                    <div class="right-actions">
-                        <form action="/resumes/${resume.id}/delete" method="post">
-                            <button type="submit" class="btn btn-delete">Удалить</button>
-                        </form>
-                    </div>
+                    <form action="/resumes/${resume.id}/refresh" method="post">
+                        <button type="submit" class="btn btn-refresh">Обновить</button>
+                    </form>
+                    <form action="/resumes/${resume.id}/delete" method="post">
+                        <button type="submit" class="btn btn-delete">Удалить</button>
+                    </form>
                 </#if>
                 <#if Session.SPRING_SECURITY_CONTEXT?? && !Session.SPRING_SECURITY_CONTEXT.authentication.authorities?seq_contains('APPLICANT')>
                     <#if resume.applicantId??>
@@ -219,7 +218,7 @@
 
 <footer class="footer">
     <div class="footer-content">
-        <p class="copyright">© 2025 JobSearch. Все права защищены.</p>
+        <p>© 2025 JobSearch. Все права защищены.</p>
     </div>
 </footer>
 </body>

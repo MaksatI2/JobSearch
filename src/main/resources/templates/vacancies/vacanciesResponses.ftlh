@@ -56,7 +56,7 @@
                     <a href="/vacancies/${vacancy.id}/info" class="vacancy-card-link">
                         <div class="vacancy-header">
                             <h2 class="vacancy-title">${vacancy.name}</h2>
-                            <div class="salary">${vacancy.salary?string} ₽</div>
+                            <div class="salary">${vacancy.salary?string} c</div>
                         </div>
                         <p class="vacancy-description">${vacancy.description}</p>
                         <div class="vacancy-meta">
@@ -85,7 +85,7 @@
                     </a>
                     <div class="vacancy-actions">
                         <a href="/vacancies/${vacancy.id}/responses" class="company-profile-btn">
-                            Отклики (${vacancy.responsesCount})
+                            Кандидаты (${vacancy.responsesCount})
                         </a>
                     </div>
                 </div>

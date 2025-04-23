@@ -176,23 +176,3 @@ body {
     transform: translateY(-2px);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
-
-@media (max-width: 768px) {
-    .navbar {
-        flex-direction: column;
-        padding: 15px;
-    }
-
-    .nav-links {
-        margin-top: 20px;
-        width: 100%;
-        justify-content: space-around;
-        flex-wrap: wrap;
-        gap: 15px;
-    }
-
-    .form-row {
-        flex-direction: column;
-        gap: 0;
-    }
-}

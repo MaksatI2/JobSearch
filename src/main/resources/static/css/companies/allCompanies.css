@@ -123,43 +123,6 @@ h1::after {
     font-size: 1.1rem;
 }
 
-@media (min-width: 768px) {
-    .company-list {
-        grid-template-columns: repeat(2, 1fr);
-    }
-}
-
-@media (min-width: 1024px) {
-    .company-list {
-        grid-template-columns: repeat(1, 1fr);
-    }
-}
-
-@media (max-width: 768px) {
-    .navbar {
-        flex-direction: column;
-        padding: 15px;
-    }
-
-    .nav-links {
-        margin-top: 20px;
-        width: 100%;
-        justify-content: space-around;
-        flex-wrap: wrap;
-        gap: 15px;
-    }
-
-    .company-header {
-        flex-direction: column;
-        text-align: center;
-    }
-
-    .company-avatar {
-        margin-right: 0;
-        margin-bottom: 15px;
-    }
-}
-
 .company-card-link {
     text-decoration: none;
     color: inherit;

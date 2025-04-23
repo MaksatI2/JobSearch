@@ -174,43 +174,6 @@ body {
     margin-bottom: 25px;
 }
 
-@media (max-width: 1024px) {
-    .resumes-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-}
-
-@media (max-width: 768px) {
-    .navbar {
-        flex-direction: column;
-        padding: 15px;
-    }
-
-    .nav-links {
-        margin-top: 20px;
-        width: 100%;
-        justify-content: space-around;
-        flex-wrap: wrap;
-    }
-
-    .resumes-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .resume-header {
-        flex-direction: column;
-    }
-
-    .salary {
-        margin-top: 10px;
-    }
-
-    .resume-meta {
-        flex-direction: column;
-        gap: 12px;
-    }
-}
-
 .resume-link {
     text-decoration: none;
     color: inherit;

@@ -308,34 +308,3 @@ body {
     text-align: center;
     font-size: 0.9rem;
 }
-
-@media (max-width: 768px) {
-    .navbar {
-        flex-direction: column;
-        padding: 10px 0;
-    }
-
-    .nav-links {
-        margin-top: 15px;
-        flex-direction: column;
-        gap: 10px;
-        width: 100%;
-    }
-
-    .registration-form-container {
-        padding: 1.75rem;
-    }
-
-    .form-row {
-        flex-direction: column;
-        gap: 0;
-    }
-
-    .account-type-selector {
-        flex-direction: column;
-    }
-
-    .page-title {
-        font-size: 1.5rem;
-    }
-}
