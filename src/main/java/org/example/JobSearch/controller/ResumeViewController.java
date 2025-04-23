@@ -5,11 +5,11 @@ import lombok.RequiredArgsConstructor;
 import org.example.JobSearch.dto.*;
 import org.example.JobSearch.dto.EditDTO.EditResumeDTO;
 import org.example.JobSearch.dto.create.CreateResumeDTO;
-import org.example.JobSearch.service.*;
+import org.example.JobSearch.service.CategoryService;
+import org.example.JobSearch.service.ResumeService;
+import org.example.JobSearch.service.UserService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -42,7 +42,7 @@ public class ResumeViewController {
         Page<ResumeDTO> resumesPage = resumeService.getAllResumes(sort, PageRequest.of(page, size));
 
         resumesPage.getContent().forEach(resume -> {
-            String avatarUrl = "/api/users/" + resume.getId() + "/avatar";
+            String avatarUrl = "/api/users/" + resume.getApplicantId() + "/avatar";
             resume.setApplicantAvatar(avatarUrl);
         });
 
@@ -151,7 +151,6 @@ public class ResumeViewController {
         model.addAttribute("categories", categoryService.getAllCategories());
         return "resumes/createResume";
     }
-
 
     @PostMapping("/addEducation")
     public String addEducation(@ModelAttribute("resumeForm") CreateResumeDTO resumeDTO,
@@ -301,7 +300,6 @@ public class ResumeViewController {
 
         return "resumes/resumeInfo";
     }
-
 
     @PostMapping("/{id}/refresh")
     public String refreshResume(@PathVariable Long id, Principal principal) {

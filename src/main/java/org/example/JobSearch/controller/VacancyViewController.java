@@ -88,7 +88,6 @@ public class VacancyViewController {
         }
     }
 
-
     @GetMapping("/{id}/edit")
     public String showEditForm(@PathVariable Long id, Model model, Principal principal) {
         VacancyDTO vacancy = vacancyService.getVacancyById(id);
@@ -144,7 +143,6 @@ public class VacancyViewController {
             return "vacancies/editVacancy";
         }
     }
-
 
     @GetMapping("/{id}/info")
     public String showVacancyDetails(@PathVariable Long id, Model model, Principal principal) {

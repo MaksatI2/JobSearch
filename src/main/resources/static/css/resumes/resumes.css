@@ -349,11 +349,12 @@ body {
 }
 
 .avatar-small {
-    width: 32px;
-    height: 32px;
+    width: 70px;
+    height: 70px;
     border-radius: 50%;
     object-fit: cover;
-    margin-right: 8px;
+    margin-right: 20px;
+    border: 2px solid var(--primary-extra-light);
 }
 
 .age {
