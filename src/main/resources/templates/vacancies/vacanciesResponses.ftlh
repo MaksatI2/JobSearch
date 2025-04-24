@@ -84,7 +84,7 @@
                         </div>
                     </a>
                     <div class="vacancy-actions">
-                        <a href="/vacancies/${vacancy.id}/responses" class="company-profile-btn">
+                        <a href="/response/vacancies/${vacancy.id}" class="company-profile-btn">
                             Кандидаты (${vacancy.responsesCount})
                         </a>
                     </div>
