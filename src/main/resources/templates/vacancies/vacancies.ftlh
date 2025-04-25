@@ -18,6 +18,7 @@
         <div class="nav-links">
             <a href="/" class="nav-link">Главная</a>
             <a href="/vacancies" class="nav-link active">Вакансии</a>
+            <a href="/favorites" class="nav-link active">Любимые</a>
             <#if Session.SPRING_SECURITY_CONTEXT?? && Session.SPRING_SECURITY_CONTEXT.authentication.authorities?seq_contains('EMPLOYER')>
                 <a href="/resumes/allResumes" class="nav-link">Резюме</a>
             <#else>
@@ -128,6 +129,19 @@
                                 </svg>
                                 Обновлена: ${vacancy.updateTime?string("dd.MM.yyyy")}
                             </span>
+
+                            <form action="/vacancies/${vacancy.id}/<#if vacancy.favorite?? && vacancy.favorite>unfavorite<#else>favorite</#if>" method="post" class="favorite-form">
+                                <input type="hidden" name="vacancyId" value="${vacancy.id}">
+                                <#if _csrf??>
+                                    <input type="hidden" name="${(_csrf.parameterName)!'csrf'}" value="${(_csrf.token)!'--no-token--'}"/>
+                                </#if>
+                                <button type="submit" class="favorite-btn" title="<#if vacancy.favorite?? && vacancy.favorite>Удалить из избранного<#else>Добавить в избранное</#if>">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="<#if vacancy.favorite?? && vacancy.favorite>gold<#else>none</#if>" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="favorite-icon">
+                                        <path d="M5 3v18l7-5 7 5V3z"/>
+                                    </svg>
+                                </button>
+                            </form>
+
                         </div>
                     </a>
                     <#if Session.SPRING_SECURITY_CONTEXT?? && !Session.SPRING_SECURITY_CONTEXT.authentication.authorities?seq_contains('EMPLOYER')>

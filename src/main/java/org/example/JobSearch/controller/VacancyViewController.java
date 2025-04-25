@@ -10,10 +10,7 @@ import org.example.JobSearch.dto.VacancyDTO;
 import org.example.JobSearch.dto.create.CreateVacancyDTO;
 import org.example.JobSearch.exceptions.CreateVacancyException;
 import org.example.JobSearch.exceptions.EditVacancyException;
-import org.example.JobSearch.service.CategoryService;
-import org.example.JobSearch.service.ResumeService;
-import org.example.JobSearch.service.UserService;
-import org.example.JobSearch.service.VacancyService;
+import org.example.JobSearch.service.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.access.AccessDeniedException;
@@ -34,6 +31,8 @@ public class VacancyViewController {
     private final CategoryService categoryService;
     private final UserService userService;
     private final ResumeService resumeService;
+    private final FavoriteService favoriteService;
+
 
     @GetMapping
     public String showVacancies(
@@ -52,8 +51,8 @@ public class VacancyViewController {
             String email = authentication.getName();
             UserDTO user = userService.getUserByEmail(email);
 
-                Page<ResumeDTO> resumesPage = resumeService.getResumesByApplicant(user.getId(), 0, 10);
-                model.addAttribute("userResumes", resumesPage.getContent());
+            Page<ResumeDTO> resumesPage = resumeService.getResumesByApplicant(user.getId(), 0, 10);
+            model.addAttribute("userResumes", resumesPage.getContent());
 
         }
 
@@ -243,5 +242,19 @@ public class VacancyViewController {
         } else {
             return "redirect:/auth/login";
         }
+    }
+
+    @PostMapping("/{id}/favorite")
+    public String addFavorite(@PathVariable Long id, Principal principal) {
+        Long userId = userService.getUserId(principal.getName());
+        favoriteService.addToFavorites(userId, id);
+        return "redirect:/vacancies/" + id + "/info";
+    }
+
+    @PostMapping("/{id}/unFavorite")
+    public String removeFavorite(@PathVariable Long id, Principal principal) {
+        Long userId = userService.getUserId(principal.getName());
+        favoriteService.removeFromFavorites(userId, id);
+        return "redirect:/vacancies/" + id + "/info";
     }
 }

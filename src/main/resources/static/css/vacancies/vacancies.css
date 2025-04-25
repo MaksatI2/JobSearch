@@ -55,6 +55,7 @@ body {
 }
 
 .vacancy-card {
+    position: relative;
     background-color: var(--white);
     border-radius: 12px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
@@ -347,4 +348,25 @@ body {
     margin-top: 12px;
     display: flex;
     justify-content: space-between;
+}
+
+.favorite-form {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}
+
+.favorite-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+}
+
+.favorite-icon {
+    transition: fill 0.3s;
+}
+
+.favorite-btn:hover .favorite-icon {
+    fill: gold;
 }

@@ -1,5 +1,7 @@
 package org.example.JobSearch.service.impl;
 
+import jakarta.mail.MessagingException;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.JobSearch.dto.UserDTO;
@@ -11,8 +13,10 @@ import org.example.JobSearch.exceptions.UserNotFoundException;
 import org.example.JobSearch.model.AccountType;
 import org.example.JobSearch.model.User;
 import org.example.JobSearch.repository.UserRepository;
+import org.example.JobSearch.service.EmailService;
 import org.example.JobSearch.service.UserService;
 import org.example.JobSearch.util.FileUtil;
+import org.example.JobSearch.util.Utility;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
@@ -21,7 +25,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.UnsupportedEncodingException;
 import java.util.List;
+import java.util.UUID;
 
 import static org.example.JobSearch.util.FileUtil.DEFAULT_AVATAR;
 
@@ -32,6 +38,7 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final EmailService emailService;
 
     @Override
     @Transactional(readOnly = true)
@@ -198,5 +205,42 @@ public class UserServiceImpl implements UserService {
                 .avatar(avatarUrl)
                 .accountType(user.getAccountType())
                 .build();
+    }
+
+    @Override
+    public void updateResetPasswordToken(String token, String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UserNotFoundException("Не удалось найти ни одного пользователя с таким адресом электронной почты " + email));
+        user.setResetPasswordToken(token);
+        userRepository.saveAndFlush(user);
+    }
+
+    @Override
+    public User getByResetPasswordToken(String token) {
+        return userRepository.findByResetPasswordToken(token).orElseThrow(() -> new UserNotFoundException("Пользователь не найден"));
+    }
+
+    @Override
+    public void updatePassword(User user, String newPassword) {
+        String encodedPassword = passwordEncoder.encode(newPassword);
+        user.setPassword(encodedPassword);
+        user.setResetPasswordToken(null);
+        userRepository.saveAndFlush(user);
+    }
+
+    @Override
+    public void makeResetPasswdLink(HttpServletRequest request) throws UserNotFoundException {
+        String email = request.getParameter("email");
+        String token = UUID.randomUUID().toString();
+
+        try {
+            updateResetPasswordToken(token, email);
+            String resetPasswordLink = Utility.getSiteURL(request) + "/auth/reset_password?token=" + token;
+            emailService.sendEmail(email, resetPasswordLink);
+        } catch (UserNotFoundException ex) {
+            throw ex;
+        } catch (UnsupportedEncodingException | MessagingException e) {
+            throw new RuntimeException("Ошибка при отправке электронного письма", e);
+        }
     }
 }
