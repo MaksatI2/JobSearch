@@ -61,7 +61,7 @@
 
             <div class="form-group">
                     <@spring.bind "resumeForm.categoryId"/>
-                    <select class="form-select ${spring.status.error?string('is-invalid', '')}"
+                    <select class="form-control"${spring.status.error?string('is-invalid', '')}"
                             id="categoryId" name="${spring.status.expression}" onchange="toggleFields()">
                         <option value="">Выберите категорию</option>
                         <#list categories as category>
