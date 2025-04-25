@@ -64,8 +64,7 @@
 
                 <div class="form-group">
                     <label for="categoryId">Категория*</label>
-                    <select class="form-control" id="categoryId" name="categoryId" required>
-                        <option value="">Выберите категорию</option>
+                    <select class="form-control" id="categoryId" name="categoryId">
                         <#list categories as category>
                             <option value="${category.id}"
                                     <#if resumeForm.categoryId?? && resumeForm.categoryId == category.id>selected</#if>>

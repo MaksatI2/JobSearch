@@ -63,8 +63,7 @@
 
             <div class="form-group">
                 <label for="categoryId">Категория:</label>
-                <select id="categoryId" name="categoryId" required>
-                    <option value="">Выберите категорию</option>
+                <select id="categoryId" name="categoryId">
                     <#list categories as category>
                         <option value="${category.id}" <#if vacancyForm.categoryId == category.id>selected</#if>>${category.name}</option>
                     </#list>
