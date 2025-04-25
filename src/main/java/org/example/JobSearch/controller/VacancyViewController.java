@@ -159,9 +159,20 @@ public class VacancyViewController {
     }
 
     @GetMapping("/{id}/info")
-    public String showVacancyDetails(@PathVariable Long id, Model model, Principal principal) {
+    public String showVacancyDetails(@PathVariable Long id,
+                                     Model model,
+                                     Principal principal,
+                                     Authentication authentication) {
         VacancyDTO vacancy = vacancyService.getVacancyById(id);
         model.addAttribute("vacancy", vacancy);
+
+        if (authentication != null && authentication.isAuthenticated()) {
+            String email = authentication.getName();
+            UserDTO user = userService.getUserByEmail(email);
+
+            Page<ResumeDTO> resumesPage = resumeService.getResumesByApplicant(user.getId(), 0, 10);
+            model.addAttribute("resumesByUser", resumesPage.getContent());
+        }
 
         if (principal != null) {
             String currentUserEmail = principal.getName();

@@ -157,13 +157,13 @@
                             <div class="form-row">
                                 <div class="form-group">
                                     <label>Количество лет работы *</label>
-                                    <@spring.formInput "resumeForm.workExperiences[${workExp?index}].years",
+                                    <@spring.formInput "resumeForm.workExperiences[${exp?index}].years",
                                     "type='number' min='0' max='50' class='form-control'" />
                                     <@spring.showErrors "<br>", "field-error"/>
                                 </div>
                                 <div class="form-group">
                                     <label>Количество месяцев *</label>
-                                    <@spring.formInput "resumeForm.workExperiences[${workExp?index}].months",
+                                    <@spring.formInput "resumeForm.workExperiences[${exp?index}].months",
                                     "type='number' min='0' max='11' class='form-control'" />
                                     <@spring.showErrors "<br>", "field-error"/>
                                 </div>
