@@ -1,11 +1,15 @@
 package org.example.JobSearch.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.JobSearch.dto.register.ApplicantRegisterDTO;
 import org.example.JobSearch.dto.register.EmployerRegisterDTO;
+import org.example.JobSearch.dto.register.ResetPasswordRequest;
 import org.example.JobSearch.exceptions.InvalidRegisterException;
+import org.example.JobSearch.exceptions.UserNotFoundException;
+import org.example.JobSearch.model.User;
 import org.example.JobSearch.service.UserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -104,5 +108,47 @@ public class AuthViewController {
         }
 
         return "auth/login";
+    }
+
+    @GetMapping("/forgot_password")
+    public String showForgotPasswordForm() {
+        return "auth/forgot_password_form";
+    }
+
+    @PostMapping("/forgot_password")
+    public String processForgotPassword(HttpServletRequest request, Model model) {
+        userService.makeResetPasswdLink(request);
+        model.addAttribute("message", "Мы отправили ссылку для сброса пароля на ваш адрес электронной почты. Пожалуйста, проверьте.");
+
+        return "auth/forgot_password_form";
+    }
+
+    @GetMapping("/reset_password")
+    public String showResetPasswordForm(@RequestParam("token") String token, Model model) {
+        ResetPasswordRequest request = new ResetPasswordRequest();
+        request.setToken(token);
+        model.addAttribute("resetRequest", request);
+        return "auth/reset_password_form";
+    }
+
+    @PostMapping("/reset_password")
+    public String processResetPassword(
+            @ModelAttribute("resetRequest") @Valid ResetPasswordRequest resetRequest,
+            BindingResult bindingResult,
+            Model model
+    ) {
+        if (bindingResult.hasErrors()) {
+            return "auth/reset_password_form";
+        }
+
+        try {
+            User user = userService.getByResetPasswordToken(resetRequest.getToken());
+            userService.updatePassword(user, resetRequest.getPassword());
+            model.addAttribute("message", "Вы успешно изменили свой пароль.");
+        } catch (UserNotFoundException e) {
+            bindingResult.rejectValue("token", "invalid.token", "Недействительный токен");
+        }
+
+        return "auth/reset_password_form";
     }
 }
