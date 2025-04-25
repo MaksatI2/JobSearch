@@ -276,22 +276,18 @@ public class ResumeViewController {
 
     @GetMapping("/{id}/info")
     public String viewResume(@PathVariable Long id, Model model, Principal principal) {
-
-        String currentUserEmail = principal.getName();
-        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        Collection<? extends GrantedAuthority> authorities = userDetails.getAuthorities();
-        boolean isEmployer = authorities.stream().anyMatch(a -> a.getAuthority().equals("EMPLOYER"));
-
         ResumeDTO resume = resumeService.getResumeById(id);
-        Long currentUserId = userService.getUserId(currentUserEmail);
+        Long currentUserId = userService.getUserId(principal.getName());
+
         boolean isOwner = resume.getApplicantId().equals(currentUserId);
+        boolean isEmployer = SecurityContextHolder.getContext().getAuthentication().getAuthorities()
+                .stream().anyMatch(auth -> auth.getAuthority().equals("EMPLOYER"));
 
         if (!isOwner && !isEmployer) {
-            return "errors/403";
+            throw new AccessDeniedException("У вас нет доступа к этому резюме");
         }
 
-        String avatarUrl = "/api/users/" + resume.getApplicantId() + "/avatar";
-        resume.setApplicantAvatar(avatarUrl);
+        resume.setApplicantAvatar("/api/users/" + resume.getApplicantId() + "/avatar");
 
         model.addAttribute("resume", resume);
         model.addAttribute("isApplicant", isOwner);
