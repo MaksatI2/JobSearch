@@ -19,12 +19,6 @@ public class UserController {
     private final UserService userService;
     private final EditUserService editUserService;
 
-//    @PutMapping("/{email}")
-//    public ResponseEntity<?> updateUserByEmail(@PathVariable @Valid String email, @RequestBody EditUserDTO editUserDTO) {
-//            editUserService.updateUserByEmail(email, editUserDTO);
-//            return ResponseEntity.ok("User updated successfully");
-//    }
-
     @PostMapping("/{userId}/avatar")
     public ResponseEntity<?> uploadUserAvatar(@PathVariable @Valid Long userId, @RequestParam MultipartFile file) {
             editUserService.updateUserAvatar(userId, file);
@@ -36,51 +30,4 @@ public class UserController {
             return userService.getAvatarByUserId(userId);
     }
 
-//    @GetMapping("/applicants/email/{email}")
-//    public ResponseEntity<UserDTO> findApplicant(@PathVariable @Valid String email) {
-//        UserDTO user = userService.findApplicant(email);
-//        return ResponseEntity.ok(user);
-//    }
-//
-//    @GetMapping("/applicants/phone/{phoneNumber}")
-//    public ResponseEntity<UserDTO> findApplicantByPhone(@PathVariable @Valid String phoneNumber) {
-//        UserDTO user = userService.findApplicantByPhone(phoneNumber);
-//        return ResponseEntity.ok(user);
-//    }
-//
-//    @GetMapping("/applicants/name/{name}")
-//    public ResponseEntity<List<UserDTO>> findApplicantsByName(@PathVariable @Valid String name) {
-//        List<UserDTO> users = userService.findApplicantsByName(name);
-//        return ResponseEntity.ok(users);
-//    }
-//
-//    @GetMapping("/employers/email/{email}")
-//    public ResponseEntity<UserDTO> findEmployer(@PathVariable @Valid String email) {
-//        UserDTO user = userService.findEmployer(email);
-//        return ResponseEntity.ok(user);
-//    }
-//
-//    @GetMapping("/employers/phone/{phoneNumber}")
-//    public ResponseEntity<UserDTO> findEmployerByPhone(@PathVariable @Valid String phoneNumber) {
-//        UserDTO user = userService.findEmployerByPhone(phoneNumber);
-//        return ResponseEntity.ok(user);
-//    }
-//
-//    @GetMapping("/employers/name/{name}")
-//    public ResponseEntity<List<UserDTO>> findEmployersByName(@PathVariable @Valid String name) {
-//        List<UserDTO> users = userService.findEmployersByName(name);
-//        return ResponseEntity.ok(users);
-//    }
-//
-//    @GetMapping("/exists/{email}")
-//    public ResponseEntity<Boolean> checkUserExists(@PathVariable @Valid String email) {
-//        boolean exists = userService.userExists(email);
-//        return ResponseEntity.ok(exists);
-//    }
-//
-//    @GetMapping("/vacancies/{vacancyId}/applicants")
-//    public ResponseEntity<?> getApplicantsForVacancy(@PathVariable("vacancyId") @Valid Long vacancyId) {
-//            List<UserDTO> applicants = userService.getApplicantsVacancy(vacancyId);
-//            return ResponseEntity.ok(applicants);
-//    }
 }

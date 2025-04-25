@@ -23,10 +23,6 @@ public interface ResumeService {
     Page<ResumeDTO> getAllResumes(String sort,Pageable pageable);
     ResumeDTO getResumeById(Long id);
 
-//    List<ResumeDTO> getUserResumes(Long applicants_id);
-
-//    List<ResumeDTO> getResumesByCategory(Long categoryId);
-
     Resume getResumeEntityById(Long id);
 
     void validateCreateResume(CreateResumeDTO resumeDto, BindingResult bindingResult);
