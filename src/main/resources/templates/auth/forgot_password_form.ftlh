@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Вход | JobSearch</title>
+    <title>Восстановление пароля | JobSearch</title>
     <link rel="stylesheet" href="/static/css/auth/register.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="icon" href="/static/images/logo-transparent.png" type="image/x-icon">
@@ -23,7 +23,7 @@
                         <button type="submit" class="logout-btn">Выйти</button>
                     </form>
                 <#else>
-                    <a href="/auth/login" class="nav-link active">Войти</a>
+                    <a href="/auth/login" class="nav-link">Войти</a>
                     <a href="/auth/register" class="nav-link register-btn">Регистрация</a>
                 </#if>
             </div>
@@ -34,43 +34,36 @@
 <main class="main">
     <div class="container">
         <div class="registration-form-container">
-            <h1 class="page-title">Вход в систему</h1>
+            <h1 class="page-title">Восстановление пароля</h1>
 
-            <#if loginError??>
+            <#if error??>
                 <div class="global-error">
-                    ${loginError}
+                    ${error}
                 </div>
             </#if>
 
-            <#if registrationSuccess??>
+            <#if message??>
                 <div class="success-message">
-                    ${registrationSuccess}
+                    ${message}
                 </div>
             </#if>
 
-            <form action="/login" method="post" class="registration-form">
+            <form action="/auth/forgot_password" method="post" class="registration-form">
                 <#if _csrf??>
                     <input type="hidden" name="${(_csrf.parameterName)!'csrf-param-name'}"
                            value="${(_csrf.token)!'csrf-token'}"/>
                 </#if>
+
                 <div class="form-group">
                     <label for="email">Email</label>
-                    <input type="email" id="email" name="username" class="form-control" required>
+                    <input type="email" id="email" name="email" class="form-control" placeholder="Введите ваш email" required autofocus>
                 </div>
 
-                <div class="form-group">
-                    <label for="password">Пароль</label>
-                    <input type="password" id="password" name="password" class="form-control" required>
-                </div>
-
-                <button type="submit" class="submit-btn">Войти</button>
+                <button type="submit" class="submit-btn">Отправить</button>
             </form>
 
             <div class="login-link">
-                Ещё нет аккаунта? <a href="/auth/register">Зарегистрироваться</a>
-            </div>
-            <div class="login-link">
-                <a href="/auth/forgot_password">Забыли пароль?</a>
+                <a href="/auth/login">Вернуться к входу</a>
             </div>
         </div>
     </div>
