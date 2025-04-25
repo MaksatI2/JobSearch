@@ -25,6 +25,8 @@ public class WorkExperience {
 
     private Integer years;
 
+    private Integer months;
+
     @Lob
     @Column(columnDefinition = "TEXT")
     private String responsibilities;

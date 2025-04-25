@@ -104,9 +104,43 @@
                                         <div class="company-name">${exp.companyName}</div>
                                         <div class="position">${exp.position}</div>
                                     </div>
-                                    <div class="years">Опыт: ${exp.years} года </div>
+                                    <div class="years">
+                                        <#assign yearsText = ''>
+                                        <#assign monthsText = ''>
+                                        <#if exp.years gt 0>
+                                            <#if exp.years == 1>
+                                                <#assign yearsText = exp.years + ' год'>
+                                            <#elseif exp.years gt 1 && exp.years < 5>
+                                                <#assign yearsText = exp.years + ' года'>
+                                            <#else>
+                                                <#assign yearsText = exp.years + ' лет'>
+                                            </#if>
+                                        </#if>
+                                        <#if exp.months gt 0>
+                                            <#if exp.months == 1>
+                                                <#assign monthsText = exp.months + ' месяц'>
+                                            <#elseif exp.months gt 1 && exp.months < 5>
+                                                <#assign monthsText = exp.months + ' месяца'>
+                                            <#else>
+                                                <#assign monthsText = exp.months + ' месяцев'>
+                                            </#if>
+                                        </#if>
+
+                                        Опыт:
+                                        <#if yearsText?has_content && monthsText?has_content>
+                                            ${yearsText} ${monthsText}
+                                        <#elseif yearsText?has_content>
+                                            ${yearsText}
+                                        <#elseif monthsText?has_content>
+                                            ${monthsText}
+                                        <#else>
+                                            менее месяца
+                                        </#if>
+                                    </div>
                                 </div>
-                                <div class="responsibilities">${exp.responsibilities}</div>
+                                <#if exp.responsibilities?has_content>
+                                    <div class="responsibilities">${exp.responsibilities}</div>
+                                </#if>
                             </div>
                         </#list>
                     <#else>

@@ -156,9 +156,16 @@
                             </div>
                             <div class="form-row">
                                 <div class="form-group">
-                                    <label>Годы опыта*</label>
-                                    <@spring.formInput "resumeForm.workExperiences[${exp?index}].years", "type='number' min='0' step='0.1' class='form-control'" />
-                                    <@spring.showErrors "<br>", "error" />
+                                    <label>Количество лет работы *</label>
+                                    <@spring.formInput "resumeForm.workExperiences[${workExp?index}].years",
+                                    "type='number' min='0' max='50' class='form-control'" />
+                                    <@spring.showErrors "<br>", "field-error"/>
+                                </div>
+                                <div class="form-group">
+                                    <label>Количество месяцев *</label>
+                                    <@spring.formInput "resumeForm.workExperiences[${workExp?index}].months",
+                                    "type='number' min='0' max='11' class='form-control'" />
+                                    <@spring.showErrors "<br>", "field-error"/>
                                 </div>
                             </div>
                             <div class="form-group">

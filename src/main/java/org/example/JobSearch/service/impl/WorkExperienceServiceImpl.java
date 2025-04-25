@@ -26,6 +26,7 @@ public class WorkExperienceServiceImpl implements WorkExperienceService {
         resume.setId(resumeId);
         workExperience.setResume(resume);
         workExperience.setYears(workExperienceDto.getYears());
+        workExperience.setMonths(workExperienceDto.getMonths() != null ? workExperienceDto.getMonths() : 0);
         workExperience.setCompanyName(workExperienceDto.getCompanyName());
         workExperience.setPosition(workExperienceDto.getPosition());
         workExperience.setResponsibilities(workExperienceDto.getResponsibilities());
@@ -51,6 +52,7 @@ public class WorkExperienceServiceImpl implements WorkExperienceService {
                 .id(workExperience.getId())
                 .resumeId(workExperience.getResume().getId())
                 .years(workExperience.getYears())
+                .months(workExperience.getMonths())
                 .companyName(workExperience.getCompanyName())
                 .position(workExperience.getPosition())
                 .responsibilities(workExperience.getResponsibilities())

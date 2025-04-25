@@ -11,13 +11,17 @@ import lombok.*;
 public class WorkExperienceDTO {
 
     private Long id;
-
     private Long resumeId;
 
     @NotNull
     @Min(value = 0, message = "Количество лет опыта не может быть отрицательным")
     @Max(value = 50, message = "Количество лет опыта не может превышать 50 лет")
     private Integer years;
+
+    @NotNull
+    @Min(value = 0, message = "Количество месяцев опыта не может быть отрицательным")
+    @Max(value = 11, message = "Количество месяцев опыта не может превышать 11")
+    private Integer months;
 
     @NotBlank
     @Size(min = 2, max = 100, message = "Название компании должно быть от 2 до 100 символов")

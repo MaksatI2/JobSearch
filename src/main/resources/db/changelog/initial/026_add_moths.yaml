@@ -1,0 +1,14 @@
+databaseChangeLog:
+  - changeSet:
+      id: 011
+      author: I.Maksat
+      changes:
+        - addColumn:
+            tableName: work_experience_info
+            columns:
+              - column:
+                  name: months
+                  type: INT
+                  constraints:
+                    nullable: true
+                  defaultValue: 0
