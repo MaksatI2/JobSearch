@@ -12,13 +12,10 @@ import org.example.JobSearch.service.VacancyService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
 
@@ -51,12 +48,34 @@ public class ResponseViewController {
         Page<ResumeDTO> resumesPage = responseService.getResumesByVacancyId(id, PageRequest.of(page, size));
         int totalResponses = responseService.getResponsesCountByVacancy(id);
 
-        model.addAttribute("vacancy", vacancy);
         model.addAttribute("resumes", resumesPage);
         model.addAttribute("totalResponses", totalResponses);
         model.addAttribute("currentPage", page);
         model.addAttribute("pageSize", size);
 
-        return "response/vacancy-responses";
+        return "responses/vacancy-responses";
+    }
+
+    @PostMapping("/respond")
+    public String respondToVacancy(@RequestParam Long resumeId,
+                                   @RequestParam Long vacancyId,
+                                   Principal principal,
+                                   RedirectAttributes redirectAttributes) {
+        try {
+            ResumeDTO resume = resumeService.getResumeById(resumeId);
+            String email = principal.getName();
+            UserDTO user = userService.getUserByEmail(email);
+
+            if (!resume.getApplicantId().equals(user.getId())) {
+                throw new AccessDeniedException("У вас нет доступа к этому резюме");
+            }
+
+            responseService.respondToVacancy(resumeId, vacancyId);
+            redirectAttributes.addFlashAttribute("successMessage", "Ваш отклик отправлен, ждите ответа");
+            return "redirect:/vacancies/" + vacancyId + "/info?success=true";
+        } catch (IllegalStateException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Ваш отклик не был отправлен");
+            return "redirect:/vacancies/" + vacancyId + "/info?error=" + e.getMessage();
+        }
     }
 }

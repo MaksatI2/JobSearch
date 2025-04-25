@@ -30,7 +30,6 @@ public interface UserService {
 
     Page<UserDTO> getAllEmployers(Pageable pageable);
 
-    boolean userExists(String email);
     Long getUserId(String email);
     User getUserId(Long id);
 }

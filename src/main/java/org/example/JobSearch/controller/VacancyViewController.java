@@ -4,17 +4,20 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.JobSearch.dto.EditDTO.EditVacancyDTO;
+import org.example.JobSearch.dto.ResumeDTO;
 import org.example.JobSearch.dto.UserDTO;
 import org.example.JobSearch.dto.VacancyDTO;
 import org.example.JobSearch.dto.create.CreateVacancyDTO;
 import org.example.JobSearch.exceptions.CreateVacancyException;
 import org.example.JobSearch.exceptions.EditVacancyException;
 import org.example.JobSearch.service.CategoryService;
+import org.example.JobSearch.service.ResumeService;
 import org.example.JobSearch.service.UserService;
 import org.example.JobSearch.service.VacancyService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -30,18 +33,29 @@ public class VacancyViewController {
     private final VacancyService vacancyService;
     private final CategoryService categoryService;
     private final UserService userService;
+    private final ResumeService resumeService;
 
     @GetMapping
     public String showVacancies(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size,
             @RequestParam(required = false) String sort,
-            Model model) {
+            Model model,
+            Authentication authentication) {
 
         Page<VacancyDTO> vacanciesPage = vacancyService.getAllVacanciesSorted(
                 sort,
                 PageRequest.of(page, size)
         );
+
+        if (authentication != null && authentication.isAuthenticated()) {
+            String email = authentication.getName();
+            UserDTO user = userService.getUserByEmail(email);
+
+                Page<ResumeDTO> resumesPage = resumeService.getResumesByApplicant(user.getId(), 0, 10);
+                model.addAttribute("userResumes", resumesPage.getContent());
+
+        }
 
         model.addAttribute("vacancies", vacanciesPage.getContent());
         model.addAttribute("currentPage", page);
