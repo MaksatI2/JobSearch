@@ -37,12 +37,6 @@ body {
     min-height: calc(100vh - 160px);
 }
 
-.container {
-    max-width: 1000px;
-    margin: 0 auto;
-    padding: 0 24px;
-}
-
 .resume-detail {
     background-color: var(--white);
     border-radius: 16px;

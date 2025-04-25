@@ -28,12 +28,6 @@ body {
     flex-direction: column;
 }
 
-.container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 20px;
-}
-
 .edit-avatar-section {
     padding: 30px;
     background-color: var(--white);
