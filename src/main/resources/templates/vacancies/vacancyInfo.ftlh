@@ -40,6 +40,19 @@
 
 <main class="main">
     <div class="container">
+
+        <#if successMessage??>
+            <div class="alert alert-success">
+                ${successMessage}
+            </div>
+        </#if>
+
+        <#if errorMessage??>
+            <div class="alert alert-danger">
+                ${errorMessage}
+            </div>
+        </#if>
+
         <div class="vacancy-detail">
             <div class="vacancy-header">
                 <h1 class="vacancy-title">${vacancy.name}</h1>

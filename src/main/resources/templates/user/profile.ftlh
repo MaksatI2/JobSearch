@@ -94,18 +94,16 @@
                              <div class="resume-card">
                                  <p><strong>${resume.name!""}</strong></p>
                                  <p>Обновлено: ${resume.updateTime!""}</p>
+                                 <form action="/resumes/${resume.id}/refresh" method="post" class="inline-form">
+                                     <#if _csrf??>
+                                         <input type="hidden" name="${(_csrf.parameterName)!'csrf-param-name'}"
+                                                value="${(_csrf.token)!'csrf-token'}"/>
+                                     </#if>
+                                     <button type="submit" class="button-link refresh-button">Обновить</button>
+                                 </form>
+                                 <a href="/resumes/${resume.id}/edit" class="button-link">Редактировать</a>
                              </div>
                          </a>
-                         <div class="resume-card-buttons">
-                             <form action="/resumes/${resume.id}/refresh" method="post" class="inline-form">
-                                 <#if _csrf??>
-                                     <input type="hidden" name="${(_csrf.parameterName)!'csrf-param-name'}"
-                                            value="${(_csrf.token)!'csrf-token'}"/>
-                                 </#if>
-                                 <button type="submit" class="button-link refresh-button">Обновить</button>
-                             </form>
-                             <a href="/resumes/${resume.id}/edit" class="button-link">Редактировать</a>
-                         </div>
                      <#else>
                        <p>Не удалось загрузить резюме.</p>
                       </#if>

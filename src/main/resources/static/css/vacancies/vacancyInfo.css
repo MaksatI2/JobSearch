@@ -185,3 +185,22 @@ body {
 .btn-delete:hover {
     transform: translateY(-2px);
 }
+
+.alert {
+    padding: 15px 20px;
+    margin-bottom: 25px;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+}
+
+.alert-success {
+    background-color: #E6FFFA;
+    color: #2C7A7B;
+    border-left: 4px solid var(--green);
+}
+
+.alert-danger {
+    background-color: #FFF5F5;
+    color: #C53030;
+    border-left: 4px solid var(--red);
+}

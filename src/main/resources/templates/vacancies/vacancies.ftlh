@@ -124,7 +124,35 @@
                                 Профиль компании
                             </a>
                         </#if>
+                        <a href="#modal-${vacancy.id}" class="respond-btn">Откликнуться</a>
                     </#if>
+                </div>
+
+                <div id="modal-${vacancy.id}" class="modal">
+                    <div class="modal-content">
+                        <a href="#" class="close-modal">&times;</a>
+                        <h3 class="modal-title">Отклик на вакансию "${vacancy.name}"</h3>
+
+                        <form action="/response/respond" method="post">
+                            <input type="hidden" name="vacancyId" value="${vacancy.id}">
+                            <#if _csrf??>
+                                <input type="hidden" name="${(_csrf.parameterName)!'csrf'}" value="${(_csrf.token)!'--no-token--'}"/>
+                            </#if>
+
+                            <label for="resumeId-${vacancy.id}">Выберите резюме:</label>
+                            <select id="resumeId-${vacancy.id}" name="resumeId" class="resume-select" required>
+                                <#if userResumes?? && userResumes?size gt 0>
+                                    <#list userResumes as resume>
+                                        <option value="${resume.id}">${resume.name} (${resume.updateTime?string("dd.MM.yyyy")})</option>
+                                    </#list>
+                                <#else>
+                                    <option value="" disabled>У вас нет резюме</option>
+                                </#if>
+                            </select>
+
+                            <button type="submit" class="submit-resume-btn">Отправить отклик</button>
+                        </form>
+                    </div>
                 </div>
             </#list>
         </div>
