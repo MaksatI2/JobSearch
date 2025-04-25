@@ -1,12 +1,15 @@
 package org.example.JobSearch.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.example.JobSearch.dto.ResumeDTO;
 import org.example.JobSearch.model.RespondedApplicant;
 import org.example.JobSearch.repository.RespondedApplicantRepository;
 import org.example.JobSearch.service.ResumeService;
 import org.example.JobSearch.service.ResponseService;
 import org.example.JobSearch.service.UserService;
 import org.example.JobSearch.service.VacancyService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -45,4 +48,17 @@ public class ResponseServiceImpl implements ResponseService {
     public int getResponsesCountByVacancy(Long vacancyId) {
         return respondedApplicantRepository.countByVacancyId(vacancyId);
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<ResumeDTO> getResumesByVacancyId(Long vacancyId, Pageable pageable) {
+        return respondedApplicantRepository.findByVacancyId(vacancyId, pageable)
+                .map(response -> {
+                    ResumeDTO resume = resumeService.getResumeById(response.getResume().getId());
+                    String avatarUrl = "/api/users/" + resume.getApplicantId() + "/avatar";
+                    resume.setApplicantAvatar(avatarUrl);
+                    return resume;
+                });
+    }
+
 }

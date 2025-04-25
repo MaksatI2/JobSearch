@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Создать вакансию | JobSearch</title>
     <link rel="stylesheet" href="/static/css/vacancies/createVacancy.css">
+    <link rel="stylesheet" href="/static/css/header.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="icon" href="/statiс/images/logo-transparent.png" type="image/x-icon">
 </head>
@@ -19,9 +20,13 @@
             <a href="/resumes/allResumes" class="nav-link">Резюме</a>
             <#if Session.SPRING_SECURITY_CONTEXT??>
                 <a href="/profile" class="nav-link">Профиль</a>
-                <form action="/logout" method="post" class="logout-form">
-                    <button type="submit" class="logout-btn">Выйти</button>
-                </form>
+                <#if _csrf??>
+                    <form action="/logout" method="post">
+                        <input type="hidden" name="${(_csrf.parameterName)!'csrf'}"
+                               value="${(_csrf.token)!'--no-token--'}"/>
+                        <button type="submit" class="logout-btn" id="logout">Выйти</button>
+                    </form>
+                </#if>
             <#else>
                 <a href="/auth/login" class="nav-link">Войти</a>
                 <a href="/auth/register" class="nav-link register-btn">Регистрация</a>
@@ -44,6 +49,10 @@
         </#if>
 
         <form action="/vacancies/create" method="post" class="vacancy-form">
+            <#if _csrf??>
+                <input type="hidden" name="${(_csrf.parameterName)!'csrf-param-name'}"
+                       value="${(_csrf.token)!'csrf-token'}"/>
+            </#if>
             <div class="form-group">
                 <label for="name">Название вакансии</label>
                 <@spring.formInput "vacancyForm.name", "class='form-control' + ((spring.status.error && spring.status.errors['name']?has_content)?then(' error-field', ''))", "id='name'" />

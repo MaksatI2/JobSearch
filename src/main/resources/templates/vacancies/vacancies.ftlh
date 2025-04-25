@@ -6,6 +6,7 @@
     <title>Список вакансий | JobSearch</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/static/css/vacancies/vacancies.css">
+    <link rel="stylesheet" href="/static/css/header.css">
     <link rel="icon" href="/static/images/logo-transparent.png" type="image/x-icon">
 </head>
 <body>
@@ -24,9 +25,13 @@
             </#if>
             <#if Session.SPRING_SECURITY_CONTEXT??>
                 <a href="/profile" class="nav-link">Профиль</a>
-                <form action="/logout" method="post" class="logout-form">
-                    <button type="submit" class="logout-btn">Выйти</button>
-                </form>
+                <#if _csrf??>
+                    <form action="/logout" method="post">
+                        <input type="hidden" name="${(_csrf.parameterName)!'csrf'}"
+                               value="${(_csrf.token)!'--no-token--'}"/>
+                        <button type="submit" class="logout-btn" id="logout">Выйти</button>
+                    </form>
+                </#if>
             <#else>
                 <a href="/auth/login" class="nav-link">Войти</a>
                 <a href="/auth/register" class="nav-link register-btn">Регистрация</a>
@@ -66,10 +71,22 @@
                     </select>
                 </div>
 
-                <button type="submit" class="submit-btn">Применить</button>
-                <#if selectedSort??>
-                    <a href="/vacancies?page=0&size=${pageSize}" class="reset-btn">Сбросить</a>
-                </#if>
+                <div class="filter-actions">
+                    <button type="submit" class="submit-btn">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" class="btn-icon">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        </svg>
+                        Применить
+                    </button>
+                    <#if selectedSort??>
+                        <a href="/vacancies?page=0&size=${pageSize}" class="reset-btn">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" class="btn-icon">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                            </svg>
+                            Сбросить
+                        </a>
+                    </#if>
+                </div>
             </form>
         </div>
 
@@ -119,7 +136,35 @@
                                 Профиль компании
                             </a>
                         </#if>
+                        <a href="#modal-${vacancy.id}" class="respond-btn">Откликнуться</a>
                     </#if>
+                </div>
+
+                <div id="modal-${vacancy.id}" class="modal">
+                    <div class="modal-content">
+                        <a href="#" class="close-modal">&times;</a>
+                        <h3 class="modal-title">Отклик на вакансию "${vacancy.name}"</h3>
+
+                        <form action="/response/respond" method="post">
+                            <input type="hidden" name="vacancyId" value="${vacancy.id}">
+                            <#if _csrf??>
+                                <input type="hidden" name="${(_csrf.parameterName)!'csrf'}" value="${(_csrf.token)!'--no-token--'}"/>
+                            </#if>
+
+                            <label for="resumeId-${vacancy.id}">Выберите резюме:</label>
+                            <select id="resumeId-${vacancy.id}" name="resumeId" class="resume-select" required>
+                                <#if userResumes?? && userResumes?size gt 0>
+                                    <#list userResumes as resume>
+                                        <option value="${resume.id}">${resume.name} (${resume.updateTime?string("dd.MM.yyyy")})</option>
+                                    </#list>
+                                <#else>
+                                    <option value="" disabled>У вас нет резюме</option>
+                                </#if>
+                            </select>
+
+                            <button type="submit" class="submit-resume-btn">Отправить отклик</button>
+                        </form>
+                    </div>
                 </div>
             </#list>
         </div>

@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>Редактирование аватарки профиля</title>
     <link rel="stylesheet" href="/static/css/user/editAvatar.css">
+    <link rel="stylesheet" href="/static/css/header.css">
     <link rel="icon" href="/static/images/logo-transparent.png" type="image/x-icon">
 </head>
 <body>
@@ -21,9 +22,13 @@
                 </#if>
                 <#if Session.SPRING_SECURITY_CONTEXT??>
                     <a href="/profile" class="nav-link active">Профиль</a>
-                    <form action="/logout" method="post" class="logout-form">
-                        <button type="submit" class="logout-btn">Выйти</button>
-                    </form>
+                    <#if _csrf??>
+                        <form action="/logout" method="post">
+                            <input type="hidden" name="${(_csrf.parameterName)!'csrf'}"
+                                   value="${(_csrf.token)!'--no-token--'}"/>
+                            <button type="submit" class="logout-btn" id="logout">Выйти</button>
+                        </form>
+                    </#if>
                 <#else>
                     <a href="/auth/login" class="nav-link">Войти</a>
                     <a href="/auth/register" class="nav-link register-btn">Регистрация</a>
@@ -47,6 +52,10 @@
         <div class="upload-container">
             <h3>Загрузить новый аватар</h3>
             <form action="/profile/avatar" method="post" enctype="multipart/form-data" class="avatar-form">
+                <#if _csrf??>
+                    <input type="hidden" name="${(_csrf.parameterName)!'csrf-param-name'}"
+                           value="${(_csrf.token)!'csrf-token'}"/>
+                </#if>
                 <input type="hidden" name="userId" value="${userId}">
                 <div class="file-input-wrapper">
                     <span class="file-label">
@@ -61,15 +70,6 @@
                 </div>
                 <button type="submit" class="btn-save-avatar">Сохранить аватар</button>
             </form>
-        </div>
-
-        <div class="avatar-requirements">
-            <h4>Требования к изображению:</h4>
-            <ul>
-                <li>Максимальный размер файла: 5МБ</li>
-                <li>Поддерживаемые форматы: JPG,JPEG</li>
-                <li>Рекомендуемый размер: 300x300 пикселей</li>
-            </ul>
         </div>
     </div>
 </section>

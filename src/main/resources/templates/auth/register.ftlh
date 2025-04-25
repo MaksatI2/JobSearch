@@ -58,6 +58,10 @@
                 </#if>
 
                 <form action="/auth/register/applicant" method="post" class="registration-form">
+                    <#if _csrf??>
+                        <input type="hidden" name="${(_csrf.parameterName)!'csrf-param-name'}"
+                               value="${(_csrf.token)!'csrf-token'}"/>
+                    </#if>
                     <div class="form-row">
                         <div class="form-group">
                             <label for="name">Имя</label>
@@ -109,6 +113,10 @@
                 </#if>
 
                 <form action="/auth/register/employer" method="post" class="registration-form">
+                    <#if _csrf??>
+                        <input type="hidden" name="${(_csrf.parameterName)!'csrf-param-name'}"
+                               value="${(_csrf.token)!'csrf-token'}"/>
+                    </#if>
                     <div class="form-group">
                         <label for="companyName">Название компании</label>
                         <@spring.formInput "employerRegisterDTO.companyName", "class='form-control' + ((spring.status.error && spring.status.errors['companyName']?has_content)?then(' error-field', ''))", "id='companyName'" />

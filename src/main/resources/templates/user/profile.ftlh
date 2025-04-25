@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Личный кабинет | JobSearch</title>
     <link rel="stylesheet" href="/static/css/user/profile.css">
+    <link rel="stylesheet" href="/static/css/header.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="icon" href="/static/images/logo-transparent.png" type="image/x-icon">
 </head>
@@ -23,9 +24,13 @@
                 </#if>
                 <#if Session.SPRING_SECURITY_CONTEXT??>
                     <a href="/profile" class="nav-link active">Профиль</a>
-                    <form action="/logout" method="post" class="logout-form">
-                        <button type="submit" class="logout-btn">Выйти</button>
-                    </form>
+                    <#if _csrf??>
+                        <form action="/logout" method="post">
+                            <input type="hidden" name="${(_csrf.parameterName)!'csrf'}"
+                                   value="${(_csrf.token)!'--no-token--'}"/>
+                            <button type="submit" class="logout-btn" id="logout">Выйти</button>
+                        </form>
+                    </#if>
                 <#else>
                     <a href="/auth/login" class="nav-link">Войти</a>
                     <a href="/auth/register" class="nav-link register-btn">Регистрация</a>
@@ -85,16 +90,21 @@
                     <h3>Ваши резюме</h3>
                     <#list resumes![] as resume>
                      <#if resume.id??>
-                        <div class="resume-card">
-                            <p><strong>${resume.name!""}</strong></p>
-                              <p>Обновлено: ${resume.updateTime!""}</p>
-                             <form action="/resumes/${resume.id}/refresh" method="post" class="inline-form">
-                                  <button type="submit" class="button-link refresh-button">Обновить</button>
-                             </form>
-                                   <a href="/resumes/${resume.id}/edit" class="button-link">Редактировать</a>
-                            <a href="/resumes/${resume.id}/info" class="button-link">Подробнее</a>
-                        </div>
-                      <#else>
+                         <a href="/resumes/${resume.id}/info" class="resume-card-link">
+                             <div class="resume-card">
+                                 <p><strong>${resume.name!""}</strong></p>
+                                 <p>Обновлено: ${resume.updateTime!""}</p>
+                                 <form action="/resumes/${resume.id}/refresh" method="post" class="inline-form">
+                                     <#if _csrf??>
+                                         <input type="hidden" name="${(_csrf.parameterName)!'csrf-param-name'}"
+                                                value="${(_csrf.token)!'csrf-token'}"/>
+                                     </#if>
+                                     <button type="submit" class="button-link refresh-button">Обновить</button>
+                                 </form>
+                                 <a href="/resumes/${resume.id}/edit" class="button-link">Редактировать</a>
+                             </div>
+                         </a>
+                     <#else>
                        <p>Не удалось загрузить резюме.</p>
                       </#if>
                     <#else>
@@ -123,19 +133,25 @@
 
                 <#elseif user.accountType == "EMPLOYER">
                     <a href="/vacancies/create" class="action-button">Создать вакансию</a>
+                    <a href="/vacancies/${user.id}/response" class="action-button">Отклики</a>
 
                     <h3>Ваши вакансии</h3>
                     <#list vacancies![] as vacancy>
                         <#if vacancy.id??>
-                            <div class="vacancy-card">
-                                <p><strong>${vacancy.name}</strong></p>
-                                <p>Обновлено: ${vacancy.updateTime}</p>
-                                <form action="/vacancies/${vacancy.id}/refresh" method="post" class="inline-form">
-                                    <button type="submit" class="button-link refresh-button">Обновить</button>
-                                </form>
-                                <a href="/vacancies/${vacancy.id}/edit" class="button-link">Редактировать</a>
-                                <a href="/vacancies/${vacancy.id}/info" class="button-link">Подробнее</a>
-                            </div>
+                            <a href="/vacancies/${vacancy.id}/info" class="vacancy-card-link">
+                                <div class="vacancy-card">
+                                    <p><strong>${vacancy.name}</strong></p>
+                                    <p>Обновлено: ${vacancy.updateTime}</p>
+                                    <form action="/vacancies/${vacancy.id}/refresh" method="post" class="inline-form">
+                                        <#if _csrf??>
+                                            <input type="hidden" name="${(_csrf.parameterName)!'csrf-param-name'}"
+                                                   value="${(_csrf.token)!'csrf-token'}"/>
+                                        </#if>
+                                        <button type="submit" class="button-link refresh-button">Обновить</button>
+                                    </form>
+                                    <a href="/vacancies/${vacancy.id}/edit" class="button-link">Редактировать</a>
+                                </div>
+                            </a>
                         <#else>
                             <p>Не удалось загрузить вакансию.</p>
                         </#if>

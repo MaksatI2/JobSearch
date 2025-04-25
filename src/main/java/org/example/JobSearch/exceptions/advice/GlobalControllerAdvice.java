@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -23,10 +24,9 @@ public class GlobalControllerAdvice {
     private final ErrorService errorService;
 
     @ExceptionHandler(AccessDeniedException.class)
-    @ResponseStatus(HttpStatus.FORBIDDEN)
-    public ModelAndView handleAccessDenied(AccessDeniedException e) {
-        ModelAndView mav = new ModelAndView("errors/403");
-        mav.addObject("error", e.getMessage());
+    public ModelAndView handleAccessDenied(AccessDeniedException e, RedirectAttributes redirectAttributes) {
+        ModelAndView mav = new ModelAndView("redirect:/profile");
+        redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
         return mav;
     }
 

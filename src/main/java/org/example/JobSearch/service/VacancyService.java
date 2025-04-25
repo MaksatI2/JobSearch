@@ -9,13 +9,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
 
-import java.util.List;
-
 public interface VacancyService {
     Page<VacancyDTO> getVacanciesByEmployer(Long employerId, int page, int size);
-
-//      оставил на потом при поиске по категории
-//    List<VacancyDTO> getVacanciesByCategory(Long categoryId);
 
     void createVacancy(CreateVacancyDTO createvacancyDto, Long employerId);
     void updateVacancy(Long vacancyId, EditVacancyDTO editvacancyDto);
@@ -24,11 +19,12 @@ public interface VacancyService {
 
     Page<VacancyDTO> getAllVacanciesSorted(String sort, Pageable pageable);
 
-//    List<VacancyDTO> getRespApplToVacancy(Long applicantId);
-
     Vacancy getVacancyEntityById(Long id);
 
     VacancyDTO getVacancyById(Long id);
+
+    @Transactional(readOnly = true)
+    Page<VacancyDTO> getVacanciesWithResponsesByAuthorId(Long authorId, Pageable pageable);
 
     EditVacancyDTO convertToEditDTO(VacancyDTO dto);
 

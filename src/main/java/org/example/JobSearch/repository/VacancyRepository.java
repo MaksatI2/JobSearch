@@ -33,6 +33,15 @@ public interface VacancyRepository extends JpaRepository<Vacancy, Long> {
     """)
     List<Vacancy> findRespondedByApplicantId(@Param("applicantId") Long applicantId);
 
+    @Query("""
+    SELECT DISTINCT v FROM Vacancy v 
+    JOIN v.applicants ra
+    WHERE v.author.id = :userId
+    GROUP BY v
+    HAVING COUNT(ra) > 0
+""")
+    Page<Vacancy> findVacanciesWithResponsesByAuthorId(@Param("userId") Long userId, Pageable pageable);
+
     boolean existsById(Long id);
 
     Page<Vacancy> findByAuthorId(Long employerId, Pageable pageable);

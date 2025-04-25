@@ -162,11 +162,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean userExists(String email) {
-        return userRepository.existsByEmail(email);
-    }
-
-    @Override
     public ResponseEntity<?> getAvatarByUserId(Long userId) {
         String avatarPath = userRepository.findById(userId)
                 .map(User::getAvatar)
