@@ -1,10 +1,10 @@
 databaseChangeLog:
   - changeSet:
-      id: 028
+      id: 029
       author: I.Maksat
       changes:
         - createTable:
-            tableName: favorite_vacancies
+            tableName: favorite_resumes
             columns:
               - column:
                   name: id
@@ -17,15 +17,15 @@ databaseChangeLog:
                   type: BIGINT
                   constraints:
                     nullable: false
-                    foreignKeyName: fk_fav_user
+                    foreignKeyName: fk_fav_resume_user
                     referencedTableName: users
                     referencedColumnNames: id
               - column:
-                  name: vacancy_id
+                  name: resume_id
                   type: BIGINT
                   constraints:
                     nullable: false
-                    foreignKeyName: fk_fav_vacancy
-                    referencedTableName: vacancies
+                    foreignKeyName: fk_fav_resume
+                    referencedTableName: resumes
                     referencedColumnNames: id
                     deleteCascade: true
