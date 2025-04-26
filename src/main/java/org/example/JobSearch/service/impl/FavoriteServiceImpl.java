@@ -8,6 +8,7 @@ import org.example.JobSearch.repository.UserRepository;
 import org.example.JobSearch.repository.VacancyRepository;
 import org.example.JobSearch.service.FavoriteService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -52,12 +53,13 @@ public class FavoriteServiceImpl implements FavoriteService {
     }
 
     @Override
+    @Transactional
     public void removeFromFavorites(Long userId, Long vacancyId) {
         repository.deleteByUserIdAndVacancyId(userId, vacancyId);
     }
 
     @Override
-    public boolean isFavorite(Long userId, Long vacancyId) {
-        return repository.findByUserIdAndVacancyId(userId, vacancyId).isPresent();
+    public List<Long> getFavoriteVacancyIds(Long userId) {
+        return repository.findVacancyIdsByUserId(userId);
     }
 }

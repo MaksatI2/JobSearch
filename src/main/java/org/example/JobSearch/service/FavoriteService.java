@@ -11,5 +11,5 @@ public interface FavoriteService {
 
     List<VacancyDTO> getUserFavorites(Long userId);
 
-    boolean isFavorite(Long userId, Long vacancyId);
+    List<Long> getFavoriteVacancyIds(Long userId);
 }
