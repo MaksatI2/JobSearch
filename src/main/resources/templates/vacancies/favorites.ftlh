@@ -31,9 +31,19 @@
 <main class="main">
     <div class="container">
         <h1 class="page-title">Избранные вакансии</h1>
+        <#if successMessage??>
+            <div class="alert alert-success">
+                ${successMessage}
+            </div>
+        </#if>
 
-        <div class="favorites-actions">
-            <a href="/vacancies" class="back-to-vacancies-btn">
+        <#if errorMessage??>
+            <div class="alert alert-danger">
+                ${errorMessage}
+            </div>
+        </#if>
+        <div class="favorite-container">
+            <a href="/vacancies" class="submit-btn">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" class="btn-icon">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
                 </svg>
@@ -45,7 +55,7 @@
             <div class="empty-state">
                 <h3>Нет избранных вакансий</h3>
                 <p>Вы еще не добавили ни одной вакансии в избранное.</p>
-                <a href="/vacancies" class="explore-vacancies-btn">Посмотреть вакансии</a>
+                <a href="/vacancies" class="submit-btn">Посмотреть вакансии</a>
             </div>
         <#else>
             <div class="vacancies-grid">
@@ -72,6 +82,13 @@
                                     </svg>
                                     Автор: <span>${vacancy.authorName}</span>
                                 </span>
+                                <span class="update-time">
+                                <svg class="icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                          d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                </svg>
+                                Обновлена: ${vacancy.updateTime?string("dd.MM.yyyy")}
+                            </span>
                             </div>
                         </a>
                         <div class="favorite-actions">

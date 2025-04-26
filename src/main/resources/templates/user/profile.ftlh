@@ -82,6 +82,7 @@
             <div class="right-column">
                 <#if user.accountType == "APPLICANT">
                     <a href="/resumes/create" class="action-button">Создать резюме</a>
+                    <a href="/favorites" class="action-button">Избранные</a>
 
                     <div class="responses-card">
                         Отклики: ${responsesCount}
@@ -134,6 +135,7 @@
                 <#elseif user.accountType == "EMPLOYER">
                     <a href="/vacancies/create" class="action-button">Создать вакансию</a>
                     <a href="/vacancies/${user.id}/response" class="action-button">Отклики</a>
+                    <a href="/favorites" class="action-button">Избранные</a>
 
                     <h3>Ваши вакансии</h3>
                     <#list vacancies![] as vacancy>
