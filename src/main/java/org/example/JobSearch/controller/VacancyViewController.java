@@ -19,8 +19,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
+import java.util.List;
 
 @Slf4j
 @Controller
@@ -50,6 +52,9 @@ public class VacancyViewController {
         if (authentication != null && authentication.isAuthenticated()) {
             String email = authentication.getName();
             UserDTO user = userService.getUserByEmail(email);
+
+            List<Long> favoriteVacancyIds = favoriteService.getFavoriteVacancyIds(user.getId());
+            model.addAttribute("favoriteVacancyIds", favoriteVacancyIds);
 
             Page<ResumeDTO> resumesPage = resumeService.getResumesByApplicant(user.getId(), 0, 10);
             model.addAttribute("userResumes", resumesPage.getContent());
@@ -245,16 +250,18 @@ public class VacancyViewController {
     }
 
     @PostMapping("/{id}/favorite")
-    public String addFavorite(@PathVariable Long id, Principal principal) {
+    public String addFavorite(@PathVariable Long id, Principal principal, RedirectAttributes redirectAttributes) {
         Long userId = userService.getUserId(principal.getName());
         favoriteService.addToFavorites(userId, id);
-        return "redirect:/vacancies/" + id + "/info";
+        redirectAttributes.addFlashAttribute("successMessage", "Вакансия добавлена в избранное.");
+        return "redirect:/vacancies";
     }
 
     @PostMapping("/{id}/unFavorite")
-    public String removeFavorite(@PathVariable Long id, Principal principal) {
+    public String removeFavorite(@PathVariable Long id, Principal principal, RedirectAttributes redirectAttributes) {
         Long userId = userService.getUserId(principal.getName());
         favoriteService.removeFromFavorites(userId, id);
-        return "redirect:/vacancies/" + id + "/info";
+        redirectAttributes.addFlashAttribute("successMessage", "Вакансия удалена из избранного.");
+        return "redirect:/favorites";
     }
 }
