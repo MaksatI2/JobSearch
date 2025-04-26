@@ -249,19 +249,4 @@ public class VacancyViewController {
         }
     }
 
-    @PostMapping("/{id}/favorite")
-    public String addFavorite(@PathVariable Long id, Principal principal, RedirectAttributes redirectAttributes) {
-        Long userId = userService.getUserId(principal.getName());
-        favoriteService.addToFavorites(userId, id);
-        redirectAttributes.addFlashAttribute("successMessage", "Вакансия добавлена в избранное.");
-        return "redirect:/vacancies";
-    }
-
-    @PostMapping("/{id}/unFavorite")
-    public String removeFavorite(@PathVariable Long id, Principal principal, RedirectAttributes redirectAttributes) {
-        Long userId = userService.getUserId(principal.getName());
-        favoriteService.removeFromFavorites(userId, id);
-        redirectAttributes.addFlashAttribute("successMessage", "Вакансия удалена из избранного.");
-        return "redirect:/favorites";
-    }
 }
