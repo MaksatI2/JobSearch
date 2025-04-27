@@ -64,7 +64,9 @@ public class ProfileController {
             model.addAttribute("currentVacancyPage", vacancyPage);
             model.addAttribute("totalVacancyPages", vacanciesPage.getTotalPages());
 
+            int responsesCount = responseService.getResponsesCountByEmployer(email);
             model.addAttribute("backUrl", referer != null ? referer : "/profile");
+            model.addAttribute("responsesCount", responsesCount);
         }
 
         return "user/profile";

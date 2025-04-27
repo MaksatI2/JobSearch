@@ -20,6 +20,13 @@ public interface RespondedApplicantRepository extends JpaRepository<RespondedApp
     """)
     int countByApplicantId(Long applicantId);
 
+    @Query("""
+            SELECT COUNT(ra)
+            FROM RespondedApplicant ra
+            WHERE ra.vacancy.author.id = :employerId
+    """)
+    int countByEmployerId(@Param("employerId") Long employerId);
+
     @Query("SELECT COUNT(ra) FROM RespondedApplicant ra WHERE ra.vacancy.id = :vacancyId")
     int countByVacancyId(@Param("vacancyId") Long vacancyId);
 

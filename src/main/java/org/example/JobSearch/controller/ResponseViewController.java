@@ -74,8 +74,8 @@ public class ResponseViewController {
             redirectAttributes.addFlashAttribute("successMessage", "Ваш отклик отправлен, ждите ответа");
             return "redirect:/vacancies/" + vacancyId + "/info?success=true";
         } catch (IllegalStateException e) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Ваш отклик не был отправлен");
-            return "redirect:/vacancies/" + vacancyId + "/info?error=" + e.getMessage();
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+            return "redirect:/vacancies/" + vacancyId + "/info?error=true";
         }
     }
 }

@@ -45,6 +45,13 @@ public class ResponseServiceImpl implements ResponseService {
 
     @Transactional(readOnly = true)
     @Override
+    public int getResponsesCountByEmployer(String email) {
+        Long employerId = userService.getUserId(email);
+        return respondedApplicantRepository.countByEmployerId(employerId);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
     public int getResponsesCountByVacancy(Long vacancyId) {
         return respondedApplicantRepository.countByVacancyId(vacancyId);
     }
