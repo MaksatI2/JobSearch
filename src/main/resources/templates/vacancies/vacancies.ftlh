@@ -139,21 +139,22 @@
                                 Обновлена: ${vacancy.updateTime?string("dd.MM.yyyy")}
                             </span>
 
-                            <form action="/vacancies/${vacancy.id}/favorite" method="post" class="favorite-form">
-                                <input type="hidden" name="vacancyId" value="${vacancy.id}">
-                                <#if _csrf??>
-                                    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-                                </#if>
-                                <button type="submit" class="favorite-btn" title="Добавить в избранное">
-                                    <svg width="24" height="24" viewBox="0 0 24 24"
-                                         fill="<#if favoriteVacancyIds?? && favoriteVacancyIds?seq_contains(vacancy.id)>gold<#else>none</#if>"
-                                         stroke="currentColor" stroke-width="2"
-                                         stroke-linecap="round" stroke-linejoin="round" class="favorite-icon">
-                                        <path d="M5 3v18l7-5 7 5V3z"/>
-                                    </svg>
-                                </button>
-                            </form>
-
+                            <#if Session.SPRING_SECURITY_CONTEXT?? && !Session.SPRING_SECURITY_CONTEXT.authentication.authorities?seq_contains('EMPLOYER')>
+                                <form action="/favorites/vacancies/${vacancy.id}/add" method="post" class="favorite-form">
+                                    <input type="hidden" name="vacancyId" value="${vacancy.id}">
+                                    <#if _csrf??>
+                                        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                                    </#if>
+                                    <button type="submit" class="favorite-btn" title="Добавить в избранное">
+                                        <svg width="24" height="24" viewBox="0 0 24 24"
+                                             fill="<#if favoriteVacancyIds?? && favoriteVacancyIds?seq_contains(vacancy.id)>gold<#else>none</#if>"
+                                             stroke="currentColor" stroke-width="2"
+                                             stroke-linecap="round" stroke-linejoin="round" class="favorite-icon">
+                                            <path d="M5 3v18l7-5 7 5V3z"/>
+                                        </svg>
+                                    </button>
+                                </form>
+                            </#if>
                         </div>
                     </a>
                     <#if Session.SPRING_SECURITY_CONTEXT?? && !Session.SPRING_SECURITY_CONTEXT.authentication.authorities?seq_contains('EMPLOYER')>

@@ -6,6 +6,7 @@ import org.example.JobSearch.service.UserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
 
@@ -24,16 +25,18 @@ public class FavoriteResumeController {
     }
 
     @PostMapping("/{id}/add")
-    public String addFavorite(@PathVariable Long id, Principal principal) {
+    public String addFavorite(@PathVariable Long id, Principal principal,  RedirectAttributes redirectAttributes) {
         Long userId = userService.getUserId(principal.getName());
         favoriteService.addResumeToFavorites(userId, id);
-        return "redirect:/resumes";
+        redirectAttributes.addFlashAttribute("successMessage", "Резюме добавлена в избранное.");
+        return "redirect:/resumes/allResumes";
     }
 
     @PostMapping("/{id}/remove")
-    public String removeFavorite(@PathVariable Long id, Principal principal) {
+    public String removeFavorite(@PathVariable Long id, Principal principal,  RedirectAttributes redirectAttributes) {
         Long userId = userService.getUserId(principal.getName());
         favoriteService.removeResumeFromFavorites(userId, id);
+        redirectAttributes.addFlashAttribute("successMessage", "Резюме удалена из избранного.");
         return "redirect:/favorites/resumes";
     }
 }

@@ -92,7 +92,7 @@
                             </div>
                         </a>
                         <div class="favorite-actions">
-                            <form action="/vacancies/${vacancy.id}/unFavorite" method="post">
+                            <form action="/favorites/resumes/${vacancy.id}/remove" method="post">
                                 <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
                                 <button type="submit" class="remove-favorite-btn">
                                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor">

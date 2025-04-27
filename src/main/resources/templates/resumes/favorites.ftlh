@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Активные резюме | JobSearch</title>
+    <title>Избранные резюме | JobSearch</title>
     <link rel="stylesheet" href="/static/css/resumes/resumes.css">
     <link rel="stylesheet" href="/static/css/header.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
@@ -16,9 +16,9 @@
         <div class="nav-links">
             <a href="/" class="nav-link">Главная</a>
             <a href="/vacancies" class="nav-link">Вакансии</a>
-            <a href="/resumes/allResumes" class="nav-link active">Резюме</a>
+            <a href="/resumes/allResumes" class="nav-link">Резюме</a>
             <#if Session.SPRING_SECURITY_CONTEXT??>
-                <a href="/profile" class="nav-link">Профиль</a>
+                <a href="/profile" class="nav-link active">Профиль</a>
                 <#if _csrf??>
                     <form action="/logout" method="post">
                         <input type="hidden" name="${(_csrf.parameterName)!'csrf'}"
@@ -36,7 +36,8 @@
 
 <main class="main">
     <div class="container">
-        <h1 class="page-title">Список активных резюме</h1>
+        <h1 class="page-title">Избранные резюме</h1>
+
         <#if successMessage??>
             <div class="alert alert-success">
                 ${successMessage}
@@ -48,32 +49,23 @@
                 ${errorMessage}
             </div>
         </#if>
-        <div class="filters-container">
-            <form method="get" action="/resumes/allResumes" class="filter-form">
-                <input type="hidden" name="page" value="0">
-                <input type="hidden" name="size" value="${pageSize}">
 
-                <div class="filter-group">
-                    <label for="sort">Сортировка:</label>
-                    <select id="sort" name="sort" class="form-control">
-                        <option value="">По дате (новые)</option>
-                        <option value="salaryAsc" <#if selectedSort?? && selectedSort == "salaryAsc">selected</#if>>
-                            По зарплате (↑)
-                        </option>
-                        <option value="salaryDesc" <#if selectedSort?? && selectedSort == "salaryDesc">selected</#if>>
-                            По зарплате (↓)
-                        </option>
-                    </select>
-                </div>
-
-                <button type="submit" class="submit-btn">Применить</button>
-                <#if selectedSort??>
-                    <a href="/vacancies?page=0&size=${pageSize}" class="reset-btn">Сбросить</a>
-                </#if>
-            </form>
+        <div class="favorite-container">
+            <a href="/resumes/allResumes" class="submit-btn">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" class="btn-icon">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                </svg>
+                Вернуться к резюме
+            </a>
         </div>
 
-        <#if resumes?? && resumes?has_content>
+        <#if resumes?size == 0>
+            <div class="empty-state">
+                <h3>Нет избранных резюме</h3>
+                <p>Вы еще не добавили ни одного резюме в избранное.</p>
+                <a href="/resumes/allResumes" class="submit-btn">Посмотреть резюме</a>
+            </div>
+        <#else>
             <div class="resumes-grid">
                 <#list resumes as resume>
                     <a href="/resumes/${resume.id}/info" class="resume-link">
@@ -107,20 +99,19 @@
                                     ${resume.updateTime?string("dd.MM.yyyy")}
                                 </span>
                             </div>
-                            <form action="/favorites/resumes/${resume.id}/add" method="post" class="favorite-form">
-                                <input type="hidden" name="resumeId" value="${resume.id}">
-                                <#if _csrf??>
+                            <div class="favorite-actions">
+                                <form action="/favorites/resumes/${resume.id}/remove" method="post">
                                     <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-                                </#if>
-                                <button type="submit" class="favorite-btn" title="Добавить в избранное">
-                                    <svg width="24" height="24" viewBox="0 0 24 24"
-                                         fill="<#if favoriteResumeIds?? && favoriteResumeIds?seq_contains(resume.id)>gold<#else>none</#if>"
-                                         stroke="currentColor" stroke-width="2"
-                                         stroke-linecap="round" stroke-linejoin="round" class="favorite-icon">
-                                        <path d="M5 3v18l7-5 7 5V3z"/>
-                                    </svg>
-                                </button>
-                            </form>
+                                    <button type="submit" class="remove-favorite-btn">
+                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                  d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                        </svg>
+                                        Удалить из избранного
+                                    </button>
+                                </form>
+                            </div>
+
                             <#if Session.SPRING_SECURITY_CONTEXT?? && !Session.SPRING_SECURITY_CONTEXT.authentication.authorities?seq_contains('APPLICANT')>
                                 <#if resume.applicantId??>
                                     <a href="/profile/viewApplicant/${resume.applicantId}" class="applicant-profile-btn">
@@ -131,43 +122,6 @@
                         </article>
                     </a>
                 </#list>
-            </div>
-
-            <#if totalPages gt 1>
-                <div class="pagination">
-                    <#if currentPage gt 0>
-                        <a href="/resumes/allResumes?page=0&size=${pageSize}" class="page-link">««</a>
-                        <a href="/resumes/allResumes?page=${currentPage - 1}&size=${pageSize}" class="page-link">«</a>
-                    </#if>
-
-                    <#list 0..totalPages-1 as i>
-                        <#if i == currentPage>
-                            <span class="page-link active">${i + 1}</span>
-                        <#else>
-                            <a href="/resumes/allResumes?page=${i}&size=${pageSize}" class="page-link">${i + 1}</a>
-                        </#if>
-                    </#list>
-
-                    <#if currentPage lt totalPages - 1>
-                        <a href="/resumes/allResumes?page=${currentPage + 1}&size=${pageSize}" class="page-link">»</a>
-                        <a href="/resumes/allResumes?page=${totalPages - 1}&size=${pageSize}" class="page-link">»»</a>
-                    </#if>
-
-                    <div class="page-size">
-                        Элементов на странице:
-                        <select onchange="window.location.href='/resumes/allResumes?page=0&size='+this.value" class="page-size-select">
-                            <option value="5" <#if pageSize == 5>selected</#if>>5</option>
-                            <option value="10" <#if pageSize == 10>selected</#if>>10</option>
-                            <option value="20" <#if pageSize == 20>selected</#if>>20</option>
-                            <option value="50" <#if pageSize == 50>selected</#if>>50</option>
-                        </select>
-                    </div>
-                </div>
-            </#if>
-        <#else>
-            <div class="empty-state">
-                <h3>Резюме не найдены</h3>
-                <p>Попробуйте зайти позже</p>
             </div>
         </#if>
     </div>

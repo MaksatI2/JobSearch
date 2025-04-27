@@ -6,11 +6,13 @@ import org.example.JobSearch.dto.*;
 import org.example.JobSearch.dto.EditDTO.EditResumeDTO;
 import org.example.JobSearch.dto.create.CreateResumeDTO;
 import org.example.JobSearch.service.CategoryService;
+import org.example.JobSearch.service.FavoriteService;
 import org.example.JobSearch.service.ResumeService;
 import org.example.JobSearch.service.UserService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -31,13 +33,15 @@ public class ResumeViewController {
     private final ResumeService resumeService;
     private final CategoryService categoryService;
     private final UserService userService;
+    private final FavoriteService favoriteService;
 
     @GetMapping("/allResumes")
     public String getAllActiveResumes(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size,
             @RequestParam(required = false) String sort,
-            Model model) {
+            Model model,
+            Authentication authentication) {
 
         Page<ResumeDTO> resumesPage = resumeService.getAllResumes(sort, PageRequest.of(page, size));
 
@@ -45,6 +49,12 @@ public class ResumeViewController {
             String avatarUrl = "/api/users/" + resume.getApplicantId() + "/avatar";
             resume.setApplicantAvatar(avatarUrl);
         });
+
+        String email = authentication.getName();
+        UserDTO user = userService.getUserByEmail(email);
+
+        List<Long> favoriteResumeIds = favoriteService.getFavoriteResumeIds(user.getId());
+        model.addAttribute("favoriteResumeIds", favoriteResumeIds);
 
         model.addAttribute("resumes", resumesPage.getContent());
         model.addAttribute("currentPage", page);
