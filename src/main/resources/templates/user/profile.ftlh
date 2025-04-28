@@ -42,7 +42,7 @@
         <div class="right-column">
             <#if user.accountType == "APPLICANT">
                 <a href="/resumes/create" class="action-button">Создать резюме</a>
-                <a href="#" class="responses-button">
+                <a href="/resumes/${user.id}/response" class="responses-button">
                     Отклики
                     <span class="responses-badge">${responsesCount}</span>
                 </a>

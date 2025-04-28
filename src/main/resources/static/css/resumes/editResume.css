@@ -21,7 +21,7 @@
 body {
     font-family: 'Inter', sans-serif;
     color: var(--dark);
-    background-color: #F7FAFC;
+    background-color: var(--primary-extra-light);
     line-height: 1.6;
 }
 
@@ -29,6 +29,7 @@ body {
     padding: 40px 20px;
     max-width: 1000px;
     margin: 0 auto;
+    background-color: var(--primary-extra-light);
 }
 
 .page-title {

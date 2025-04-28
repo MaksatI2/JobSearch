@@ -1,7 +1,7 @@
 <#import "/spring.ftl" as spring>
 <#import "../layout.ftlh" as layout>
 
-<@layout.page title="Детали вакансии | JobSearch" styles="/static/css/vacancies/vacancyInfo.css" activeNav="vacancies">
+<@layout.page title="Детали вакансии | JobSearch" styles="/static/css/vacancies/vacancies.css" activeNav="vacancies">
 
     <main class="main">
         <div class="container">

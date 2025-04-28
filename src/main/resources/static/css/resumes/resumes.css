@@ -28,6 +28,7 @@ body {
 .main {
     padding: 40px 0;
     min-height: calc(100vh - 160px);
+    background-color: var(--primary-extra-light);
 }
 
 .page-title {
@@ -54,6 +55,12 @@ body {
     display: grid;
     grid-template-columns: 1fr;
     gap: 25px;
+}
+
+.resume-card-link{
+    text-decoration: none;
+    color: inherit;
+    display: block;
 }
 
 .resume-card {

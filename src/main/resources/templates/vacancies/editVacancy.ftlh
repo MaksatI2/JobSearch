@@ -3,7 +3,7 @@
 
 <@layout.page
 title="Редактировать вакансию | JobSearch"
-styles="/static/css/vacancies/editVacancy.css"
+styles="/static/css/vacancies/vacancies.css"
 activeNav="vacancies">
 
     <h1 class="page-title">Редактировать вакансию</h1>
