@@ -1,7 +1,7 @@
 <#import "/spring.ftl" as spring>
 <#import "../layout.ftlh" as layout>
 
-<@layout.page title="Создать вакансию | JobSearch" styles="/static/css/vacancies/createVacancy.css" activeNav="vacancies">
+<@layout.page title="Создать вакансию | JobSearch" styles="/static/css/vacancies/vacancies.css" activeNav="vacancies">
     <h1 class="page-title">Создать вакансию</h1>
 
     <@spring.bind "vacancyForm" />

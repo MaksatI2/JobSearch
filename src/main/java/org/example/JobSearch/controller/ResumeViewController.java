@@ -13,9 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -23,7 +21,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.sql.Timestamp;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Controller
@@ -333,6 +334,38 @@ public class ResumeViewController {
 
         resumeService.deleteResume(id);
         return "redirect:/profile?deleteSuccess";
+    }
+
+    @GetMapping("/{userId}/response")
+    public String showResumesWithResponses(
+            @PathVariable Long userId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            Model model,
+            Principal principal) {
+        if (principal != null) {
+            String currentUserEmail = principal.getName();
+            Long currentUserId = userService.getUserId(currentUserEmail);
+
+            if (!currentUserId.equals(userId)) {
+                throw new AccessDeniedException("Вы можете просматривать только свои резюме с откликами");
+            }
+
+            Page<ResumeDTO> resumesPage = resumeService.getResumesWithResponsesByApplicantId(
+                    userId,
+                    PageRequest.of(page, size)
+            );
+
+            model.addAttribute("resumes", resumesPage.getContent());
+            model.addAttribute("currentPage", page);
+            model.addAttribute("totalPages", resumesPage.getTotalPages());
+            model.addAttribute("pageSize", size);
+            model.addAttribute("userId", userId);
+
+            return "resumes/resumesResponse";
+        } else {
+            return "redirect:/auth/login";
+        }
     }
 
 }

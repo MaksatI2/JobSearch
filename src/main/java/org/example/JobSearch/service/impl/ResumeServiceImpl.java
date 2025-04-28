@@ -185,6 +185,7 @@ public class ResumeServiceImpl implements ResumeService {
     }
 
     private ResumeDTO toDTO(Resume resume) {
+        int responsesCount = resume.getRespondedApplicants().size();
         ResumeDTO dto = ResumeDTO.builder()
                 .id(resume.getId())
                 .applicantId(resume.getApplicant().getId())
@@ -197,6 +198,7 @@ public class ResumeServiceImpl implements ResumeService {
                 .isActive(resume.getIsActive())
                 .createDate(resume.getCreateDate())
                 .updateTime(resume.getUpdateTime())
+                .responsesCount(responsesCount)
                 .build();
 
         dto.setEducationInfos(educationInfoService.getEducationInfoByResumeId(resume.getId()));
@@ -301,5 +303,12 @@ public class ResumeServiceImpl implements ResumeService {
                 throw new CreateResumeException("startDate", "Дата начала обучения не может быть позже даты окончания");
             }
         }
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<ResumeDTO> getResumesWithResponsesByApplicantId(Long applicantId, Pageable pageable) {
+        Page<Resume> resumesPage = resumeRepository.findResumesWithResponsesByApplicantId(applicantId, pageable);
+        return resumesPage.map(this::toDTO);
     }
 }
