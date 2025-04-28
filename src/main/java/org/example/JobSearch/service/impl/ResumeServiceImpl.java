@@ -11,6 +11,7 @@ import org.example.JobSearch.dto.create.CreateResumeDTO;
 import org.example.JobSearch.exceptions.CreateResumeException;
 import org.example.JobSearch.exceptions.ResumeNotFoundException;
 import org.example.JobSearch.model.Category;
+import org.example.JobSearch.model.RespondedApplicant;
 import org.example.JobSearch.model.Resume;
 import org.example.JobSearch.model.User;
 import org.example.JobSearch.repository.ResumeRepository;

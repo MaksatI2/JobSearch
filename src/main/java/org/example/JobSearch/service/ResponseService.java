@@ -16,4 +16,10 @@ public interface ResponseService {
     int getResponsesCountByEmployer(String email);
 
     int getResponsesCountByVacancy(Long vacancyId);
+
+    @Transactional
+    void markApplicantResponsesAsViewed(Long applicantId);
+
+    @Transactional
+    void markEmployerResponsesAsViewed(Long employerId);
 }

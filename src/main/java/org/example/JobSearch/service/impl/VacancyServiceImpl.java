@@ -8,10 +8,7 @@ import org.example.JobSearch.dto.create.CreateVacancyDTO;
 import org.example.JobSearch.exceptions.CreateVacancyException;
 import org.example.JobSearch.exceptions.EditVacancyException;
 import org.example.JobSearch.exceptions.VacancyNotFoundException;
-import org.example.JobSearch.model.AccountType;
-import org.example.JobSearch.model.Category;
-import org.example.JobSearch.model.User;
-import org.example.JobSearch.model.Vacancy;
+import org.example.JobSearch.model.*;
 import org.example.JobSearch.repository.VacancyRepository;
 import org.example.JobSearch.service.CategoryService;
 import org.example.JobSearch.service.UserService;
@@ -25,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 @Slf4j
 @Service

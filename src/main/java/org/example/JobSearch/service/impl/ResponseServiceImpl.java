@@ -13,6 +13,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class ResponseServiceImpl implements ResponseService {
@@ -32,7 +34,7 @@ public class ResponseServiceImpl implements ResponseService {
         RespondedApplicant response = new RespondedApplicant();
         response.setResume(resumeService.getResumeEntityById(resumeId));
         response.setVacancy(vacancyService.getVacancyEntityById(vacancyId));
-        response.setConfirmation(false);
+        response.setConfirmation(null);
         respondedApplicantRepository.save(response);
     }
 
@@ -66,6 +68,24 @@ public class ResponseServiceImpl implements ResponseService {
                     resume.setApplicantAvatar(avatarUrl);
                     return resume;
                 });
+    }
+
+    @Override
+    @Transactional
+    public void markApplicantResponsesAsViewed(Long applicantId) {
+        List<RespondedApplicant> responses = respondedApplicantRepository
+                .findByResumeApplicantIdAndViewedFalse(applicantId);
+        responses.forEach(response -> response.setViewed(true));
+        respondedApplicantRepository.saveAll(responses);
+    }
+
+    @Override
+    @Transactional
+    public void markEmployerResponsesAsViewed(Long employerId) {
+        List<RespondedApplicant> responses = respondedApplicantRepository
+                .findByVacancyAuthorIdAndConfirmationNull(employerId);
+        responses.forEach(response -> response.setConfirmation(false));
+        respondedApplicantRepository.saveAll(responses);
     }
 
 }

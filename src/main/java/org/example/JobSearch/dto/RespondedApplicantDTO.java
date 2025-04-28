@@ -21,4 +21,7 @@ public class RespondedApplicantDTO {
 
     @NotNull(message = "Поле подтверждения не может быть пустым")
     private Boolean confirmation;
+
+    @NotNull(message = "Поле просмотра не может быть пустым")
+    private Boolean viewed;
 }

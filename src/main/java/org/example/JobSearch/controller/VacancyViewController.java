@@ -34,6 +34,7 @@ public class VacancyViewController {
     private final UserService userService;
     private final ResumeService resumeService;
     private final FavoriteService favoriteService;
+    private final ResponseService responseService;
 
 
     @GetMapping
@@ -236,6 +237,8 @@ public class VacancyViewController {
                     userId,
                     PageRequest.of(page, size)
             );
+
+            responseService.markEmployerResponsesAsViewed(userId);
 
             model.addAttribute("vacancies", vacanciesPage.getContent());
             model.addAttribute("currentPage", page);

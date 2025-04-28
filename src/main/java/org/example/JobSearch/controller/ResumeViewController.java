@@ -2,13 +2,12 @@ package org.example.JobSearch.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.example.JobSearch.dao.mapper.ResumeMapper;
 import org.example.JobSearch.dto.*;
 import org.example.JobSearch.dto.EditDTO.EditResumeDTO;
 import org.example.JobSearch.dto.create.CreateResumeDTO;
-import org.example.JobSearch.service.CategoryService;
-import org.example.JobSearch.service.FavoriteService;
-import org.example.JobSearch.service.ResumeService;
-import org.example.JobSearch.service.UserService;
+import org.example.JobSearch.model.RespondedApplicant;
+import org.example.JobSearch.service.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.access.AccessDeniedException;
@@ -35,6 +34,7 @@ public class ResumeViewController {
     private final CategoryService categoryService;
     private final UserService userService;
     private final FavoriteService favoriteService;
+    private final ResponseService responseService;
 
     @GetMapping("/allResumes")
     public String getAllActiveResumes(
@@ -355,6 +355,8 @@ public class ResumeViewController {
                     userId,
                     PageRequest.of(page, size)
             );
+
+            responseService.markApplicantResponsesAsViewed(userId);
 
             model.addAttribute("resumes", resumesPage.getContent());
             model.addAttribute("currentPage", page);
