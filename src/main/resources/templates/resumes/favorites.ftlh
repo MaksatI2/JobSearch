@@ -3,8 +3,6 @@
 <@layout.page
 title="Избранные резюме | JobSearch" styles="/static/css/resumes/resumes.css" activeNav="favorite">
 
-    <main class="main">
-        <div class="container">
             <h1 class="page-title">Избранные резюме</h1>
 
             <#if successMessage??>
@@ -95,8 +93,5 @@ title="Избранные резюме | JobSearch" styles="/static/css/resumes/
                     </#list>
                 </div>
             </#if>
-
-        </div>
-    </main>
 
 </@layout.page>

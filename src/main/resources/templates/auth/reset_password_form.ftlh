@@ -26,8 +26,8 @@
 
             <div class="form-group">
                 <label for="password">Новый пароль</label>
-                <@spring.formInput "resetRequest.password", "class='form-control' placeholder='Введите новый пароль' required", "password"/>
-                <@spring.showErrors "<br>", "field-error"/>
+                <@spring.formInput "resetRequest.password", "class='form-control' placeholder='Введите новый пароль'", "password"/>
+                <@spring.showErrors "<br>", "error"/>
             </div>
 
             <button type="submit" class="submit-btn">Изменить пароль</button>

@@ -25,7 +25,7 @@
         </a>
     </div>
 
-    <#if vacancies?size == 0>
+    <#if vacanciesPage?? && vacanciesPage.content?size == 0>
         <div class="empty-state">
             <h3>Нет избранных вакансий</h3>
             <p>Вы еще не добавили ни одной вакансии в избранное.</p>
@@ -33,7 +33,7 @@
         </div>
     <#else>
         <div class="vacancies-grid">
-            <#list vacancies as vacancy>
+            <#list vacanciesPage.content as vacancy>
                 <div class="vacancy-card">
                     <a href="/vacancies/${vacancy.id}/info" class="vacancy-card-link">
                         <div class="vacancy-header">
@@ -66,7 +66,7 @@
                         </div>
                     </a>
                     <div class="favorite-actions">
-                        <form action="/favorites/resumes/${vacancy.id}/remove" method="post">
+                        <form action="/favorites/vacancies/${vacancy.id}/remove" method="post">
                             <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
                             <button type="submit" class="remove-favorite-btn">
                                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor">
@@ -80,5 +80,37 @@
                 </div>
             </#list>
         </div>
+
+        <#if totalPages gt 1>
+            <div class="pagination">
+                <#if currentPage gt 0>
+                    <a href="/favorites/vacancies?page=0&size=${pageSize}" class="page-link">««</a>
+                    <a href="/favorites/vacancies?page=${currentPage - 1}&size=${pageSize}" class="page-link">«</a>
+                </#if>
+
+                <#list 0..totalPages-1 as i>
+                    <#if i == currentPage>
+                        <span class="page-link active">${i + 1}</span>
+                    <#else>
+                        <a href="/favorites/vacancies?page=${i}&size=${pageSize}" class="page-link">${i + 1}</a>
+                    </#if>
+                </#list>
+
+                <#if currentPage lt totalPages - 1>
+                    <a href="/favorites/vacancies?page=${currentPage + 1}&size=${pageSize}" class="page-link">»</a>
+                    <a href="/favorites/vacancies?page=${totalPages - 1}&size=${pageSize}" class="page-link">»»</a>
+                </#if>
+
+                <div class="page-size">
+                    Элементов на странице:
+                    <select onchange="window.location.href='/favorites/vacancies?page=0&size='+this.value" class="page-size-select">
+                        <option value="5" <#if pageSize == 5>selected</#if>>5</option>
+                        <option value="10" <#if pageSize == 10>selected</#if>>10</option>
+                        <option value="20" <#if pageSize == 20>selected</#if>>20</option>
+                        <option value="50" <#if pageSize == 50>selected</#if>>50</option>
+                    </select>
+                </div>
+            </div>
+        </#if>
     </#if>
 </@layout.page>
