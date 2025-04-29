@@ -117,9 +117,12 @@ public class AuthViewController {
 
     @PostMapping("/forgot_password")
     public String processForgotPassword(HttpServletRequest request, Model model) {
-        userService.makeResetPasswdLink(request);
-        model.addAttribute("message", "Мы отправили ссылку для сброса пароля на ваш адрес электронной почты. Пожалуйста, проверьте.");
-
+        try {
+            userService.makeResetPasswdLink(request);
+            model.addAttribute("message", "Мы отправили ссылку для сброса пароля на ваш адрес электронной почты. Пожалуйста, проверьте.");
+        } catch (UserNotFoundException ex) {
+            model.addAttribute("error", ex.getMessage());
+        }
         return "auth/forgot_password_form";
     }
 

@@ -1,11 +1,14 @@
 package org.example.JobSearch.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.example.JobSearch.service.FavoriteService;
+import org.example.JobSearch.service.FavoriteResumeService;
 import org.example.JobSearch.service.UserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
@@ -15,7 +18,7 @@ import java.security.Principal;
 @RequiredArgsConstructor
 public class FavoriteResumeController {
     private final UserService userService;
-    private final FavoriteService favoriteService;
+    private final FavoriteResumeService favoriteService;
 
     @GetMapping
     public String showFavoriteResumes(Principal principal, Model model) {
