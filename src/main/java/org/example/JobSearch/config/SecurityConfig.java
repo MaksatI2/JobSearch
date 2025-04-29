@@ -45,6 +45,8 @@ public class SecurityConfig {
                         ).permitAll()
                         .requestMatchers("/profile/viewApplicant/*").hasAuthority("EMPLOYER")
                         .requestMatchers("/profile/viewEmployer/*").hasAuthority("APPLICANT")
+                        .requestMatchers("/favorites/vacancies").hasAuthority("APPLICANT")
+                        .requestMatchers("/favorites/resumes").hasAuthority("EMPLOYER")
                         .requestMatchers("/resumes/*/info").authenticated()
                         .requestMatchers("/vacancies/*/favorite").authenticated()
                         .requestMatchers("/vacancies/*/unFavorite").authenticated()

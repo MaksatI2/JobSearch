@@ -22,7 +22,7 @@ public class UserController {
     @PostMapping("/{userId}/avatar")
     public ResponseEntity<?> uploadUserAvatar(@PathVariable @Valid Long userId, @RequestParam MultipartFile file) {
             editUserService.updateUserAvatar(userId, file);
-            return ResponseEntity.ok("Avatar updated successfully");
+            return ResponseEntity.ok("Аватар успешно обновлен");
     }
 
     @GetMapping("/{userId}/avatar")

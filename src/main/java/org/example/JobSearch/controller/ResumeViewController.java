@@ -33,7 +33,7 @@ public class ResumeViewController {
     private final ResumeService resumeService;
     private final CategoryService categoryService;
     private final UserService userService;
-    private final FavoriteService favoriteService;
+    private final FavoriteResumeService favoriteService;
     private final ResponseService responseService;
 
     @GetMapping("/allResumes")
