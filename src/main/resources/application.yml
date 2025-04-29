@@ -1,5 +1,5 @@
 server:
-  port: 9098
+  port: 9099
 spring:
   application:
     name: "JobSearch"
@@ -14,6 +14,17 @@ spring:
     properties:
       hibernate:
         generate_statistics: false
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: zer0icemax@gmail.com
+    password: xazs yxaj muhy wdpm
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls.enable: true
+          ssl.trust: smtp.gmail.com
 
 
   datasource:

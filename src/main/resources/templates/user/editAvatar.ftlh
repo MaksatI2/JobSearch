@@ -1,45 +1,8 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <title>Редактирование аватарки профиля</title>
-    <link rel="stylesheet" href="/static/css/user/editAvatar.css">
-    <link rel="stylesheet" href="/static/css/header.css">
-    <link rel="icon" href="/static/images/logo-transparent.png" type="image/x-icon">
-</head>
-<body>
-<header class="header">
-    <div class="container">
-        <nav class="navbar">
-            <img src="/static/images/logo-transparent.png" alt="JobSearch" class="logo-img">
-            <div class="nav-links">
-                <a href="/" class="nav-link">Главная</a>
-                <a href="/vacancies" class="nav-link">Вакансии</a>
-                <#if Session.SPRING_SECURITY_CONTEXT?? && Session.SPRING_SECURITY_CONTEXT.authentication.authorities?seq_contains('EMPLOYER')>
-                    <a href="/resumes/allResumes" class="nav-link">Резюме</a>
-                <#else>
-                    <a href="/company/allCompanies" class="nav-link">Компании</a>
-                </#if>
-                <#if Session.SPRING_SECURITY_CONTEXT??>
-                    <a href="/profile" class="nav-link active">Профиль</a>
-                    <#if _csrf??>
-                        <form action="/logout" method="post">
-                            <input type="hidden" name="${(_csrf.parameterName)!'csrf'}"
-                                   value="${(_csrf.token)!'--no-token--'}"/>
-                            <button type="submit" class="logout-btn" id="logout">Выйти</button>
-                        </form>
-                    </#if>
-                <#else>
-                    <a href="/auth/login" class="nav-link">Войти</a>
-                    <a href="/auth/register" class="nav-link register-btn">Регистрация</a>
-                </#if>
-            </div>
-        </nav>
-    </div>
-</header>
+<#import "/spring.ftl" as spring>
+<#import "../layout.ftlh" as layout>
 
-<section class="edit-avatar-section">
-    <div class="container">
+<@layout.page title="Редактирование аватарки профиля" styles="/static/css/user/editAvatar.css" activeNav="profile">
+    <section class="edit-avatar-section">
         <h2>Сменить аватар</h2>
 
         <div class="current-avatar-container">
@@ -53,8 +16,7 @@
             <h3>Загрузить новый аватар</h3>
             <form action="/profile/avatar" method="post" enctype="multipart/form-data" class="avatar-form">
                 <#if _csrf??>
-                    <input type="hidden" name="${(_csrf.parameterName)!'csrf-param-name'}"
-                           value="${(_csrf.token)!'csrf-token'}"/>
+                    <input type="hidden" name="${(_csrf.parameterName)!'csrf-param-name'}" value="${(_csrf.token)!'csrf-token'}"/>
                 </#if>
                 <input type="hidden" name="userId" value="${userId}">
                 <div class="file-input-wrapper">
@@ -71,13 +33,5 @@
                 <button type="submit" class="btn-save-avatar">Сохранить аватар</button>
             </form>
         </div>
-    </div>
-</section>
-
-<footer class="footer">
-    <div class="container">
-        <p>© 2025 JobSearch. Все права защищены.</p>
-    </div>
-</footer>
-</body>
-</html>
+    </section>
+</@layout.page>

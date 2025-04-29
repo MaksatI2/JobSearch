@@ -11,6 +11,9 @@ import java.util.List;
 @Table(name = "users")
 @Getter
 @Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,6 +32,8 @@ public class User {
 
     @Column(nullable = false, length = 255)
     private String password;
+
+    private String resetPasswordToken;
 
     @Column(name = "phone_number", nullable = false, length = 20)
     private String phoneNumber;

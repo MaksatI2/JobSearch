@@ -31,6 +31,7 @@ body {
 .main {
     padding: 40px 0;
     flex-grow: 1;
+    background-color: var(--primary-extra-light);
 }
 
 h2 {
@@ -140,16 +141,6 @@ h2::after {
 .resume-card p strong, .vacancy-card p strong {
     color: var(--primary-dark);
     font-size: 1.1rem;
-}
-
-.responses-card {
-    background-color: var(--primary-extra-light);
-    padding: 15px 20px;
-    margin-bottom: 25px;
-    border-radius: 12px;
-    font-weight: 600;
-    color: var(--primary-dark);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
 }
 
 .inline-form {
@@ -309,4 +300,43 @@ h3::after {
     border-radius: 4px;
     background-color: #4FA399;
     color: white;
+}
+
+.responses-button {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    padding: 12px 24px;
+    margin-bottom: 20px;
+    background-color: var(--primary);
+    color: var(--white);
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.responses-button:hover {
+    background-color: var(--primary-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.responses-badge {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    background-color: var(--red);
+    color: var(--white);
+    border-radius: 50%;
+    font-size: 12px;
+    font-weight: 700;
 }

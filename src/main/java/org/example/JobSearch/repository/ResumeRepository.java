@@ -25,6 +25,15 @@ public interface ResumeRepository extends JpaRepository<Resume, Long> {
 
     Page<Resume> findByApplicantId(Long applicantId, Pageable pageable);
 
+    @Query("""
+    SELECT DISTINCT r FROM Resume r 
+    JOIN r.respondedApplicants resp
+    WHERE r.applicant.id = :applicantId
+    GROUP BY r
+    HAVING COUNT(resp) > 0
+""")
+    Page<Resume> findResumesWithResponsesByApplicantId(@Param("applicantId") Long applicantId, Pageable pageable);
+
     boolean existsById(Long id);
 
     @Modifying

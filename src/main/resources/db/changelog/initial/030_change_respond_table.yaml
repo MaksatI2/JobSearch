@@ -1,0 +1,12 @@
+databaseChangeLog:
+  - changeSet:
+      id: 030
+      author: I.Maksat
+      changes:
+        - addColumn:
+            tableName: responded_applicants
+            columns:
+              - column:
+                  name: viewed
+                  type: BOOLEAN
+                  defaultValueBoolean: false

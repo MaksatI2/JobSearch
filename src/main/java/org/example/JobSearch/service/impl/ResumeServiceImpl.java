@@ -11,6 +11,7 @@ import org.example.JobSearch.dto.create.CreateResumeDTO;
 import org.example.JobSearch.exceptions.CreateResumeException;
 import org.example.JobSearch.exceptions.ResumeNotFoundException;
 import org.example.JobSearch.model.Category;
+import org.example.JobSearch.model.RespondedApplicant;
 import org.example.JobSearch.model.Resume;
 import org.example.JobSearch.model.User;
 import org.example.JobSearch.repository.ResumeRepository;
@@ -185,6 +186,7 @@ public class ResumeServiceImpl implements ResumeService {
     }
 
     private ResumeDTO toDTO(Resume resume) {
+        int responsesCount = resume.getRespondedApplicants().size();
         ResumeDTO dto = ResumeDTO.builder()
                 .id(resume.getId())
                 .applicantId(resume.getApplicant().getId())
@@ -197,6 +199,7 @@ public class ResumeServiceImpl implements ResumeService {
                 .isActive(resume.getIsActive())
                 .createDate(resume.getCreateDate())
                 .updateTime(resume.getUpdateTime())
+                .responsesCount(responsesCount)
                 .build();
 
         dto.setEducationInfos(educationInfoService.getEducationInfoByResumeId(resume.getId()));
@@ -301,5 +304,12 @@ public class ResumeServiceImpl implements ResumeService {
                 throw new CreateResumeException("startDate", "Дата начала обучения не может быть позже даты окончания");
             }
         }
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<ResumeDTO> getResumesWithResponsesByApplicantId(Long applicantId, Pageable pageable) {
+        Page<Resume> resumesPage = resumeRepository.findResumesWithResponsesByApplicantId(applicantId, pageable);
+        return resumesPage.map(this::toDTO);
     }
 }

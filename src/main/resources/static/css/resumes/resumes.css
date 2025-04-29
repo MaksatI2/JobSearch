@@ -28,6 +28,7 @@ body {
 .main {
     padding: 40px 0;
     min-height: calc(100vh - 160px);
+    background-color: var(--primary-extra-light);
 }
 
 .page-title {
@@ -56,7 +57,14 @@ body {
     gap: 25px;
 }
 
+.resume-card-link{
+    text-decoration: none;
+    color: inherit;
+    display: block;
+}
+
 .resume-card {
+    position: relative;
     background-color: var(--white);
     border-radius: 12px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
@@ -270,6 +278,7 @@ body {
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
+    text-decoration: none;
 }
 
 .submit-btn:hover {
@@ -330,4 +339,61 @@ body {
 
 .resume-author .icon {
     margin-right: 8px;
+}
+.favorite-container {
+    margin-bottom: 25px;
+}
+.favorite-form {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+}
+.favorite-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+}
+.favorite-icon {
+    transition: fill 0.3s;
+}
+.favorite-btn:hover .favorite-icon {
+    fill: gold;
+}
+.favorite-actions {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+}
+.remove-favorite-btn {
+    background-color: #ff4d4f;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: background-color 0.3s ease;
+}
+.remove-favorite-btn:hover {
+    background-color: #d9363e;
+}
+.alert {
+    padding: 15px 20px;
+    margin-bottom: 25px;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+}
+.alert-success {
+    background-color: #E6FFFA;
+    color: #2C7A7B;
+    border-left: 4px solid var(--green);
+}
+.alert-danger {
+    background-color: #FFF5F5;
+    color: #C53030;
+    border-left: 4px solid var(--red);
 }

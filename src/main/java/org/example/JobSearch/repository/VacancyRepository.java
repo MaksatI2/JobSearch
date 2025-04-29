@@ -26,14 +26,6 @@ public interface VacancyRepository extends JpaRepository<Vacancy, Long> {
     Page<Vacancy> findAllActiveSorted(@Param("sort") String sort, Pageable pageable);
 
     @Query("""
-        SELECT v FROM Vacancy v
-        JOIN v.applicants ra
-        JOIN ra.resume r
-        WHERE r.applicant.id = :applicantId
-    """)
-    List<Vacancy> findRespondedByApplicantId(@Param("applicantId") Long applicantId);
-
-    @Query("""
     SELECT DISTINCT v FROM Vacancy v 
     JOIN v.applicants ra
     WHERE v.author.id = :userId

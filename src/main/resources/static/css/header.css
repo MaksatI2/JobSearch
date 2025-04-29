@@ -57,20 +57,6 @@
     font-weight: 600;
 }
 
-.register-btn {
-    background-color: var(--white);
-    color: var(--primary);
-    padding: 8px 20px;
-    border-radius: 6px;
-    font-weight: 600;
-    transition: all 0.3s ease;
-}
-
-.register-btn:hover {
-    background-color: var(--primary-extra-light);
-    transform: translateY(-2px);
-}
-
 .logout-btn {
     background: none;
     border: none;

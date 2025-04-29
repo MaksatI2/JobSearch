@@ -21,6 +21,7 @@ public interface ResumeService {
     void refreshResume(Long resumeId);
 
     Page<ResumeDTO> getAllResumes(String sort,Pageable pageable);
+    Page<ResumeDTO> getResumesWithResponsesByApplicantId(Long applicantId, Pageable pageable);
     ResumeDTO getResumeById(Long id);
 
     Resume getResumeEntityById(Long id);

@@ -25,8 +25,11 @@ public class RespondedApplicant {
             foreignKey = @ForeignKey(name = "fk_responded_resume"))
     private Resume resume;
 
+    @Column
+    private Boolean confirmation;
+
     @Column(nullable = false)
-    private Boolean confirmation = false;
+    private Boolean viewed = false;
 
     @OneToMany(mappedBy = "respondedApplicant", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Message> messages = new ArrayList<>();

@@ -1,0 +1,31 @@
+databaseChangeLog:
+  - changeSet:
+      id: 029
+      author: I.Maksat
+      changes:
+        - createTable:
+            tableName: favorite_resumes
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: user_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_fav_resume_user
+                    referencedTableName: users
+                    referencedColumnNames: id
+              - column:
+                  name: resume_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_fav_resume
+                    referencedTableName: resumes
+                    referencedColumnNames: id
+                    deleteCascade: true

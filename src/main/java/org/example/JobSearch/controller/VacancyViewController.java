@@ -10,10 +10,7 @@ import org.example.JobSearch.dto.VacancyDTO;
 import org.example.JobSearch.dto.create.CreateVacancyDTO;
 import org.example.JobSearch.exceptions.CreateVacancyException;
 import org.example.JobSearch.exceptions.EditVacancyException;
-import org.example.JobSearch.service.CategoryService;
-import org.example.JobSearch.service.ResumeService;
-import org.example.JobSearch.service.UserService;
-import org.example.JobSearch.service.VacancyService;
+import org.example.JobSearch.service.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.access.AccessDeniedException;
@@ -24,6 +21,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.util.List;
 
 @Slf4j
 @Controller
@@ -34,6 +32,9 @@ public class VacancyViewController {
     private final CategoryService categoryService;
     private final UserService userService;
     private final ResumeService resumeService;
+    private final FavoriteVacancyService favoriteService;
+    private final ResponseService responseService;
+
 
     @GetMapping
     public String showVacancies(
@@ -52,8 +53,11 @@ public class VacancyViewController {
             String email = authentication.getName();
             UserDTO user = userService.getUserByEmail(email);
 
-                Page<ResumeDTO> resumesPage = resumeService.getResumesByApplicant(user.getId(), 0, 10);
-                model.addAttribute("userResumes", resumesPage.getContent());
+            List<Long> favoriteVacancyIds = favoriteService.getFavoriteVacancyIds(user.getId());
+            model.addAttribute("favoriteVacancyIds", favoriteVacancyIds);
+
+            Page<ResumeDTO> resumesPage = resumeService.getResumesByApplicant(user.getId(), 0, 10);
+            model.addAttribute("userResumes", resumesPage.getContent());
 
         }
 
@@ -233,6 +237,8 @@ public class VacancyViewController {
                     PageRequest.of(page, size)
             );
 
+            responseService.markEmployerResponsesAsViewed(userId);
+
             model.addAttribute("vacancies", vacanciesPage.getContent());
             model.addAttribute("currentPage", page);
             model.addAttribute("totalPages", vacanciesPage.getTotalPages());
@@ -244,4 +250,5 @@ public class VacancyViewController {
             return "redirect:/auth/login";
         }
     }
+
 }
