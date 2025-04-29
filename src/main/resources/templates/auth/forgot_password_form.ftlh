@@ -25,7 +25,7 @@
 
             <div class="form-group">
                 <label for="email">Email</label>
-                <input type="email" id="email" name="email" class="form-control" placeholder="Введите ваш email" required autofocus>
+                <input type="email" id="email" name="email" class="form-control" placeholder="Введите ваш email">
             </div>
 
             <button type="submit" class="submit-btn">Отправить</button>
