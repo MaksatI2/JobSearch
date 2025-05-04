@@ -2,11 +2,9 @@ package org.example.JobSearch.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.example.JobSearch.dao.mapper.ResumeMapper;
 import org.example.JobSearch.dto.*;
 import org.example.JobSearch.dto.EditDTO.EditResumeDTO;
 import org.example.JobSearch.dto.create.CreateResumeDTO;
-import org.example.JobSearch.model.RespondedApplicant;
 import org.example.JobSearch.service.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;

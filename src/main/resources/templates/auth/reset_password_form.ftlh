@@ -22,10 +22,10 @@
                 <input type="hidden" name="${(_csrf.parameterName)!'csrf-param-name'}"
                        value="${(_csrf.token)!'csrf-token'}"/>
             </#if>
-            <input type="hidden" name="token" value="${token!''}"/>
 
             <div class="form-group">
                 <label for="password">Новый пароль</label>
+                <@spring.formHiddenInput "resetRequest.token"/>
                 <@spring.formInput "resetRequest.password", "class='form-control' placeholder='Введите новый пароль'", "password"/>
                 <@spring.showErrors "<br>", "error"/>
             </div>

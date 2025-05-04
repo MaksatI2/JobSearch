@@ -58,7 +58,7 @@
                             </div>
                         </a>
                         <div class="resume-actions">
-                            <a href="/response/resumes/${resume.id}" class="submit-btn">
+                            <a href="#" class="submit-btn">
                                 Вакансии (${resume.responsesCount})
                             </a>
                         </div>

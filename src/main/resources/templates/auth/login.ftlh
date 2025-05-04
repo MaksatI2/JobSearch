@@ -12,7 +12,7 @@
         </#if>
 
         <#if registrationSuccess??>
-            <div class="success-message">
+            <div class="alert-success">
                 ${registrationSuccess}
             </div>
         </#if>
