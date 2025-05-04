@@ -48,6 +48,7 @@ public class ResponseViewController {
         Page<ResumeDTO> resumesPage = responseService.getResumesByVacancyId(id, PageRequest.of(page, size));
         int totalResponses = responseService.getResponsesCountByVacancy(id);
 
+        model.addAttribute("vacancy", vacancy);
         model.addAttribute("resumes", resumesPage);
         model.addAttribute("totalResponses", totalResponses);
         model.addAttribute("currentPage", page);

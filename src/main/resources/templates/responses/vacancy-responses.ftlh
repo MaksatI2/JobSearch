@@ -44,23 +44,23 @@
         <#if resumes.totalPages gt 1>
             <div class="pagination">
                 <#if resumes.number gt 0>
-                    <a href="/vacancies/${vacancy.id}?page=0&size=${pageSize}" class="page-link">««</a>
-                    <a href="/vacancies/${vacancy.id}?page=${resumes.number - 1}&size=${pageSize}" class="page-link">«</a>
+                    <a href="/response/vacancies/${vacancy.id}?page=0&size=${pageSize}" class="page-link">««</a>
+                    <a href="/response/vacancies/${vacancy.id}?page=${resumes.number - 1}&size=${pageSize}" class="page-link">«</a>
                 </#if>
                 <#list 1..resumes.totalPages as i>
                     <#if i == resumes.number + 1>
                         <span class="page-link active">${i}</span>
                     <#else>
-                        <a href="/vacancies/${vacancy.id}?page=${i - 1}&size=${pageSize}" class="page-link">${i}</a>
+                        <a href="/response/vacancies/${vacancy.id}?page=${i - 1}&size=${pageSize}" class="page-link">${i}</a>
                     </#if>
                 </#list>
                 <#if resumes.number lt resumes.totalPages - 1>
-                    <a href="/vacancies/${vacancy.id}?page=${resumes.number + 1}&size=${pageSize}" class="page-link">»</a>
-                    <a href="/vacancies/${vacancy.id}?page=${resumes.totalPages - 1}&size=${pageSize}" class="page-link">»»</a>
+                    <a href="/response/vacancies/${vacancy.id}?page=${resumes.number + 1}&size=${pageSize}" class="page-link">»</a>
+                    <a href="/response/vacancies/${vacancy.id}?page=${resumes.totalPages - 1}&size=${pageSize}" class="page-link">»»</a>
                 </#if>
                 <div class="page-size">
                     Элементов на странице:
-                    <select onchange="window.location.href='/vacancies/${vacancy.id}?page=0&size='+this.value" class="page-size-select">
+                    <select onchange="window.location.href='/response/vacancies/${vacancy.id}?page=0&size='+this.value" class="page-size-select">
                         <option value="5" <#if pageSize == 5>selected</#if>>5</option>
                         <option value="10" <#if pageSize == 10>selected</#if>>10</option>
                         <option value="20" <#if pageSize == 20>selected</#if>>20</option>
