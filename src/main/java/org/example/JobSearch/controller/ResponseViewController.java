@@ -79,4 +79,31 @@ public class ResponseViewController {
             return "redirect:/vacancies/" + vacancyId + "/info?error=true";
         }
     }
+
+    @GetMapping("/resumes/{id}")
+    public String responsesByResume(@PathVariable Long id,
+                                    @RequestParam(defaultValue = "0") int page,
+                                    @RequestParam(defaultValue = "10") int size,
+                                    Model model,
+                                    Principal principal) {
+
+        ResumeDTO resume = resumeService.getResumeById(id);
+        String email = principal.getName();
+        UserDTO user = userService.getUserByEmail(email);
+
+        if (!resume.getApplicantId().equals(user.getId())) {
+            throw new AccessDeniedException("У вас нет доступа к этому резюме");
+        }
+
+        Page<VacancyDTO> vacanciesPage = responseService.getVacanciesByResumeId(id, PageRequest.of(page, size));
+        int totalResponses = responseService.getResponsesCountByResume(id);
+
+        model.addAttribute("resume", resume);
+        model.addAttribute("vacancies", vacanciesPage);
+        model.addAttribute("totalResponses", totalResponses);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("pageSize", size);
+
+        return "responses/resume-responses";
+    }
 }
