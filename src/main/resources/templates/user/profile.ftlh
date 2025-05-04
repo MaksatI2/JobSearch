@@ -28,7 +28,12 @@
             <#if user.accountType == "APPLICANT">
                 <p>${user.name} ${user.surname}</p>
                 <p>Email: ${user.email}</p>
-                <p>Возраст: ${user.age}</p>
+                <p>Возраст:<#if user.age??>${user.age}
+                    <#else>
+                        <span class="text-danger">не указан</span>
+                    </#if>
+                </p>
+
                 <p>Телефон: ${user.phoneNumber}</p>
             <#else>
                 <p>${user.name}</p>

@@ -308,3 +308,111 @@ body {
     text-align: center;
     font-size: 0.9rem;
 }
+.oauth-login {
+    margin-top: 20px;
+    width: 100%;
+}
+
+.separator {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    color: #777;
+    margin: 15px 0;
+}
+
+.separator::before,
+.separator::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px solid #ddd;
+}
+
+.separator::before {
+    margin-right: 10px;
+}
+
+.separator::after {
+    margin-left: 10px;
+}
+
+.google-login-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #fff;
+    color: #444;
+    width: 100%;
+    padding: 10px 0;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+    text-decoration: none;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+}
+
+.google-login-btn:hover {
+    background-color: #f8f8f8;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+
+.google-logo {
+    width: 20px;
+    height: 20px;
+    margin-right: 10px;
+}
+
+.account-type-selection {
+    margin-bottom: 20px;
+}
+
+.account-type-option {
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.account-type-option:hover {
+    background-color: #f8f8f8;
+}
+
+.account-type-option input[type="radio"] {
+    display: none;
+}
+
+.account-type-option input[type="radio"]:checked + .account-type-label {
+    font-weight: 500;
+}
+
+.account-type-option input[type="radio"]:checked + .account-type-label .account-type-title {
+    color: #007bff;
+}
+
+.account-type-label {
+    display: flex;
+    flex-direction: column;
+    cursor: pointer;
+    width: 100%;
+}
+
+.account-type-title {
+    font-size: 18px;
+    margin-bottom: 5px;
+}
+
+.account-type-description {
+    font-size: 14px;
+    color: #777;
+}
+
+.user-info {
+    background-color: #f8f8f8;
+    padding: 15px;
+    border-radius: 4px;
+    margin-bottom: 20px;
+}
