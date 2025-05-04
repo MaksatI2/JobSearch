@@ -8,7 +8,6 @@ import org.example.JobSearch.dto.UserDTO;
 import org.example.JobSearch.dto.register.ApplicantRegisterDTO;
 import org.example.JobSearch.dto.register.EmployerRegisterDTO;
 import org.example.JobSearch.exceptions.InvalidRegisterException;
-import org.example.JobSearch.exceptions.InvalidUserDataException;
 import org.example.JobSearch.exceptions.UserNotFoundException;
 import org.example.JobSearch.model.AccountType;
 import org.example.JobSearch.model.User;
@@ -26,7 +25,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.UnsupportedEncodingException;
-import java.util.List;
 import java.util.UUID;
 
 import static org.example.JobSearch.util.FileUtil.DEFAULT_AVATAR;
@@ -46,64 +44,11 @@ public class UserServiceImpl implements UserService {
         return userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException("Пользователь не найден с ID: " + id));
     }
-
-    @Override
-    public UserDTO findApplicant(String email) {
-        User user = userRepository.findByEmailAndType(email, AccountType.APPLICANT)
-                .orElseThrow(() -> new UserNotFoundException("Соискатель с email не найден: " + email));
-        return convertToUserDTO(user);
-    }
-
     @Override
     public UserDTO getUserByEmail(String email) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UserNotFoundException("Пользователь не найден"));
         return convertToUserDTO(user);
-    }
-
-    @Override
-    public UserDTO findApplicantByPhone(String phoneNumber) {
-        User user = userRepository.findByPhoneAndType(phoneNumber, AccountType.APPLICANT)
-                .orElseThrow(() -> new UserNotFoundException("Соискатель с телефоном не найден: " + phoneNumber));
-        return convertToUserDTO(user);
-    }
-
-    @Override
-    public List<UserDTO> findApplicantsByName(String name) {
-        if (name == null || name.isEmpty()) {
-            throw new InvalidUserDataException("Имя не может быть пустым");
-        }
-        List<User> users = userRepository.findByNameAndType(name, AccountType.APPLICANT);
-        if (users.isEmpty()) {
-            throw new UserNotFoundException("Соискатели с именем не найдены: " + name);
-        }
-        return users.stream().map(this::convertToUserDTO).toList();
-    }
-
-    @Override
-    public UserDTO findEmployer(String email) {
-        User user = userRepository.findByEmailAndType(email, AccountType.EMPLOYER)
-                .orElseThrow(() -> new UserNotFoundException("Работодатель с email не найден: " + email));
-        return convertToUserDTO(user);
-    }
-
-    @Override
-    public UserDTO findEmployerByPhone(String phoneNumber) {
-        User user = userRepository.findByPhoneAndType(phoneNumber, AccountType.EMPLOYER)
-                .orElseThrow(() -> new UserNotFoundException("Работодатель с телефоном не найден: " + phoneNumber));
-        return convertToUserDTO(user);
-    }
-
-    @Override
-    public List<UserDTO> findEmployersByName(String name) {
-        if (name == null || name.isEmpty()) {
-            throw new InvalidUserDataException("Имя не может быть пустым");
-        }
-        List<User> users = userRepository.findByNameAndType(name, AccountType.EMPLOYER);
-        if (users.isEmpty()) {
-            throw new UserNotFoundException("Работодатели с именем не найдены: " + name);
-        }
-        return users.stream().map(this::convertToUserDTO).toList();
     }
 
     @Override
@@ -148,18 +93,6 @@ public class UserServiceImpl implements UserService {
         user.setAccountType(AccountType.EMPLOYER);
 
         userRepository.save(user);
-    }
-
-    @Override
-    public List<UserDTO> getApplicantsVacancy(Long vacancyId) {
-        if (vacancyId == null) {
-            throw new InvalidUserDataException("ID вакансии не может быть null");
-        }
-        List<User> applicants = userRepository.findApplicantsByVacancyId(vacancyId);
-        if (applicants.isEmpty()) {
-            throw new UserNotFoundException("Не найдено соискателей для вакансии ID: " + vacancyId);
-        }
-        return applicants.stream().map(this::convertToUserDTO).toList();
     }
 
     @Override

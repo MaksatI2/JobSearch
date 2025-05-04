@@ -25,13 +25,17 @@
             <div class="nav-links">
                 <a href="/" class="nav-link <#if activeNav == "home">active</#if>">Главная</a>
                 <a href="/vacancies" class="nav-link <#if activeNav == "vacancies">active</#if>">Вакансии</a>
-                <#if Session.SPRING_SECURITY_CONTEXT?? && Session.SPRING_SECURITY_CONTEXT.authentication.authorities?seq_contains('EMPLOYER')>
-                    <a href="/resumes/allResumes" class="nav-link <#if activeNav == "resumes">active</#if>">Резюме</a>
-                    <a href="/favorites/resumes" class="nav-link <#if activeNav == "favorite">active</#if>">Избранные</a>
-                <#else>
-                    <a href="/company/allCompanies" class="nav-link <#if activeNav == "companies">active</#if>">Компании</a>
-                    <a href="/favorites/vacancies" class="nav-link <#if activeNav == "favorite">active</#if>">Избранные</a>
+
+                <#if Session.SPRING_SECURITY_CONTEXT??>
+                    <#if Session.SPRING_SECURITY_CONTEXT.authentication.authorities?seq_contains('EMPLOYER')>
+                        <a href="/resumes/allResumes" class="nav-link <#if activeNav == "resumes">active</#if>">Резюме</a>
+                        <a href="/favorites/resumes" class="nav-link <#if activeNav == "favorite">active</#if>">Избранные</a>
+                    <#else>
+                        <a href="/company/allCompanies" class="nav-link <#if activeNav == "companies">active</#if>">Компании</a>
+                        <a href="/favorites/vacancies" class="nav-link <#if activeNav == "favorite">active</#if>">Избранные</a>
+                    </#if>
                 </#if>
+
                 <#if Session.SPRING_SECURITY_CONTEXT??>
                     <a href="/profile" class="nav-link profile-link <#if activeNav == "profile">active</#if>">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
