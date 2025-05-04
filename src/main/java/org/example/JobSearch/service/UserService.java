@@ -19,15 +19,6 @@ public interface UserService {
 
     UserDTO getUserById(Long userId);
     UserDTO getUserByEmail(String email);
-    UserDTO findApplicant(String email);
-    UserDTO findApplicantByPhone(String phoneNumber);
-    UserDTO findEmployer(String email);
-    UserDTO findEmployerByPhone(String phoneNumber);
-
-    List<UserDTO> findApplicantsByName(String name);
-    List<UserDTO> findEmployersByName(String name);
-    List<UserDTO> getApplicantsVacancy(Long vacancyId);
-
     ResponseEntity<?> getAvatarByUserId(Long userId);
 
     Page<UserDTO> getAllEmployers(Pageable pageable);
