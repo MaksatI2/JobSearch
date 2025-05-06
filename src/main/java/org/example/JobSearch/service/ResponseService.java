@@ -7,26 +7,20 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 
 public interface ResponseService {
-    void respondToVacancy(Long resumeId, Long vacancyId);
-
-    int getResponsesCountByApplicant(String email);
-
-    Page<ResumeDTO> getResumesByVacancyId(Long vacancyId, Pageable pageable);
-
     @Transactional(readOnly = true)
     int getResponsesCountByEmployer(String email);
-
+    @Transactional(readOnly = true)
+    int getResponsesCountByResume(Long resumeId);
     int getResponsesCountByVacancy(Long vacancyId);
-
-    @Transactional
-    void markApplicantResponsesAsViewed(Long applicantId);
-
-    @Transactional
-    void markEmployerResponsesAsViewed(Long employerId);
+    int getResponsesCountByApplicant(String email);
 
     @Transactional(readOnly = true)
     Page<VacancyDTO> getVacanciesByResumeId(Long resumeId, Pageable pageable);
+    Page<ResumeDTO> getResumesByVacancyId(Long vacancyId, Pageable pageable);
 
-    @Transactional(readOnly = true)
-    int getResponsesCountByResume(Long resumeId);
+    @Transactional
+    void markApplicantResponsesAsViewed(Long applicantId);
+    @Transactional
+    void markEmployerResponsesAsViewed(Long employerId);
+    void respondToVacancy(Long resumeId, Long vacancyId);
 }

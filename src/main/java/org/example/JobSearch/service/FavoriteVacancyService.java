@@ -8,12 +8,10 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 public interface FavoriteVacancyService {
+    @Transactional
+    void removeVacancyFromFavorites(Long userId, Long vacancyId);
     void addVacancyToFavorites(Long userId, Long vacancyId);
 
     Page<VacancyDTO> getUserFavoriteVacancies(Long userId, Pageable pageable);
-
-    @Transactional
-    void removeVacancyFromFavorites(Long userId, Long vacancyId);
-
     List<Long> getFavoriteVacancyIds(Long userId);
 }

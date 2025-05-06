@@ -13,20 +13,17 @@ import org.springframework.validation.BindingResult;
 import java.util.List;
 
 public interface ResumeService {
-    Page<ResumeDTO> getResumesByApplicant(Long applicantId, int page, int size);
-
     void createResume(CreateResumeDTO resumeDto, BindingResult bindingResult);
     void updateResume(Long resumeId, EditResumeDTO editresumeDto);
     void deleteResume(Long resumeId);
     void refreshResume(Long resumeId);
+    void validateCreateResume(CreateResumeDTO resumeDto, BindingResult bindingResult);
+    void validateEducation(List<EducationInfoDTO> educationInfos, BindingResult bindingResult);
 
+    Page<ResumeDTO> getResumesByApplicant(Long applicantId, int page, int size);
     Page<ResumeDTO> getAllResumes(String sort,Pageable pageable);
     Page<ResumeDTO> getResumesWithResponsesByApplicantId(Long applicantId, Pageable pageable);
     ResumeDTO getResumeById(Long id);
 
     Resume getResumeEntityById(Long id);
-
-    void validateCreateResume(CreateResumeDTO resumeDto, BindingResult bindingResult);
-
-    void validateEducation(List<EducationInfoDTO> educationInfos, BindingResult bindingResult);
 }

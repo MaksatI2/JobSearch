@@ -16,19 +16,16 @@ public interface VacancyService {
     void updateVacancy(Long vacancyId, EditVacancyDTO editvacancyDto);
     void deleteVacancy(Long vacancyId);
     void refreshVacancy(Long vacancyId);
+    void validateVacancyData(CreateVacancyDTO  createvacancyDto, BindingResult bindingResult);
+    void validateEditVacancyData(EditVacancyDTO  editVacancyDTO, BindingResult bindingResult);
 
+    @Transactional(readOnly = true)
+    Page<VacancyDTO> getVacanciesWithResponsesByAuthorId(Long authorId, Pageable pageable);
     Page<VacancyDTO> getAllVacanciesSorted(String sort, Pageable pageable);
 
     Vacancy getVacancyEntityById(Long id);
 
     VacancyDTO getVacancyById(Long id);
 
-    @Transactional(readOnly = true)
-    Page<VacancyDTO> getVacanciesWithResponsesByAuthorId(Long authorId, Pageable pageable);
-
     EditVacancyDTO convertToEditDTO(VacancyDTO dto);
-
-    void validateVacancyData(CreateVacancyDTO  createvacancyDto, BindingResult bindingResult);
-
-    void validateEditVacancyData(EditVacancyDTO  editVacancyDTO, BindingResult bindingResult);
 }
