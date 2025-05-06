@@ -20,8 +20,7 @@
         <div class="left-column">
             <div class="avatar-container">
                 <img src="/api/users/${user.id}/avatar"
-                     alt="Аватар"
-                     onerror="this.src='/static/default-avatar/default_avatar.jpg'">
+                     alt="Аватар">
                 <a href="/profile/avatar/edit" class="change-avatar-button">Изменить аватар</a>
             </div>
 

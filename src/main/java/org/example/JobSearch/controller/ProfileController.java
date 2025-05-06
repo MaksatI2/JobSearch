@@ -80,9 +80,6 @@ public class ProfileController {
             return "errors/404";
         }
 
-        String avatarUrl = "/api/users/" + user.getId() + "/avatar";
-        user.setAvatar(avatarUrl);
-
         model.addAttribute("user", user);
         model.addAttribute("isViewMode", true);
 
@@ -105,9 +102,6 @@ public class ProfileController {
         if (user == null || user.getAccountType() != AccountType.EMPLOYER) {
             return "errors/404";
         }
-
-        String avatarUrl = "/api/users/" + user.getId() + "/avatar";
-        user.setAvatar(avatarUrl);
 
         model.addAttribute("user", user);
         model.addAttribute("isViewMode", true);

@@ -18,7 +18,7 @@
     <div class="profile">
         <div class="left-column">
             <div class="avatar-container">
-                <img src="${user.avatar}" alt="Аватар" onerror="this.src='/static/default-avatar/default_avatar.jpg'">
+                <img src="/api/users/${user.id}/avatar" alt="Аватар" onerror="this.src='/static/default-avatar/default_avatar.jpg'">
             </div>
             <p>${user.name} ${user.surname}</p>
             <p>Email: ${user.email}</p>
