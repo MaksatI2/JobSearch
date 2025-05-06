@@ -42,9 +42,6 @@ public class ProfileController {
         String referer = request.getHeader("Referer");
         UserDTO user = userService.getUserByEmail(email);
 
-        String avatarUrl = "/api/users/" + user.getId() + "/avatar";
-        user.setAvatar(avatarUrl);
-
         model.addAttribute("user", user);
 
         if (user.getAccountType() == AccountType.APPLICANT) {

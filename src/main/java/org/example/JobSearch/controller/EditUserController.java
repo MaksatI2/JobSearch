@@ -64,13 +64,7 @@ public class EditUserController {
         String currentUserEmail = principal.getName();
         UserDTO user = userService.getUserByEmail(currentUserEmail);
 
-        String avatarUrl = "/api/users/" + user.getId() + "/avatar";
-        user.setAvatar(avatarUrl);
-
         model.addAttribute("user", user);
-
-        model.addAttribute("user", user);
-        model.addAttribute("userId", user.getId());
 
         return "user/editAvatar";
     }

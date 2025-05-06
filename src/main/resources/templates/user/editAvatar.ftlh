@@ -8,7 +8,7 @@
         <div class="current-avatar-container">
             <h3>Текущий аватар</h3>
             <div class="avatar-wrapper">
-                <img src="${user.avatar}" alt="Аватар пользователя" class="current-avatar" onerror="this.src='/static/default-avatar/default_avatar.jpg'">
+                <img src="/api/users/${user.id}/avatar" alt="Аватар пользователя" class="current-avatar" onerror="this.src='/static/default-avatar/default_avatar.jpg'">
             </div>
         </div>
 
@@ -18,7 +18,7 @@
                 <#if _csrf??>
                     <input type="hidden" name="${(_csrf.parameterName)!'csrf-param-name'}" value="${(_csrf.token)!'csrf-token'}"/>
                 </#if>
-                <input type="hidden" name="userId" value="${userId}">
+                <input type="hidden" name="userId" value="${user.id}">
                 <div class="file-input-wrapper">
                     <span class="file-label">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="upload-icon">
@@ -32,6 +32,14 @@
                 </div>
                 <button type="submit" class="btn-save-avatar">Сохранить аватар</button>
             </form>
+        </div>
+        <div class="avatar-requirements">
+            <h4>Требования к изображению:</h4>
+            <ul>
+                <li>Максимальный размер файла: 5МБ</li>
+                <li>Поддерживаемые форматы: JPG,JPEG</li>
+                <li>Рекомендуемый размер: 300x300 пикселей</li>
+            </ul>
         </div>
     </section>
 </@layout.page>
