@@ -55,7 +55,8 @@
                 </div>
                 <div class="form-group">
                     <label for="password">Пароль (минимум 6 символов)</label>
-                    <@spring.formInput "applicantRegisterDTO.password", "class='form-control' + ((spring.status.error && spring.status.errors['password']?has_content)?then(' error-field', ''))", "password id='password'"/>
+                    <@spring.formPasswordInput "applicantRegisterDTO.password"
+                    "class='form-control' + ((spring.status.error && spring.status.errors['password']?has_content)?then(' error-field', ''))" />
                     <@spring.showErrors "<br>" "error" />
                 </div>
                 <div class="form-group">
@@ -92,7 +93,8 @@
                 </div>
                 <div class="form-group">
                     <label for="password">Пароль (минимум 6 символов)</label>
-                    <@spring.formInput "employerRegisterDTO.password", "class='form-control' + ((spring.status.error && spring.status.errors['password']?has_content)?then(' error-field', ''))", "password id='password'" />
+                    <@spring.formPasswordInput "employerRegisterDTO.password"
+                    "class='form-control' + ((spring.status.error && spring.status.errors['password']?has_content)?then(' error-field', ''))" />
                     <@spring.showErrors "<br>" "error" />
                 </div>
                 <div class="form-group">

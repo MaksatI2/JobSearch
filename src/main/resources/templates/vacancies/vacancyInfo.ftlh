@@ -108,9 +108,15 @@
                     <#if isAuthor>
                         <a href="/vacancies/${vacancy.id}/edit" class="btn btn-edit">Редактировать</a>
                         <form action="/vacancies/${vacancy.id}/refresh" method="post">
+                            <#if _csrf??>
+                                <input type="hidden" name="${(_csrf.parameterName)!'csrf'}" value="${(_csrf.token)!'--no-token--'}"/>
+                            </#if>
                             <button type="submit" class="btn btn-refresh">Обновить</button>
                         </form>
                         <form action="/vacancies/${vacancy.id}/delete" method="post">
+                            <#if _csrf??>
+                                <input type="hidden" name="${(_csrf.parameterName)!'csrf'}" value="${(_csrf.token)!'--no-token--'}"/>
+                            </#if>
                             <button type="submit" class="btn btn-delete">Удалить</button>
                         </form>
                     </#if>

@@ -6,7 +6,7 @@ title="Список вакансий | JobSearch"
 styles="/static/css/vacancies/vacancies.css"
 activeNav="vacancies">
 
-    <h1 class="page-title">Все вакансии</h1>
+    <h1 class="page-title"><@spring.messageText "vacancies.title", "Все вакансии"/></h1>
     <#if successMessage??>
         <div class="alert alert-success">
             ${successMessage}

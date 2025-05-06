@@ -2,6 +2,7 @@ package org.example.JobSearch.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.example.JobSearch.dto.ResumeDTO;
+import org.example.JobSearch.dto.VacancyDTO;
 import org.example.JobSearch.model.RespondedApplicant;
 import org.example.JobSearch.repository.RespondedApplicantRepository;
 import org.example.JobSearch.service.ResumeService;
@@ -86,6 +87,22 @@ public class ResponseServiceImpl implements ResponseService {
                 .findByVacancyAuthorIdAndConfirmationNull(employerId);
         responses.forEach(response -> response.setConfirmation(false));
         respondedApplicantRepository.saveAll(responses);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public Page<VacancyDTO> getVacanciesByResumeId(Long resumeId, Pageable pageable) {
+        return respondedApplicantRepository.findByResumeId(resumeId, pageable)
+                .map(response -> {
+                    VacancyDTO vacancy = vacancyService.getVacancyById(response.getVacancy().getId());
+                    return vacancy;
+                });
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public int getResponsesCountByResume(Long resumeId) {
+        return respondedApplicantRepository.countByResumeId(resumeId);
     }
 
 }

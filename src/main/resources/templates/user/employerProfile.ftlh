@@ -19,7 +19,7 @@
     <div class="profile">
         <div class="left-column">
             <div class="avatar-container">
-                <img src="${user.avatar}"
+                <img src="/api/users/${user.id}/avatar"
                      alt="Аватар"
                      onerror="this.src='/static/default-avatar/default_avatar.jpg'">
             </div>

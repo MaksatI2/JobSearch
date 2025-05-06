@@ -16,21 +16,18 @@ public interface UserService {
 
     void  registerEmployer(EmployerRegisterDTO employerDto);
     void  registerApplicant(ApplicantRegisterDTO applicantDto);
+    void updatePassword(User user, String newPassword);
+    void updateResetPasswordToken(String token, String email);
+    void makeResetPasswdLink(HttpServletRequest request) throws UserNotFoundException;
 
     UserDTO getUserById(Long userId);
     UserDTO getUserByEmail(String email);
-    ResponseEntity<?> getAvatarByUserId(Long userId);
 
+    ResponseEntity<?> getAvatarByUserId(Long userId);
     Page<UserDTO> getAllEmployers(Pageable pageable);
 
     Long getUserId(String email);
+
     User getUserId(Long id);
-
-    void updateResetPasswordToken(String token, String email);
-
     User getByResetPasswordToken(String token);
-
-    void updatePassword(User user, String newPassword);
-
-    void makeResetPasswdLink(HttpServletRequest request) throws UserNotFoundException;
 }

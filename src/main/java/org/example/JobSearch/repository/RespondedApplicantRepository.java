@@ -36,6 +36,11 @@ public interface RespondedApplicantRepository extends JpaRepository<RespondedApp
 
     Page<RespondedApplicant> findByVacancyId(Long vacancyId, Pageable pageable);
 
+    @Query("SELECT COUNT(ra) FROM RespondedApplicant ra WHERE ra.resume.id = :resumeId")
+    int countByResumeId(@Param("resumeId") Long resumeId);
+
+    Page<RespondedApplicant> findByResumeId(Long resumeId, Pageable pageable);
+
     List<RespondedApplicant> findByResumeApplicantIdAndViewedFalse(Long applicantId);
     List<RespondedApplicant> findByVacancyAuthorIdAndConfirmationNull(Long employerId);
 }

@@ -1,6 +1,7 @@
 package org.example.JobSearch.config;
 
 import lombok.RequiredArgsConstructor;
+import org.example.JobSearch.service.impl.CustomOAuth2UserService;
 import org.example.JobSearch.service.impl.CustomUserDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,6 +22,8 @@ public class SecurityConfig {
     private final CustomUserDetailsService userDetailsService;
     private final PasswordEncoder passwordEncoder;
     private final CustomSuccessHandler successHandler;
+    private final CustomOAuth2UserService oAuth2UserService;
+    private final OAuth2AuthenticationSuccessHandler oAuth2SuccessHandler;
 
     @Bean
     public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
@@ -62,6 +65,14 @@ public class SecurityConfig {
                         .loginProcessingUrl("/login")
                         .successHandler(successHandler)
                         .failureUrl("/auth/login?error=true")
+                        .permitAll()
+                )
+                .oauth2Login(oauth2 -> oauth2
+                        .loginPage("/auth/login")
+                        .userInfoEndpoint(userInfo -> userInfo
+                                .userService(oAuth2UserService)
+                        )
+                        .successHandler(oAuth2SuccessHandler)
                         .permitAll()
                 )
                 .logout(logout -> logout

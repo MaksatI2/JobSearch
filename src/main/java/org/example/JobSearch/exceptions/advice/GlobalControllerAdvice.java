@@ -2,7 +2,6 @@ package org.example.JobSearch.exceptions.advice;
 
 import lombok.RequiredArgsConstructor;
 import org.example.JobSearch.exceptions.*;
-import org.example.JobSearch.service.ErrorService;
 import org.springframework.beans.TypeMismatchException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -21,7 +20,6 @@ import java.util.NoSuchElementException;
 @ControllerAdvice
 @RequiredArgsConstructor
 public class GlobalControllerAdvice {
-    private final ErrorService errorService;
 
     @ExceptionHandler(AccessDeniedException.class)
     public ModelAndView handleAccessDenied(AccessDeniedException e, RedirectAttributes redirectAttributes) {
@@ -53,9 +51,7 @@ public class GlobalControllerAdvice {
         e.getBindingResult().getFieldErrors().forEach(error ->
                 fieldErrors.put(error.getField(), error.getDefaultMessage()));
 
-        mav.addObject("error", errorService.makeResponse(
-                new IllegalArgumentException("Ошибка валидации данных")
-        ));
+        mav.addObject("error",  e.getMessage());
         mav.addObject("fieldErrors", fieldErrors);
 
         return mav;
@@ -65,7 +61,7 @@ public class GlobalControllerAdvice {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ModelAndView handleInvalidRegisterException(InvalidRegisterException e) {
         ModelAndView mav = new ModelAndView("auth/register");
-        mav.addObject("error", errorService.makeResponse(e));
+        mav.addObject("error",  e.getMessage());
         mav.addObject("type", e.getFieldName().contains("company") ? "employer" : "applicant");
         return mav;
     }
@@ -77,7 +73,7 @@ public class GlobalControllerAdvice {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ModelAndView handleBadRequestExceptions(Exception e) {
         ModelAndView mav = new ModelAndView("errors/400");
-        mav.addObject("error", errorService.makeResponse(e));
+        mav.addObject("error",  e.getMessage());
         return mav;
     }
 
@@ -85,9 +81,7 @@ public class GlobalControllerAdvice {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ModelAndView TypeMismatchException(Exception e) {
         ModelAndView mav = new ModelAndView("errors/400");
-        mav.addObject("error", errorService.makeResponse(
-                new IllegalArgumentException("ID должно быть числом")
-        ));
+        mav.addObject("error",  e.getMessage());
         return mav;
     }
 

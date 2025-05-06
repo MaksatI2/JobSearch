@@ -194,9 +194,15 @@
                     Редактировать
                 </a>
                 <form action="/resumes/${resume.id}/refresh" method="post">
+                    <#if _csrf??>
+                        <input type="hidden" name="${(_csrf.parameterName)!'csrf'}" value="${(_csrf.token)!'--no-token--'}"/>
+                    </#if>
                     <button type="submit" class="btn btn-refresh">Обновить</button>
                 </form>
                 <form action="/resumes/${resume.id}/delete" method="post">
+                    <#if _csrf??>
+                        <input type="hidden" name="${(_csrf.parameterName)!'csrf'}" value="${(_csrf.token)!'--no-token--'}"/>
+                    </#if>
                     <button type="submit" class="btn btn-delete">Удалить</button>
                 </form>
             </#if>

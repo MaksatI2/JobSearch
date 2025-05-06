@@ -147,11 +147,11 @@ public class AuthViewController {
         try {
             User user = userService.getByResetPasswordToken(resetRequest.getToken());
             userService.updatePassword(user, resetRequest.getPassword());
-            model.addAttribute("message", "Вы успешно изменили свой пароль.");
+            model.addAttribute("registrationSuccess", "Вы успешно изменили свой пароль.");
         } catch (UserNotFoundException e) {
             bindingResult.rejectValue("token", "invalid.token", "Недействительный токен");
         }
 
-        return "auth/reset_password_form";
+        return "auth/login";
     }
 }

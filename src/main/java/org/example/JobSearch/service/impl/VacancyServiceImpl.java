@@ -22,7 +22,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
 
 import java.sql.Timestamp;
-import java.util.List;
 
 @Slf4j
 @Service
