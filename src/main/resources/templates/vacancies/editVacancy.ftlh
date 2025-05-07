@@ -2,7 +2,6 @@
 <#import "../layout.ftlh" as layout>
 
 <@layout.page
-title="Редактировать вакансию | JobSearch"
 styles="/static/css/vacancies/vacancies.css"
 activeNav="vacancies">
 

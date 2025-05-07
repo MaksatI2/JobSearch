@@ -1,7 +1,7 @@
 <#import "/spring.ftl" as spring>
 <#import "../layout.ftlh" as layout>
 
-<@layout.page title="Редактирование аватарки профиля" styles="/static/css/user/editAvatar.css" activeNav="profile">
+<@layout.page styles="/static/css/user/editAvatar.css" activeNav="profile">
     <section class="edit-avatar-section">
         <h2>Сменить аватар</h2>
 

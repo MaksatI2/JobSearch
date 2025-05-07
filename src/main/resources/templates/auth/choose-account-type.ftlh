@@ -1,7 +1,7 @@
 <#import "../layout.ftlh" as layout>
 <#import "/spring.ftl" as spring>
 
-<@layout.page title="Выбор типа аккаунта | JobSearch" styles="/static/css/auth/register.css" activeNav="login">
+<@layout.page styles="/static/css/auth/register.css" activeNav="login">
     <div class="registration-form-container">
         <h1 class="page-title">Выберите тип аккаунта</h1>
 

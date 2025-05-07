@@ -1,6 +1,6 @@
 <#import "../layout.ftlh" as layout>
 
-<@layout.page title="Отклики на вакансию | JobSearch" styles="/static/css/resumes/resumes.css" activeNav="profile">
+<@layout.page styles="/static/css/resumes/resumes.css" activeNav="profile">
     <a href="/profile" class="reset-btn">← Назад к профилю</a>
     <#if resumes.content?? && resumes.content?has_content>
         <div class="resumes-grid">

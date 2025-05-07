@@ -1,6 +1,6 @@
 <#import "../layout.ftlh" as layout>
 
-<@layout.page title="Активные резюме | JobSearch" styles="/static/css/resumes/resumes.css" activeNav="resumes">
+<@layout.page styles="/static/css/resumes/resumes.css" activeNav="resumes">
 
     <div class="container">
         <h1 class="page-title">Список активных резюме</h1>

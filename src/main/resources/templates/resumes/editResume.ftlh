@@ -1,7 +1,7 @@
 <#import "../layout.ftlh" as layout>
 <#import "/spring.ftl" as spring>
 
-<@layout.page title="Редактирование резюме | JobSearch" styles="/static/css/resumes/editResume.css" activeNav="resumes">
+<@layout.page styles="/static/css/resumes/editResume.css" activeNav="resumes">
     <h1 class="page-title">Редактирование резюме</h1>
 
     <@spring.bind "resumeForm" />

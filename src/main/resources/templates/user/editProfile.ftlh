@@ -1,7 +1,7 @@
 <#import "/spring.ftl" as spring>
 <#import "../layout.ftlh" as layout>
 
-<@layout.page title="Редактирование профиля | JobSearch" styles="/static/css/user/editProfile.css" activeNav="profile">
+<@layout.page styles="/static/css/user/editProfile.css" activeNav="profile">
     <h1 class="page-title">Редактирование профиля</h1>
 
     <@spring.bind "editUserDTO" />

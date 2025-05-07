@@ -1,7 +1,7 @@
 <#import "/spring.ftl" as spring>
 <#import "../layout.ftlh" as layout>
 
-<@layout.page title="Детали резюме | JobSearch" styles="/static/css/resumes/resumeInfo.css" activeNav="resumes">
+<@layout.page styles="/static/css/resumes/resumeInfo.css" activeNav="resumes">
     <div class="resume-detail">
         <div class="resume-header">
             <div class="applicant-info">

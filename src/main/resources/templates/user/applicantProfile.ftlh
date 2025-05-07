@@ -1,6 +1,6 @@
 <#import "../layout.ftlh" as layout>
 
-<@layout.page title="Личный кабинет соискателя | JobSearch" styles="/static/css/user/profile.css" activeNav="profile">
+<@layout.page styles="/static/css/user/profile.css" activeNav="profile">
     <h2>Личный кабинет Соискателя</h2>
 
     <#if successMessage??>

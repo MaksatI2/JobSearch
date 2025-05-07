@@ -1,7 +1,7 @@
 <#import "/spring.ftl" as spring>
 <#import "../layout.ftlh" as layout>
 
-<@layout.page title="Избранные вакансии | JobSearch" styles="/static/css/vacancies/vacancies.css" activeNav="favorite">
+<@layout.page styles="/static/css/vacancies/vacancies.css" activeNav="favorite">
     <h1 class="page-title">Избранные вакансии</h1>
 
     <#if successMessage??>

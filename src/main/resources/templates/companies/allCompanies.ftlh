@@ -1,6 +1,6 @@
 <#import "../layout.ftlh" as layout>
 
-<@layout.page title="Компании | JobSearch" styles="/static/css/companies/allCompanies.css" activeNav="companies">
+<@layout.page styles="/static/css/companies/allCompanies.css" activeNav="companies">
     <h1>Список компаний</h1>
 
     <#if companies?? && companies?size gt 0>

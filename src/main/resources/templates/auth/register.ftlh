@@ -1,7 +1,7 @@
 <#import "../layout.ftlh" as layout>
 <#import "/spring.ftl" as spring>
 
-<@layout.page title="Регистрация | JobSearch" styles="/static/css/auth/register.css" activeNav="register">
+<@layout.page styles="/static/css/auth/register.css" activeNav="register">
     <div class="registration-form-container">
         <h1 class="page-title">Регистрация</h1>
 

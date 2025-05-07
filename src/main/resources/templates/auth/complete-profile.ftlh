@@ -1,5 +1,5 @@
 <#import "../layout.ftlh" as layout>
-<@layout.page title="Завершение регистрации" styles="/static/css/auth/register.css" activeNav="">
+<@layout.page styles="/static/css/auth/register.css" activeNav="">
     <div class="registration-form-container">
         <h1>Завершение регистрации</h1>
 

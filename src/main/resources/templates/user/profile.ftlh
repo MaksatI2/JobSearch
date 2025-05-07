@@ -1,7 +1,7 @@
 <#import "/spring.ftl" as spring>
 <#import "../layout.ftlh" as layout>
 
-<@layout.page title="Личный кабинет | JobSearch" styles="/static/css/user/profile.css" activeNav="profile">
+<@layout.page styles="/static/css/user/profile.css" activeNav="profile">
     <h2>Личный кабинет <#if user.accountType == "APPLICANT">Соискателя<#else>Работодателя</#if></h2>
 
     <#if successMessage??>
