@@ -3,10 +3,10 @@
 
 <@layout.page styles="/static/css/auth/register.css" activeNav="login">
     <div class="registration-form-container">
-        <h1 class="page-title">Выберите тип аккаунта</h1>
+        <h1 class="page-title"><@spring.message code="choose.account.title"/></h1>
 
         <div class="user-info">
-            <p>Вы входите как: ${name}</p>
+            <p><@spring.message code="choose.account.name"/> ${name}</p>
             <p>Email: ${email}</p>
         </div>
 
@@ -19,21 +19,21 @@
                 <div class="account-type-option">
                     <input type="radio" id="applicant" name="accountType" value="1" checked>
                     <label for="applicant" class="account-type-label">
-                        <span class="account-type-title">Соискатель</span>
-                        <span class="account-type-description">Ищете работу, создаете резюме и откликаетесь на вакансии</span>
+                        <span class="account-type-title"><@spring.message code="choose.account.applicant"/></span>
+                        <span class="account-type-description"><@spring.message code="choose.account.applicant.desc"/></span>
                     </label>
                 </div>
 
                 <div class="account-type-option">
                     <input type="radio" id="employer" name="accountType" value="2">
                     <label for="employer" class="account-type-label">
-                        <span class="account-type-title">Работодатель</span>
-                        <span class="account-type-description">Размещаете вакансии и ищете сотрудников</span>
+                        <span class="account-type-title"><@spring.message code="choose.account.employer"/></span>
+                        <span class="account-type-description"><@spring.message code="choose.account.employer.desc"/></span>
                     </label>
                 </div>
             </div>
 
-            <button type="submit" class="submit-btn">Продолжить</button>
+            <button type="submit" class="submit-btn"><@spring.message code="choose.account.go"/></button>
         </form>
     </div>
 </@layout.page>
