@@ -2,7 +2,7 @@
 <#import "/spring.ftl" as spring>
 
 <@layout.page styles="/static/css/resumes/editResume.css" activeNav="resumes">
-    <h1 class="page-title">Редактирование резюме</h1>
+    <h1 class="page-title"><@spring.message code="resumes.edit.title"/></h1>
 
     <@spring.bind "resumeForm" />
     <#if spring.status.error>
@@ -19,14 +19,14 @@
                    value="${(_csrf.token)!'csrf-token'}"/>
         </#if>
         <div class="section">
-            <h2 class="section-title">Основная информация</h2>
+            <h2 class="section-title"><@spring.message code="resumes.edit.resume"/></h2>
             <div class="form-group">
-                <label for="name">Название резюме*</label>
+                <label for="name"><@spring.message code="resumes.edit.name"/> *</label>
                 <@spring.formInput "resumeForm.name", "class='form-control' id='name'" />
                 <@spring.showErrors "<br>", "error" />
             </div>
             <div class="form-group">
-                <label for="categoryId">Категория*</label>
+                <label for="categoryId"><@spring.message code="resumes.edit.category"/> *</label>
                 <select class="form-control" id="categoryId" name="categoryId">
                     <#list categories as category>
                         <option value="${category.id}"
@@ -39,108 +39,119 @@
             </div>
             <div class="form-row">
                 <div class="form-group">
-                    <label for="salary">Желаемая зарплата</label>
+                    <label for="salary"><@spring.message code="resumes.salary"/></label>
                     <@spring.formInput "resumeForm.salary", "type='number' min='0' step='0.01' class='form-control' id='salary'" />
                     <@spring.showErrors "<br>", "error" />
                 </div>
                 <div class="form-group">
-                    <label for="isActive">Статус резюме</label>
-                    <@spring.formSingleSelect "resumeForm.isActive", {"true": "Активно", "false": "Неактивно"}, "class='form-control' id='isActive' required='required'" />
+                    <label for="isActive"><@spring.message code="resumes.create.status"/> </label>
+                    <@spring.formSingleSelect "resumeForm.isActive", {
+                    "true": " " + springMacroRequestContext.getMessage("resumes.create.status.active"),
+                    "false": " " + springMacroRequestContext.getMessage("resumes.create.status.false")},
+                    "class='form-control' id='isActive' required='required'" />
                     <@spring.showErrors "<br>", "error" />
                 </div>
             </div>
         </div>
 
         <div class="section">
-            <h2 class="section-title">Образование</h2>
+            <h2 class="section-title"><@spring.message code="resume.education.title"/></h2>
             <#if resumeForm.educationInfos?? && resumeForm.educationInfos?size gt 0>
                 <#list resumeForm.educationInfos as edu>
                     <div class="education-item" data-index="${edu?index}">
                         <@spring.bind "resumeForm.educationInfos[${edu?index}]" />
                         <div class="form-row">
                             <div class="form-group">
-                                <label>Учебное заведение*</label>
+                                <label><@spring.message code="resume.education.institution"/> *</label>
                                 <@spring.formInput "resumeForm.educationInfos[${edu?index}].institution", "class='form-control'" />
                                 <@spring.showErrors "<br>", "error" />
                             </div>
                             <div class="form-group">
-                                <label>Степень</label>
+                                <label><@spring.message code="resume.education.degree"/> *</label>
                                 <@spring.formInput "resumeForm.educationInfos[${edu?index}].degree", "class='form-control'" />
                                 <@spring.showErrors "<br>", "error" />
                             </div>
                         </div>
                         <div class="form-row">
                             <div class="form-group">
-                                <label>Программа/Специальность*</label>
+                                <label><@spring.message code="resume.education.program"/> *</label>
                                 <@spring.formInput "resumeForm.educationInfos[${edu?index}].program", "class='form-control'" />
                                 <@spring.showErrors "<br>", "error" />
                             </div>
                         </div>
                         <div class="form-group">
-                            <label>Дата начала *</label>
+                            <label><@spring.message code="resume.education.startDate"/> *</label>
                             <@spring.formInput "resumeForm.educationInfos[${edu?index}].startDate",
                             "class='form-control datepicker'", "date"/>
                             <@spring.showErrors "<br>", "error"/>
                         </div>
                         <div class="form-group">
-                            <label>Дата окончания</label>
+                            <label><@spring.message code="resume.education.endDate"/></label>
                             <@spring.formInput "resumeForm.educationInfos[${edu?index}].endDate",
                             "class='form-control datepicker'", "date"/>
                             <@spring.showErrors "<br>", "error"/>
                         </div>
-                        <button type="submit" name="removeEducation" value="${edu?index}" class="remove-btn">Удалить</button>
+                        <button type="submit" name="removeEducation" value="${edu?index}" class="remove-btn">
+                            <@spring.message code="resume.education.remove"/>
+                        </button>
                     </div>
                 </#list>
             <#else>
-                <p>Нет информации об образовании</p>
+                <p><@spring.message code="resume.education.empty"/></p>
             </#if>
-            <button type="submit" name="addEducation" value="true" class="add-btn">+ Добавить образование</button>
+            <button type="submit" name="addEducation" value="true" class="add-btn">
+                + <@spring.message code="resume.education.add"/>
+            </button>
         </div>
 
         <div class="section">
-            <h2 class="section-title">Опыт работы</h2>
+            <h2 class="section-title"><@spring.message code="resume.work.title"/></h2>
             <#if resumeForm.workExperiences?? && resumeForm.workExperiences?size gt 0>
                 <#list resumeForm.workExperiences as exp>
                     <div class="experience-item" data-index="${exp?index}">
                         <@spring.bind "resumeForm.workExperiences[${exp?index}]" />
                         <div class="form-row">
                             <div class="form-group">
-                                <label>Компания*</label>
+                                <label><@spring.message code="resume.work.company"/> *</label>
                                 <@spring.formInput "resumeForm.workExperiences[${exp?index}].companyName", "class='form-control'" />
                                 <@spring.showErrors "<br>", "error" />
                             </div>
                             <div class="form-group">
-                                <label>Должность*</label>
+                                <label><@spring.message code="resume.work.position"/> *</label>
                                 <@spring.formInput "resumeForm.workExperiences[${exp?index}].position", "class='form-control'" />
                                 <@spring.showErrors "<br>", "error" />
                             </div>
                         </div>
                         <div class="form-row">
                             <div class="form-group">
-                                <label>Количество лет работы *</label>
+                                <label><@spring.message code="resume.work.years"/> *</label>
                                 <@spring.formInput "resumeForm.workExperiences[${exp?index}].years",
                                 "type='number' min='0' max='50' class='form-control'" />
                                 <@spring.showErrors "<br>", "field-error"/>
                             </div>
                             <div class="form-group">
-                                <label>Количество месяцев *</label>
+                                <label><@spring.message code="resume.work.months"/> *</label>
                                 <@spring.formInput "resumeForm.workExperiences[${exp?index}].months",
                                 "type='number' min='0' max='11' class='form-control'" />
                                 <@spring.showErrors "<br>", "field-error"/>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label>Обязанности и достижения</label>
+                            <label><@spring.message code="resume.work.responsibilities"/> *</label>
                             <@spring.formTextarea "resumeForm.workExperiences[${exp?index}].responsibilities", "class='form-control'" />
                             <@spring.showErrors "<br>", "error" />
                         </div>
-                        <button type="submit" name="removeWorkExp" value="${exp?index}" class="remove-btn">Удалить</button>
+                        <button type="submit" name="removeWorkExp" value="${exp?index}" class="remove-btn">
+                            <@spring.message code="resume.work.remove"/>
+                        </button>
                     </div>
                 </#list>
             <#else>
-                <p>Нет информации об опыте работы</p>
+                <p><@spring.message code="resume.work.empty"/></p>
             </#if>
-            <button type="submit" name="addWorkExp" value="true" class="add-btn">+ Добавить опыт работы</button>
+            <button type="submit" name="addWorkExp" value="true" class="add-btn">
+                + <@spring.message code="resume.work.add"/>
+            </button>
         </div>
 
         <div id="contact-infos" class="contacts-grid">
@@ -148,7 +159,7 @@
                 <div class="contact-item">
                     <div class="contact-input">
                         <#if contact.typeId == 1>
-                            <img src="/static/images/contact/viber-logo-svgrepo-com.svg" alt="Телефон" class="contact-icon" />
+                            <img src="/static/images/contact/viber-logo-svgrepo-com.svg" alt="Phone" class="contact-icon" />
                             <input type="text"
                                    name="contactInfos[${contact?index}].value"
                                    class="form-control no-label"
@@ -214,8 +225,8 @@
         </div>
 
         <div class="form-actions">
-            <button type="submit" class="submit-btn">Сохранить изменения</button>
-            <a href="/profile" class="cancel-btn">Отмена</a>
+            <button type="submit" class="submit-btn"><@spring.message code="resume.create.submit"/></button>
+            <a href="/profile" class="cancel-btn"><@spring.message code="resume.create.cancel"/></a>
         </div>
     </form>
 </@layout.page>

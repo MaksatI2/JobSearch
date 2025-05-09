@@ -1,9 +1,10 @@
 <#import "../layout.ftlh" as layout>
+<#import "/spring.ftl" as spring>
 
 <@layout.page styles="/static/css/resumes/resumes.css" activeNav="resumes">
 
     <div class="container">
-        <h1 class="page-title">Список активных резюме</h1>
+        <h1 class="page-title"><@spring.message code="resumes.title"/></h1>
 
         <#if successMessage??>
             <div class="alert alert-success">
@@ -23,18 +24,26 @@
                 <input type="hidden" name="size" value="${pageSize}">
 
                 <div class="filter-group">
-                    <label for="sort">Сортировка:</label>
+                    <label for="sort"><@spring.message code="sort.label"/></label>
                     <select id="sort" name="sort" class="form-control">
-                        <option value="">По дате (новые)</option>
-                        <option value="salaryAsc" <#if selectedSort?? && selectedSort == "salaryAsc">selected</#if>>По зарплате (↑)</option>
-                        <option value="salaryDesc" <#if selectedSort?? && selectedSort == "salaryDesc">selected</#if>>По зарплате (↓)</option>
+                        <option value=""><@spring.message code="sort.date"/></option>
+                        <option value="salaryAsc" <#if selectedSort?? && selectedSort == "salaryAsc">selected</#if>>
+                            <@spring.message code="sort.salary.asc"/>
+                        </option>
+                        <option value="salaryDesc" <#if selectedSort?? && selectedSort == "salaryDesc">selected</#if>>
+                            <@spring.message code="sort.salary.desc"/>
+                        </option>
                     </select>
                 </div>
 
-                <button type="submit" class="submit-btn">Применить</button>
+                <button type="submit" class="submit-btn">
+                    <@spring.message code="filter.apply"/>
+                </button>
 
                 <#if selectedSort??>
-                    <a href="/vacancies?page=0&size=${pageSize}" class="reset-btn">Сбросить</a>
+                    <a href="/vacancies?page=0&size=${pageSize}" class="reset-btn">
+                        <@spring.message code="filter.reset"/>
+                    </a>
                 </#if>
             </form>
         </div>
@@ -60,7 +69,7 @@
                                 </#if>
                                 <span>${resume.applicantName!'Неизвестно'}</span>
                                 <#if resume.applicantAge??>
-                                    <span class="age">${resume.applicantAge} лет</span>
+                                    <span class="age">${resume.applicantAge} <@spring.message code="resumes.years"/></span>
                                 </#if>
                             </div>
 
@@ -92,7 +101,7 @@
                             <#if Session.SPRING_SECURITY_CONTEXT?? && !Session.SPRING_SECURITY_CONTEXT.authentication.authorities?seq_contains('APPLICANT')>
                                 <#if resume.applicantId??>
                                     <a href="/profile/viewApplicant/${resume.applicantId}" class="applicant-profile-btn">
-                                        Профиль соискателя
+                                        <@spring.message code="resumes.profile"/>
                                     </a>
                                 </#if>
                             </#if>
@@ -122,7 +131,7 @@
                     </#if>
 
                     <div class="page-size">
-                        Элементов на странице:
+                        <@spring.message code="pagination"/>
                         <select onchange="window.location.href='/resumes/allResumes?page=0&size='+this.value" class="page-size-select">
                             <option value="5" <#if pageSize == 5>selected</#if>>5</option>
                             <option value="10" <#if pageSize == 10>selected</#if>>10</option>
@@ -135,8 +144,8 @@
 
         <#else>
             <div class="empty-state">
-                <h3>Резюме не найдены</h3>
-                <p>Попробуйте зайти позже</p>
+                <h3><@spring.message code="resumes.empty"/></h3>
+                <p><@spring.message code="resumes.message"/></p>
             </div>
         </#if>
     </div>

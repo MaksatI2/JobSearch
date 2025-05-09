@@ -1,8 +1,11 @@
 <#import "/spring.ftl" as spring>
 <#import "../layout.ftlh" as layout>
 
-<@layout.page styles="/static/css/vacancies/vacancies.css" activeNav="vacancies">
-    <h1 class="page-title">Создать вакансию</h1>
+<@layout.page
+styles="/static/css/vacancies/vacancies.css"
+activeNav="vacancies">
+
+    <h1 class="page-title"><@spring.message code="vacancies.creation.title"/></h1>
 
     <@spring.bind "vacancyForm" />
     <#if spring.status.error>
@@ -19,64 +22,66 @@
                    value="${(_csrf.token)!'csrf-token'}"/>
         </#if>
         <div class="form-group">
-            <label for="name">Название вакансии</label>
-            <@spring.formInput "vacancyForm.name", "class='form-control' + ((spring.status.error && spring.status.errors['name']?has_content)?then(' error-field', ''))", "id='name'" />
+            <label for="name"><@spring.message code="vacancies.editing.vacancy.name"/></label>
+            <@spring.formInput "vacancyForm.name", "class='form-control' + ((spring.status.errors['name']?has_content)?then(' error-field', ''))", "id='name'" />
             <@spring.showErrors "<br>" "error" />
         </div>
 
         <div class="form-group">
-            <@spring.bind "vacancyForm.categoryId"/>
-            <select class="form-control ${spring.status.error?string('is-invalid', '')}"
-                    id="categoryId" name="${spring.status.expression}" onchange="toggleFields()">
-                <option value="">Выберите категорию</option>
+            <label for="categoryId"><@spring.message code="vacancies.editing.vacancy.category"/></label>
+            <select class="form-control" id="categoryId" name="categoryId">
+                <option value=""><@spring.message code="vacancies.select.category"/></option>
                 <#list categories as category>
-                    <option value="${category.id}" ${(spring.stringStatusValue == category.id?string)?string("selected", "")}>${category.name}</option>
+                    <option value="${category.id}" <#if vacancyForm.categoryId?? && vacancyForm.categoryId == category.id>selected</#if>>${category.name}</option>
                 </#list>
             </select>
-            <@spring.showErrors "<br>", "error" />
+            <@spring.showErrors "<br>" "error" />
         </div>
 
         <div class="form-group">
-            <label for="description">Описание</label>
-            <@spring.formInput "vacancyForm.description", "class='form-control' + ((spring.status.error && spring.status.errors['description']?has_content)?then(' error-field', ''))", "id='description'" />
+            <label for="description"><@spring.message code="vacancies.editing.description"/></label>
+            <@spring.formInput "vacancyForm.description", "class='form-control' + ((spring.status.errors['description']?has_content)?then(' error-field', ''))", "id='description'" />
             <@spring.showErrors "<br>" "error" />
         </div>
 
         <div class="form-row">
             <div class="form-group">
-                <label for="salary">Зарплата</label>
+                <label for="salary"><@spring.message code="vacancies.editing.salary"/></label>
                 <@spring.formInput
                 "vacancyForm.salary",
-                "type='number' min='0' class='form-control' + ((spring.status.error && spring.status.errors['salary']?has_content)?then(' error-field', ''))",
+                "type='number' min='0' class='form-control' + ((spring.status.errors['salary']?has_content)?then(' error-field', ''))",
                 "id='salary'" />
                 <@spring.showErrors "<br>" "error" />
             </div>
 
             <div class="form-group">
-                <label for="expFrom">Опыт от</label>
+                <label for="expFrom"><@spring.message code="vacancies.editing.exp.from"/></label>
                 <@spring.formInput
                 "vacancyForm.expFrom",
-                "type='number' min='0' class='form-control' + ((spring.status.error && spring.status.errors['expFrom']?has_content)?then(' error-field', ''))",
+                "type='number' min='0' class='form-control' + ((spring.status.errors['expFrom']?has_content)?then(' error-field', ''))",
                 "id='expFrom'" />
                 <@spring.showErrors "<br>" "error" />
             </div>
 
             <div class="form-group">
-                <label for="expTo">Опыт до</label>
+                <label for="expTo"><@spring.message code="vacancies.editing.exp.to"/></label>
                 <@spring.formInput
                 "vacancyForm.expTo",
-                "type='number' min='0' class='form-control' + ((spring.status.error && spring.status.errors['expTo']?has_content)?then(' error-field', ''))",
+                "type='number' min='0' class='form-control' + ((spring.status.errors['expTo']?has_content)?then(' error-field', ''))",
                 "id='expTo'" />
                 <@spring.showErrors "<br>" "error" />
             </div>
         </div>
 
         <div class="form-group">
-            <label for="isActive">Статус вакансии</label>
-            <@spring.formSingleSelect "vacancyForm.isActive", {"true": "Активно", "false": "Неактивно"}, "class='form-control' id='isActive' required='required'" />
-            <@spring.showErrors "<br>", "error" />
+            <label for="isActive"><@spring.message code="vacancies.editing.status"/></label>
+            <select class="form-control" id="isActive" name="isActive">
+                <option value="true" <#if vacancyForm.isActive?? && vacancyForm.isActive == true>selected</#if>><@spring.message code="vacancies.status.active"/></option>
+                <option value="false" <#if vacancyForm.isActive?? && vacancyForm.isActive == false>selected</#if>><@spring.message code="vacancies.status.inactive"/></option>
+            </select>
+            <@spring.showErrors "isActive" "error" />
         </div>
 
-        <button type="submit" class="submit-btn">Создать вакансию</button>
+        <button type="submit" class="submit-btn"><@spring.message code="vacancies.creation.create"/></button>
     </form>
 </@layout.page>
