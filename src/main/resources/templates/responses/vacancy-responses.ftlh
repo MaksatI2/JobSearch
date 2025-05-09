@@ -1,7 +1,8 @@
 <#import "../layout.ftlh" as layout>
+<#import "/spring.ftl" as spring>
 
 <@layout.page styles="/static/css/resumes/resumes.css" activeNav="profile">
-    <a href="/profile" class="reset-btn">← Назад к профилю</a>
+    <a href="/profile" class="reset-btn"><@spring.message code="response.back"/></a>
     <#if resumes.content?? && resumes.content?has_content>
         <div class="resumes-grid">
             <#list resumes.content as resume>
@@ -20,9 +21,9 @@
                                           d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
                                 </svg>
                             </#if>
-                            <span>${resume.applicantName!'Неизвестно'}</span>
+                            <span>${resume.applicantName}</span>
                             <#if resume.applicantAge??>
-                                <span class="age">${resume.applicantAge} лет</span>
+                                <span class="age">${resume.applicantAge} <@spring.message code="resumes.years"/></span>
                             </#if>
                         </div>
                         <div class="resume-meta">
@@ -35,7 +36,7 @@
                             </span>
                         </div>
                         <a href="/profile/viewApplicant/${resume.applicantId}" class="applicant-profile-btn">
-                            Профиль соискателя
+                            <@spring.message code="resumes.profile"/>
                         </a>
                     </article>
                 </a>
@@ -59,7 +60,7 @@
                     <a href="/response/vacancies/${vacancy.id}?page=${resumes.totalPages - 1}&size=${pageSize}" class="page-link">»»</a>
                 </#if>
                 <div class="page-size">
-                    Элементов на странице:
+                    <@spring.message code="pagination"/>
                     <select onchange="window.location.href='/response/vacancies/${vacancy.id}?page=0&size='+this.value" class="page-size-select">
                         <option value="5" <#if pageSize == 5>selected</#if>>5</option>
                         <option value="10" <#if pageSize == 10>selected</#if>>10</option>

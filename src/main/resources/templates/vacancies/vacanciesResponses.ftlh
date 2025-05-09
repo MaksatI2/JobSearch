@@ -5,16 +5,16 @@
 
     <main class="main">
         <div class="container">
-            <h1 class="page-title">Мои вакансии с откликами</h1>
+            <h1 class="page-title"></h1>
 
             <div class="filters-container">
-                <a href="/profile" class="reset-btn">Вернуться в профиль</a>
+                <a href="/profile" class="reset-btn"><@spring.message code="vacancies.responded.back.profile"/></a>
             </div>
 
             <#if vacancies?size == 0>
                 <div class="empty-state">
-                    <h3>Вакансии с откликами не найдены</h3>
-                    <p>У вас нет вакансий с откликами в данный момент.</p>
+                    <h3><@spring.message code="vacancies.responded.no.vacancies"/></h3>
+                    <p><@spring.message code="vacancies.responded.empty.vacancies"/></p>
                 </div>
             </#if>
 
@@ -33,27 +33,28 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                           d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                                 </svg>
-                                Опыт: ${vacancy.expFrom}-${vacancy.expTo} лет
+                                <@spring.message code="vacancies.card.exp"/> ${vacancy.expFrom}-${vacancy.expTo}
+                                <@spring.message code="vacancies.card.exp.years"/>
                             </span>
                                 <span class="responses">
                                 <svg class="icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                           d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z"></path>
                                 </svg>
-                                Откликов: ${vacancy.responsesCount!0}
+                                <@spring.message code="vacancies.responded.count"/> ${vacancy.responsesCount!0}
                             </span>
                                 <span class="update-time">
                                 <svg class="icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                           d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
                                 </svg>
-                                Обновлена: ${vacancy.updateTime?string("dd.MM.yyyy")}
+                                <@spring.message code="vacancies.card.date"/> ${vacancy.updateTime?string("dd.MM.yyyy")}
                             </span>
                             </div>
                         </a>
                         <div class="vacancy-actions">
                             <a href="/response/vacancies/${vacancy.id}" class="company-profile-btn">
-                                Кандидаты (${vacancy.responsesCount})
+                                <@spring.message code="vacancies.responded.count.applicant"/> (${vacancy.responsesCount})
                             </a>
                         </div>
                     </div>
@@ -81,7 +82,7 @@
                     </#if>
 
                     <div class="page-size">
-                        Элементов на странице:
+                        <@spring.message code="pagination"/>
                         <select onchange="window.location.href='/vacancies/${userId}/response?page=0&size='+this.value" class="page-size-select">
                             <option value="5" <#if pageSize == 5>selected</#if>>5</option>
                             <option value="10" <#if pageSize == 10>selected</#if>>10</option>
