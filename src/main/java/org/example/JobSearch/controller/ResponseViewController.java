@@ -9,6 +9,8 @@ import org.example.JobSearch.service.ResponseService;
 import org.example.JobSearch.service.ResumeService;
 import org.example.JobSearch.service.UserService;
 import org.example.JobSearch.service.VacancyService;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.access.AccessDeniedException;
@@ -29,6 +31,7 @@ public class ResponseViewController {
     private final ResumeService resumeService;
     private final UserService userService;
     private final VacancyService vacancyService;
+    private final MessageSource messageSource;
 
     @GetMapping("/vacancies/{id}")
     public String responseByVacancies(@PathVariable Long id,
@@ -42,7 +45,7 @@ public class ResponseViewController {
         UserDTO user = userService.getUserByEmail(email);
 
         if (!vacancy.getAuthorId().equals(user.getId())) {
-            throw new AccessDeniedException("У вас нет доступа к этой вакансии");
+            throw new AccessDeniedException(getMessage("response.vacancy.forbidden"));
         }
 
         Page<ResumeDTO> resumesPage = responseService.getResumesByVacancyId(id, PageRequest.of(page, size));
@@ -68,11 +71,11 @@ public class ResponseViewController {
             UserDTO user = userService.getUserByEmail(email);
 
             if (!resume.getApplicantId().equals(user.getId())) {
-                throw new AccessDeniedException("У вас нет доступа к этому резюме");
+                throw new AccessDeniedException(getMessage("response.resume.forbidden"));
             }
 
             responseService.respondToVacancy(resumeId, vacancyId);
-            redirectAttributes.addFlashAttribute("successMessage", "Ваш отклик отправлен, ждите ответа");
+            redirectAttributes.addFlashAttribute("successMessage", getMessage("response.respond"));
             return "redirect:/vacancies/" + vacancyId + "/info?success=true";
         } catch (IllegalStateException e) {
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
@@ -92,7 +95,7 @@ public class ResponseViewController {
         UserDTO user = userService.getUserByEmail(email);
 
         if (!resume.getApplicantId().equals(user.getId())) {
-            throw new AccessDeniedException("У вас нет доступа к этому резюме");
+            throw new AccessDeniedException(getMessage("response.resume.forbidden"));
         }
 
         Page<VacancyDTO> vacanciesPage = responseService.getVacanciesByResumeId(id, PageRequest.of(page, size));
@@ -105,5 +108,9 @@ public class ResponseViewController {
         model.addAttribute("pageSize", size);
 
         return "responses/resume-responses";
+    }
+
+    private String getMessage(String code) {
+        return messageSource.getMessage(code, null, LocaleContextHolder.getLocale());
     }
 }

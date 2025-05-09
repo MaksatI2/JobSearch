@@ -6,6 +6,8 @@ import org.example.JobSearch.dto.VacancyDTO;
 import org.example.JobSearch.model.AccountType;
 import org.example.JobSearch.service.FavoriteVacancyService;
 import org.example.JobSearch.service.UserService;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.access.AccessDeniedException;
@@ -22,6 +24,7 @@ import java.security.Principal;
 public class FavoriteVacancyController {
     private final UserService userService;
     private final FavoriteVacancyService favoriteService;
+    private final MessageSource messageSource;
 
     @GetMapping
     public String showFavoriteVacancies(
@@ -33,7 +36,7 @@ public class FavoriteVacancyController {
         UserDTO user = userService.getUserByEmail(principal.getName());
 
         if (user.getAccountType() != AccountType.APPLICANT) {
-            throw new AccessDeniedException("Только соискатели могут просматривать избранные вакансии");
+            throw new AccessDeniedException(getMessage("validate.forbidden"));
         }
         Page<VacancyDTO> vacanciesPage = favoriteService.getUserFavoriteVacancies(
                 user.getId(),
@@ -52,7 +55,7 @@ public class FavoriteVacancyController {
     public String addFavorite(@PathVariable Long id, Principal principal, RedirectAttributes redirectAttributes) {
         Long userId = userService.getUserId(principal.getName());
         favoriteService.addVacancyToFavorites(userId, id);
-        redirectAttributes.addFlashAttribute("successMessage", "Вакансия добавлена в избранное.");
+        redirectAttributes.addFlashAttribute("successMessage", getMessage("vacancy.save"));
         return "redirect:/vacancies";
     }
 
@@ -60,7 +63,11 @@ public class FavoriteVacancyController {
     public String removeFavorite(@PathVariable Long id, Principal principal, RedirectAttributes redirectAttributes) {
         Long userId = userService.getUserId(principal.getName());
         favoriteService.removeVacancyFromFavorites(userId, id);
-        redirectAttributes.addFlashAttribute("successMessage", "Вакансия удалена из избранного.");
+        redirectAttributes.addFlashAttribute("successMessage", getMessage("vacancy.delete"));
         return "redirect:/favorites/vacancies";
+    }
+
+    private String getMessage(String code) {
+        return messageSource.getMessage(code, null, LocaleContextHolder.getLocale());
     }
 }

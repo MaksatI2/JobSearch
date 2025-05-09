@@ -3,6 +3,8 @@ package org.example.JobSearch.controller;
 import lombok.RequiredArgsConstructor;
 import org.example.JobSearch.service.FavoriteResumeService;
 import org.example.JobSearch.service.UserService;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,6 +21,7 @@ import java.security.Principal;
 public class FavoriteResumeController {
     private final UserService userService;
     private final FavoriteResumeService favoriteService;
+    private final MessageSource messageSource;
 
     @GetMapping
     public String showFavoriteResumes(Principal principal, Model model) {
@@ -31,7 +34,7 @@ public class FavoriteResumeController {
     public String addFavorite(@PathVariable Long id, Principal principal,  RedirectAttributes redirectAttributes) {
         Long userId = userService.getUserId(principal.getName());
         favoriteService.addResumeToFavorites(userId, id);
-        redirectAttributes.addFlashAttribute("successMessage", "Резюме добавлена в избранное.");
+        redirectAttributes.addFlashAttribute("successMessage", getMessage("resume.save"));
         return "redirect:/resumes/allResumes";
     }
 
@@ -39,7 +42,11 @@ public class FavoriteResumeController {
     public String removeFavorite(@PathVariable Long id, Principal principal,  RedirectAttributes redirectAttributes) {
         Long userId = userService.getUserId(principal.getName());
         favoriteService.removeResumeFromFavorites(userId, id);
-        redirectAttributes.addFlashAttribute("successMessage", "Резюме удалена из избранного.");
+        redirectAttributes.addFlashAttribute("successMessage", getMessage("resume.delete"));
         return "redirect:/favorites/resumes";
+    }
+
+    private String getMessage(String code) {
+        return messageSource.getMessage(code, null, LocaleContextHolder.getLocale());
     }
 }
