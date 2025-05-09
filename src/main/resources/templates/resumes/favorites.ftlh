@@ -1,8 +1,9 @@
 <#import "../layout.ftlh" as layout>
+<#import "/spring.ftl" as spring>
 
 <@layout.page styles="/static/css/resumes/resumes.css" activeNav="favorite">
 
-            <h1 class="page-title">Избранные резюме</h1>
+            <h1 class="page-title"><@spring.message code="resumes.favorites.title"/></h1>
 
             <#if successMessage??>
                 <div class="alert alert-success">
@@ -22,15 +23,15 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                               d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
                     </svg>
-                    Вернуться к резюме
+                    <@spring.message code="resumes.favorites.back.resumes"/>
                 </a>
             </div>
 
             <#if resumes?size == 0>
                 <div class="empty-state">
-                    <h3>Нет избранных резюме</h3>
-                    <p>Вы еще не добавили ни одного резюме в избранное.</p>
-                    <a href="/resumes/allResumes" class="submit-btn">Посмотреть резюме</a>
+                    <h3><@spring.message code="resumes.favorites.no.vacancies"/></h3>
+                    <p><@spring.message code="resumes.favorites.empty.resumes"/></p>
+                    <a href="/resumes/allResumes" class="submit-btn"><@spring.message code="resumes.favorites.show"/></a>
                 </div>
             <#else>
                 <div class="resumes-grid">
@@ -51,9 +52,9 @@
                                                   d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
                                         </svg>
                                     </#if>
-                                    <span>${resume.applicantName!'Неизвестно'}</span>
+                                    <span>${resume.applicantName}</span>
                                     <#if resume.applicantAge??>
-                                        <span class="age">${resume.applicantAge} лет</span>
+                                        <span class="age">${resume.applicantAge} <@spring.message code="resumes.years"/></span>
                                     </#if>
                                 </div>
 
@@ -75,7 +76,7 @@
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                       d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
                                             </svg>
-                                            Удалить из избранного
+                                            <@spring.message code="favorites.delete"/>
                                         </button>
                                     </form>
                                 </div>
@@ -83,7 +84,7 @@
                                 <#if Session.SPRING_SECURITY_CONTEXT?? && !Session.SPRING_SECURITY_CONTEXT.authentication.authorities?seq_contains('APPLICANT')>
                                     <#if resume.applicantId??>
                                         <a href="/profile/viewApplicant/${resume.applicantId}" class="applicant-profile-btn">
-                                            Профиль соискателя
+                                            <@spring.message code="resumes.profile"/>
                                         </a>
                                     </#if>
                                 </#if>
