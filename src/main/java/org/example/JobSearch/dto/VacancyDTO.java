@@ -15,7 +15,7 @@ public class VacancyDTO {
 
     Long id;
 
-    @NotNull(message = "{vacancy.authorId.notNull}")
+    @NotNull(message = "vacancy.authorId.notNull")
     @Positive(message = "{vacancy.authorId.positive}")
     private Long authorId;
 

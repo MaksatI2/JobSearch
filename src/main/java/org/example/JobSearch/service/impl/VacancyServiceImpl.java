@@ -13,6 +13,8 @@ import org.example.JobSearch.repository.VacancyRepository;
 import org.example.JobSearch.service.CategoryService;
 import org.example.JobSearch.service.UserService;
 import org.example.JobSearch.service.VacancyService;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -30,6 +32,7 @@ public class VacancyServiceImpl implements VacancyService {
     private final VacancyRepository vacancyRepository;
     private final UserService userService;
     private final CategoryService categoryService;
+    private final MessageSource messageSource;
 
     @Transactional(readOnly = true)
     @Override
@@ -42,19 +45,19 @@ public class VacancyServiceImpl implements VacancyService {
     @Override
     public Vacancy getVacancyEntityById(Long id) {
         return vacancyRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("{vacancy.not.found}"));
+                .orElseThrow(() -> new IllegalArgumentException(getMessage("vacancy.not.found")));
     }
 
     @Override
     @Transactional
     public void createVacancy(CreateVacancyDTO createVacancyDto, Long employerId) {
-        log.info("Создание новой вакансии работодателем ID: {}", employerId);
+        log.info(getMessage("vacancy.create.log.start"), employerId);
 
         User employer = userService.getUserId(employerId);
 
         if (!employer.getAccountType().equals(AccountType.EMPLOYER)) {
-            log.error("Попытка создания вакансии пользователем, не являющимся работодателем: {}", employerId);
-            throw new AccessDeniedException("{vacancy.creation.forbidden}");
+            log.error(getMessage("vacancy.create.log.error.not.employer"), employerId);
+            throw new AccessDeniedException(getMessage("vacancy.creation.forbidden"));
         }
 
         Category category = categoryService.getCategoryById(createVacancyDto.getCategoryId());
@@ -75,16 +78,16 @@ public class VacancyServiceImpl implements VacancyService {
                 .build();
 
         vacancyRepository.save(vacancy);
-        log.info("Вакансия успешно создана: {}", vacancy.getName());
+        log.info(getMessage("vacancy.create.log.success"), vacancy.getName());
     }
 
     @Override
     @Transactional
     public void updateVacancy(Long vacancyId, EditVacancyDTO editVacancyDto) {
-        log.info("Обновление вакансии ID: {}", vacancyId);
+        log.info(getMessage("vacancy.update.log.start"), vacancyId);
 
         Vacancy vacancy = vacancyRepository.findById(vacancyId)
-                .orElseThrow(() -> new VacancyNotFoundException("{vacancy.not.found}"));
+                .orElseThrow(() -> new VacancyNotFoundException(getMessage("vacancy.not.found")));
 
         if (editVacancyDto.getCategoryId() != null) {
             Category category = categoryService.getCategoryById(editVacancyDto.getCategoryId());
@@ -99,19 +102,19 @@ public class VacancyServiceImpl implements VacancyService {
         vacancy.setIsActive(editVacancyDto.getIsActive());
         vacancy.setUpdateTime(new Timestamp(System.currentTimeMillis()));
         vacancyRepository.save(vacancy);
-        log.info("Вакансия ID {} успешно обновлена", vacancyId);
+        log.info(getMessage("vacancy.update.log.success"), vacancyId);
     }
 
     @Override
     @Transactional
     public void deleteVacancy(Long vacancyId) {
-        log.info("Удаление вакансии ID: {}", vacancyId);
+        log.info(getMessage("vacancy.delete.log.start"), vacancyId);
         if (!vacancyRepository.existsById(vacancyId)) {
-            log.error("Вакансия для удаления не найдена ID: {}", vacancyId);
-            throw new VacancyNotFoundException("{vacancy.not.found.id} " + vacancyId);
+            log.error(getMessage("vacancy.delete.log.error.not.found"), vacancyId);
+            throw new VacancyNotFoundException(getMessage("vacancy.not.found.id") + " " + vacancyId);
         }
         vacancyRepository.deleteById(vacancyId);
-        log.info("Вакансия ID {} успешно удалена", vacancyId);
+        log.info(getMessage("vacancy.delete.log.success"), vacancyId);
     }
 
     @Override
@@ -123,9 +126,9 @@ public class VacancyServiceImpl implements VacancyService {
     @Override
     @Transactional(readOnly = true)
     public VacancyDTO getVacancyById(Long id) {
-        log.info("Поиск вакансии по ID: {}", id);
+        log.info(getMessage("vacancy.get.log.start"), id);
         Vacancy vacancy = vacancyRepository.findById(id)
-                .orElseThrow(() -> new VacancyNotFoundException("{vacancy.not.found}"));
+                .orElseThrow(() -> new VacancyNotFoundException(getMessage("vacancy.not.found")));
         return toDTO(vacancy);
     }
 
@@ -179,25 +182,25 @@ public class VacancyServiceImpl implements VacancyService {
     public void validateVacancyData(CreateVacancyDTO createVacancyDto, BindingResult bindingResult) {
         if (createVacancyDto.getSalary() != null) {
             if (createVacancyDto.getSalary() < 0) {
-                throw new CreateVacancyException("salary", "{vacancy.salary.negative}");
+                throw new CreateVacancyException("salary", getMessage("vacancy.salary.negative"));
             }
         }
 
         if (createVacancyDto.getExpFrom() != null) {
             if (createVacancyDto.getExpFrom() < 0) {
-                throw new CreateVacancyException("expFrom", "{vacancy.expFrom.negative}");
+                throw new CreateVacancyException("expFrom", getMessage("vacancy.expFrom.negative"));
             }
         }
 
         if (createVacancyDto.getExpTo() != null) {
             if (createVacancyDto.getExpTo() < 0) {
-                throw new CreateVacancyException("expTo", "{vacancy.expTo.negative}");
+                throw new CreateVacancyException("expTo", getMessage("vacancy.expTo.negative"));
             }
         }
 
         if (createVacancyDto.getExpFrom() != null && createVacancyDto.getExpTo() != null) {
             if (createVacancyDto.getExpFrom() > createVacancyDto.getExpTo()) {
-                throw new CreateVacancyException("expFrom", "{vacancy.exp.range.invalid}");
+                throw new CreateVacancyException("expFrom", getMessage("vacancy.exp.range.invalid"));
             }
         }
     }
@@ -206,26 +209,30 @@ public class VacancyServiceImpl implements VacancyService {
     public void validateEditVacancyData(EditVacancyDTO editVacancyDto, BindingResult bindingResult) {
         if (editVacancyDto.getSalary() != null) {
             if (editVacancyDto.getSalary() < 0) {
-                throw new EditVacancyException("salary", "{vacancy.salary.negative}");
+                throw new EditVacancyException("salary", getMessage("vacancy.salary.negative"));
             }
         }
 
         if (editVacancyDto.getExpFrom() != null) {
             if (editVacancyDto.getExpFrom() < 0) {
-                throw new EditVacancyException("expFrom", "{vacancy.expFrom.negative}");
+                throw new EditVacancyException("expFrom", getMessage("vacancy.expFrom.negative"));
             }
         }
 
         if (editVacancyDto.getExpTo() != null) {
             if (editVacancyDto.getExpTo() < 0) {
-                throw new EditVacancyException("expTo", "{vacancy.expTo.negative}");
+                throw new EditVacancyException("expTo", getMessage("vacancy.expTo.negative"));
             }
         }
 
         if (editVacancyDto.getExpFrom() != null && editVacancyDto.getExpTo() != null) {
             if (editVacancyDto.getExpFrom() > editVacancyDto.getExpTo()) {
-                throw new EditVacancyException("expFrom", "{vacancy.exp.range.invalid}");
+                throw new EditVacancyException("expFrom", getMessage("vacancy.exp.range.invalid"));
             }
         }
+    }
+
+    private String getMessage(String code) {
+        return messageSource.getMessage(code, null, LocaleContextHolder.getLocale());
     }
 }

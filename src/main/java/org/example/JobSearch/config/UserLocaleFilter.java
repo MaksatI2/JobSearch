@@ -28,13 +28,17 @@ public class UserLocaleFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
+
+        // 1. Сначала проверяем параметр запроса (явное изменение языка)
         String requestLang = request.getParameter("lang");
 
+        // 2. Для авторизованных пользователей
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth != null && auth.isAuthenticated() && auth.getPrincipal() instanceof UserDetails userDetails) {
             userRepository.findByEmail(userDetails.getUsername()).ifPresent(user -> {
                 Locale userLocale = new Locale(user.getLanguage());
 
+                // Если язык указан в запросе - обновляем в БД
                 if (requestLang != null && (requestLang.equals("ru") || requestLang.equals("en"))) {
                     if (!requestLang.equals(user.getLanguage())) {
                         user.setLanguage(requestLang);
@@ -43,6 +47,7 @@ public class UserLocaleFilter extends OncePerRequestFilter {
                     LocaleContextHolder.setLocale(new Locale(requestLang));
                     localeResolver.setLocale(request, response, new Locale(requestLang));
                 }
+                // Иначе используем язык из БД (игнорируем куки)
                 else {
                     LocaleContextHolder.setLocale(userLocale);
                     localeResolver.setLocale(request, response, userLocale);

@@ -11,6 +11,8 @@ import org.example.JobSearch.exceptions.InvalidRegisterException;
 import org.example.JobSearch.exceptions.UserNotFoundException;
 import org.example.JobSearch.model.User;
 import org.example.JobSearch.service.UserService;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -22,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class AuthViewController {
     private final UserService userService;
+    private final MessageSource messageSource;
 
     @GetMapping("/register")
     public String showRegistrationForm(
@@ -100,11 +103,11 @@ public class AuthViewController {
             Model model) {
 
         if (error != null) {
-            model.addAttribute("loginError", "Неверный email или пароль");
+            model.addAttribute("loginError", getMessage("login.error"));
         }
 
         if (registered != null) {
-            model.addAttribute("registrationSuccess", "Регистрация прошла успешно! Войдите в систему.");
+            model.addAttribute("registrationSuccess", getMessage("register.success"));
         }
 
         return "auth/login";
@@ -119,9 +122,9 @@ public class AuthViewController {
     public String processForgotPassword(HttpServletRequest request, Model model) {
         try {
             userService.makeResetPasswdLink(request);
-            model.addAttribute("message", "Мы отправили ссылку для сброса пароля на ваш адрес электронной почты. Пожалуйста, проверьте.");
+            model.addAttribute("message", getMessage("password.reset.link.sent"));
         } catch (UserNotFoundException ex) {
-            model.addAttribute("error", ex.getMessage());
+            model.addAttribute("error", getMessage("password.reset.error.user_not_found"));
         }
         return "auth/forgot_password_form";
     }
@@ -147,11 +150,15 @@ public class AuthViewController {
         try {
             User user = userService.getByResetPasswordToken(resetRequest.getToken());
             userService.updatePassword(user, resetRequest.getPassword());
-            model.addAttribute("registrationSuccess", "Вы успешно изменили свой пароль.");
+            model.addAttribute("registrationSuccess", getMessage("password.reset.success"));
         } catch (UserNotFoundException e) {
-            bindingResult.rejectValue("token", "invalid.token", "Недействительный токен");
+            bindingResult.rejectValue("token", "invalid.token", getMessage("password.reset.error.invalid_token"));
         }
 
         return "auth/login";
+    }
+
+    private String getMessage(String code) {
+        return messageSource.getMessage(code, null, LocaleContextHolder.getLocale());
     }
 }
