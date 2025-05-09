@@ -3,7 +3,7 @@
 
 <@layout.page styles="/static/css/auth/register.css" activeNav="">
     <div class="registration-form-container">
-        <h1 class="page-title">Сброс пароля</h1>
+        <h1 class="page-title"><@spring.message code="password.reset.title"/></h1>
 
         <#if error??>
             <div class="global-error">
@@ -24,17 +24,17 @@
             </#if>
 
             <div class="form-group">
-                <label for="password">Новый пароль</label>
+                <label for="password"><@spring.message code="password.reset.new"/></label>
                 <@spring.formHiddenInput "resetRequest.token"/>
-                <@spring.formInput "resetRequest.password", "class='form-control' placeholder='Введите новый пароль'", "password"/>
+                <@spring.formInput "resetRequest.password", "class='form-control'", "password"/>
                 <@spring.showErrors "<br>", "error"/>
             </div>
 
-            <button type="submit" class="submit-btn">Изменить пароль</button>
+            <button type="submit" class="submit-btn"><@spring.message code="password.reset.save"/></button>
         </form>
 
         <div class="login-link">
-            <a href="/auth/login">Вернуться к входу</a>
+            <a href="/auth/login"><@spring.message code="password.reset.back.login"/></a>
         </div>
     </div>
 </@layout.page>
