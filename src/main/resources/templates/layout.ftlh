@@ -3,6 +3,7 @@
 <#macro page title="" styles="" activeNav="">
     <!DOCTYPE html>
     <html lang="ru">
+    <title>JobSearch</title>
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -23,16 +24,16 @@
                 <img src="/static/images/logo-transparent.png" alt="JobSearch" class="logo-img">
             </a>
             <div class="nav-links">
-                <a href="/" class="nav-link <#if activeNav == "home">active</#if>">Главная</a>
-                <a href="/vacancies" class="nav-link <#if activeNav == "vacancies">active</#if>">Вакансии</a>
+                <a href="/" class="nav-link <#if activeNav == "home">active</#if>"><@spring.message code="nav.home" /></a>
+                <a href="/vacancies" class="nav-link <#if activeNav == "vacancies">active</#if>"><@spring.message code="nav.vacancies" /></a>
 
                 <#if Session.SPRING_SECURITY_CONTEXT??>
                     <#if Session.SPRING_SECURITY_CONTEXT.authentication.authorities?seq_contains('EMPLOYER')>
-                        <a href="/resumes/allResumes" class="nav-link <#if activeNav == "resumes">active</#if>">Резюме</a>
-                        <a href="/favorites/resumes" class="nav-link <#if activeNav == "favorite">active</#if>">Избранные</a>
+                        <a href="/resumes/allResumes" class="nav-link <#if activeNav == "resumes">active</#if>"><@spring.message code="nav.resumes" /></a>
+                        <a href="/favorites/resumes" class="nav-link <#if activeNav == "favorite">active</#if>"><@spring.message code="nav.favorites" /></a>
                     <#else>
-                        <a href="/company/allCompanies" class="nav-link <#if activeNav == "companies">active</#if>">Компании</a>
-                        <a href="/favorites/vacancies" class="nav-link <#if activeNav == "favorite">active</#if>">Избранные</a>
+                        <a href="/company/allCompanies" class="nav-link <#if activeNav == "companies">active</#if>"><@spring.message code="nav.companies" /></a>
+                        <a href="/favorites/vacancies" class="nav-link <#if activeNav == "favorite">active</#if>"><@spring.message code="nav.favorites" /></a>
                     </#if>
                 </#if>
 
@@ -45,13 +46,16 @@
                     <#if activeNav == "profile" && _csrf??>
                         <form action="/logout" method="post">
                             <input type="hidden" name="${(_csrf.parameterName)!'csrf'}" value="${(_csrf.token)!'--no-token--'}"/>
-                            <button type="submit" class="logout-btn" id="logout">Выйти</button>
+                            <button type="submit" class="logout-btn" id="logout"><@spring.message code="nav.logout" /></button>
                         </form>
                     </#if>
                 <#else>
-                    <a href="/auth/login" class="nav-link <#if activeNav == "login">active</#if>">Войти</a>
-                    <a href="/auth/register" class="nav-link <#if activeNav == "register">active</#if>">Регистрация</a>
+                    <a href="/auth/login" class="nav-link <#if activeNav == "login">active</#if>"><@spring.message code="nav.login" /></a>
+                    <a href="/auth/register" class="nav-link <#if activeNav == "register">active</#if>"><@spring.message code="nav.register" /></a>
                 </#if>
+                <div class="lang-switcher">
+                    <a href="?lang=ru">RU</a> | <a href="?lang=en">EN</a>
+                </div>
             </div>
         </nav>
     </header>
@@ -64,7 +68,7 @@
 
     <footer class="footer">
         <div class="container">
-            <p>© 2025 JobSearch. Все права защищены.</p>
+            <p>© 2025 JobSearch. <@spring.message code="footer.rights" /></p>
         </div>
     </footer>
     </body>
