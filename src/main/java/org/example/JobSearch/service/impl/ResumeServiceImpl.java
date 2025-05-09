@@ -40,7 +40,7 @@ public class ResumeServiceImpl implements ResumeService {
     @Transactional(readOnly = true)
     public Resume getResumeEntityById(Long id) {
         return resumeRepository.findById(id)
-                .orElseThrow(() -> new ResumeNotFoundException("Резюме не найдено с ID: " + id));
+                .orElseThrow(() -> new ResumeNotFoundException("{resume.not.found.with.id=} " + id));
     }
 
     @Transactional(readOnly = true)
@@ -106,7 +106,7 @@ public class ResumeServiceImpl implements ResumeService {
         log.info("Обновление резюме ID: {}", resumeId);
 
         Resume resume = resumeRepository.findById(resumeId)
-                .orElseThrow(() -> new ResumeNotFoundException("Резюме с ID не найдено: " + resumeId));
+                .orElseThrow(() -> new ResumeNotFoundException("{resume.not.found.with.id=} " + resumeId));
 
         if (editResumeDto.getEducationInfos() != null) {
             updateEducationInfo(resume, editResumeDto.getEducationInfos());
@@ -155,7 +155,7 @@ public class ResumeServiceImpl implements ResumeService {
     public void deleteResume(Long resumeId) {
         log.info("Удаление резюме ID: {}", resumeId);
         if (!resumeRepository.existsById(resumeId)) {
-            throw new ResumeNotFoundException("Резюме с ID не найдено: " + resumeId);
+            throw new ResumeNotFoundException("{resume.not.found.with.id} " + resumeId);
         }
         resumeRepository.deleteById(resumeId);
     }
@@ -171,7 +171,7 @@ public class ResumeServiceImpl implements ResumeService {
     public Page<ResumeDTO> getAllResumes(String sort, Pageable pageable) {
         Page<Resume> resumes = resumeRepository.findAllActiveSorted(sort,pageable);
         if (resumes.isEmpty()) {
-            throw new ResumeNotFoundException("Активные резюме не найдены");
+            throw new ResumeNotFoundException("{resume.not.found.active}");
         }
         return resumes.map(this::toDTO);
     }
@@ -180,7 +180,7 @@ public class ResumeServiceImpl implements ResumeService {
     @Transactional(readOnly = true)
     public ResumeDTO getResumeById(Long id) {
         Resume resume = resumeRepository.findById(id)
-                .orElseThrow(() -> new ResumeNotFoundException("Резюме не найдено"));
+                .orElseThrow(() -> new ResumeNotFoundException("{resume.not.found}"));
         return toDTO(resume);
     }
 
@@ -211,21 +211,21 @@ public class ResumeServiceImpl implements ResumeService {
     @Override
     public void validateCreateResume(CreateResumeDTO resumeDto, BindingResult bindingResult) {
         if (resumeDto.getCategoryId() == null) {
-            throw new CreateResumeException("categoryId", "категории не может быть пустым");
+            throw new CreateResumeException("categoryId", "{resume.category.empty}");
         }
 
         if (resumeDto.getName() == null || resumeDto.getName().trim().isEmpty()) {
-            throw new CreateResumeException("name", "Название резюме не может быть пустым");
+            throw new CreateResumeException("name", "{resume.name.empty}");
         }
 
 
         if (resumeDto.getName().matches(".*\\d.*")) {
-            throw new CreateResumeException("name", "Название резюме не должно содержать цифры");
+            throw new CreateResumeException("name", "{resume.name.numbers}");
         }
 
         if (resumeDto.getSalary() != null) {
             if (resumeDto.getSalary() < 0) {
-                throw new CreateResumeException("salary", "Зарплата не может быть отрицательной");
+                throw new CreateResumeException("salary", "{resume.salary.negative}");
             }
         }
 
@@ -243,32 +243,32 @@ public class ResumeServiceImpl implements ResumeService {
 
                 if (typeId == 1 && !value.matches("^996\\d{9}$")) {
                     throw new CreateResumeException("contactInfos[" + i + "].value",
-                            "Телефон должен быть в формате 996XXXXXXXXX");
+                            "contact.phone.invalid");
                 }
 
                 if (typeId == 2 && !value.matches("^[\\w.-]+@[\\w.-]+\\.[a-zA-Z]{2,6}$")) {
                     throw new CreateResumeException("contactInfos[" + i + "].value",
-                            "Email некорректен");
+                            "{contact.email.invalid}");
                 }
 
                 if (typeId == 3 && !value.matches("^https://(www\\.)?linkedin\\.com/in/.+")) {
                     throw new CreateResumeException("contactInfos[" + i + "].value",
-                            "LinkedIn должен быть в формате https://linkedin.com/in/username");
+                            "{contact.linkedin.invalid}");
                 }
 
                 if (typeId == 4 && !value.matches("^https://(www\\.)?github\\.com/.+")) {
                     throw new CreateResumeException("contactInfos[" + i + "].value",
-                            "GitHub должен быть в формате https://github.com/username");
+                            "{contact.github.invalid}");
                 }
 
                 if (typeId == 5 && !value.matches("^@\\w{5,}$") && !value.matches("^996\\d{9}$")) {
                     throw new CreateResumeException("contactInfos[" + i + "].value",
-                            "Telegram должен быть в формате @username или номером 996XXXXXXXXX");
+                            "{contact.telegram.invalid}");
                 }
 
                 if (typeId == 6 && !value.matches("^(https?://)?[\\w.-]+\\.[a-z]{2,6}.*$")) {
                     throw new CreateResumeException("contactInfos[" + i + "].value",
-                            "Ссылка на сайт некорректна");
+                            "{contact.website.invalid}");
                 }
             }
         }
@@ -284,23 +284,23 @@ public class ResumeServiceImpl implements ResumeService {
 
         for (EducationInfoDTO eduDto : educationInfos) {
             if (eduDto.getStartDate() == null) {
-                throw new CreateResumeException("startDate", "Дата начала обучения не может быть пустой");
+                throw new CreateResumeException("startDate", "{education.start.emptyw}");
             }
 
             if (eduDto.getEndDate() == null) {
-                throw new CreateResumeException("endDate", "Дата окончания обучения не может быть пустой");
+                throw new CreateResumeException("endDate", "{education.end.empty}");
             }
 
             if (eduDto.getStartDate().after(now)) {
-                throw new CreateResumeException("startDate", "Дата начала обучения не может быть в будущем");
+                throw new CreateResumeException("startDate", "{education.start.future}");
             }
 
             if (eduDto.getEndDate().after(now)) {
-                throw new CreateResumeException("endDate", "Дата окончания обучения не может быть в будущем");
+                throw new CreateResumeException("endDate", "{education.end.future}");
             }
 
             if (eduDto.getStartDate().after(eduDto.getEndDate())) {
-                throw new CreateResumeException("startDate", "Дата начала обучения не может быть позже даты окончания");
+                throw new CreateResumeException("startDate", "{education.period.invalid}");
             }
         }
     }

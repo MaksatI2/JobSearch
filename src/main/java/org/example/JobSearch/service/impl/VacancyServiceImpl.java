@@ -42,7 +42,7 @@ public class VacancyServiceImpl implements VacancyService {
     @Override
     public Vacancy getVacancyEntityById(Long id) {
         return vacancyRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Вакансия не найдена"));
+                .orElseThrow(() -> new IllegalArgumentException("{vacancy.not.found}"));
     }
 
     @Override
@@ -54,7 +54,7 @@ public class VacancyServiceImpl implements VacancyService {
 
         if (!employer.getAccountType().equals(AccountType.EMPLOYER)) {
             log.error("Попытка создания вакансии пользователем, не являющимся работодателем: {}", employerId);
-            throw new AccessDeniedException("Только работодатели могут создавать вакансии");
+            throw new AccessDeniedException("{vacancy.creation.forbidden}");
         }
 
         Category category = categoryService.getCategoryById(createVacancyDto.getCategoryId());
@@ -84,7 +84,7 @@ public class VacancyServiceImpl implements VacancyService {
         log.info("Обновление вакансии ID: {}", vacancyId);
 
         Vacancy vacancy = vacancyRepository.findById(vacancyId)
-                .orElseThrow(() -> new VacancyNotFoundException("Вакансия не найдена"));
+                .orElseThrow(() -> new VacancyNotFoundException("{vacancy.not.found}"));
 
         if (editVacancyDto.getCategoryId() != null) {
             Category category = categoryService.getCategoryById(editVacancyDto.getCategoryId());
@@ -108,7 +108,7 @@ public class VacancyServiceImpl implements VacancyService {
         log.info("Удаление вакансии ID: {}", vacancyId);
         if (!vacancyRepository.existsById(vacancyId)) {
             log.error("Вакансия для удаления не найдена ID: {}", vacancyId);
-            throw new VacancyNotFoundException("Вакансия не найдена по ID: " + vacancyId);
+            throw new VacancyNotFoundException("{vacancy.not.found.id} " + vacancyId);
         }
         vacancyRepository.deleteById(vacancyId);
         log.info("Вакансия ID {} успешно удалена", vacancyId);
@@ -125,7 +125,7 @@ public class VacancyServiceImpl implements VacancyService {
     public VacancyDTO getVacancyById(Long id) {
         log.info("Поиск вакансии по ID: {}", id);
         Vacancy vacancy = vacancyRepository.findById(id)
-                .orElseThrow(() -> new VacancyNotFoundException("Вакансия не найдена"));
+                .orElseThrow(() -> new VacancyNotFoundException("{vacancy.not.found}"));
         return toDTO(vacancy);
     }
 
@@ -179,25 +179,25 @@ public class VacancyServiceImpl implements VacancyService {
     public void validateVacancyData(CreateVacancyDTO createVacancyDto, BindingResult bindingResult) {
         if (createVacancyDto.getSalary() != null) {
             if (createVacancyDto.getSalary() < 0) {
-                throw new CreateVacancyException("salary", "Зарплата не может быть отрицательной");
+                throw new CreateVacancyException("salary", "{vacancy.salary.negative}");
             }
         }
 
         if (createVacancyDto.getExpFrom() != null) {
             if (createVacancyDto.getExpFrom() < 0) {
-                throw new CreateVacancyException("expFrom", "Опыт 'от' не может быть отрицательным");
+                throw new CreateVacancyException("expFrom", "{vacancy.expFrom.negative}");
             }
         }
 
         if (createVacancyDto.getExpTo() != null) {
             if (createVacancyDto.getExpTo() < 0) {
-                throw new CreateVacancyException("expTo", "Опыт 'до' не может быть отрицательным");
+                throw new CreateVacancyException("expTo", "{vacancy.expTo.negative}");
             }
         }
 
         if (createVacancyDto.getExpFrom() != null && createVacancyDto.getExpTo() != null) {
             if (createVacancyDto.getExpFrom() > createVacancyDto.getExpTo()) {
-                throw new CreateVacancyException("expFrom", "Начальный опыт не может быть больше конечного");
+                throw new CreateVacancyException("expFrom", "{vacancy.exp.range.invalid}");
             }
         }
     }
@@ -206,25 +206,25 @@ public class VacancyServiceImpl implements VacancyService {
     public void validateEditVacancyData(EditVacancyDTO editVacancyDto, BindingResult bindingResult) {
         if (editVacancyDto.getSalary() != null) {
             if (editVacancyDto.getSalary() < 0) {
-                throw new EditVacancyException("salary", "Зарплата не может быть отрицательной");
+                throw new EditVacancyException("salary", "{vacancy.salary.negative}");
             }
         }
 
         if (editVacancyDto.getExpFrom() != null) {
             if (editVacancyDto.getExpFrom() < 0) {
-                throw new EditVacancyException("expFrom", "Опыт 'от' не может быть отрицательным");
+                throw new EditVacancyException("expFrom", "{vacancy.expFrom.negative}");
             }
         }
 
         if (editVacancyDto.getExpTo() != null) {
             if (editVacancyDto.getExpTo() < 0) {
-                throw new EditVacancyException("expTo", "Опыт 'до' не может быть отрицательным");
+                throw new EditVacancyException("expTo", "{vacancy.expTo.negative}");
             }
         }
 
         if (editVacancyDto.getExpFrom() != null && editVacancyDto.getExpTo() != null) {
             if (editVacancyDto.getExpFrom() > editVacancyDto.getExpTo()) {
-                throw new EditVacancyException("expFrom", "Начальный опыт не может быть больше конечного");
+                throw new EditVacancyException("expFrom", "{vacancy.exp.range.invalid}");
             }
         }
     }

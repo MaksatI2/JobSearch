@@ -11,11 +11,11 @@ import lombok.*;
 @Builder
 public class ResetPasswordRequest {
 
-    @NotBlank(message = "Токен обязателен")
+    @NotBlank(message = "{validation.token.notBlank}")
     private String token;
 
-    @NotBlank(message = "Пароль не может быть пустым")
-    @Size(min = 6, message = "Пароль должен содержать минимум 6 символов")
+    @NotBlank(message = "{user.password.notBlank}")
+    @Size(min = 6, message = "{user.password.size}")
     private String password;
 
 }
