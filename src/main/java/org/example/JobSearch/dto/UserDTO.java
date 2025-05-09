@@ -13,34 +13,34 @@ public class UserDTO {
 
     private Long id;
 
-    @NotBlank(message = "Email не может быть пустым")
-    @Email(message = "Неверный формат email")
+    @NotBlank(message = "{user.email.notBlank}")
+    @Email(message = "{user.email.invalid}")
     private String email;
 
-    @NotBlank(message = "Имя не может быть пустым")
-    @Size(min = 2, max = 50, message = "Имя должно быть от 2 до 50 символов")
+    @NotBlank(message = "{user.name.notBlank}")
+    @Size(min = 2, max = 50, message = "{user.name.size}")
     private String name;
 
-    @NotBlank(message = "Фамилия не может быть пустым")
-    @Size(min = 2, max = 50, message = "Фамилия должна быть от 2 до 50 символов")
+    @NotBlank(message = "{user.surname.notBlank}")
+    @Size(min = 2, max = 50, message = "{user.surname.size}")
     private String surname;
 
-    @Min(value = 18, message = "Возраст должен быть не менее 18 лет")
-    @Max(value = 60, message = "Возраст должен быть не более 60 лет")
-    @NotNull(message = "Возраст обязателен для заполнения")
+    @Min(value = 18, message = "{user.age.min}")
+    @Max(value = 60, message = "{user.age.max}")
+    @NotNull(message = "{user.age.notNull}")
     private Integer age;
 
-    @NotBlank(message = "Пароль не может быть пустым")
-    @Size(min = 8, message = "Пароль должен содержать минимум 8 символов")
+    @NotBlank(message = "{user.password.notBlank}")
+    @Size(min = 6, message = "{user.password.size}")
     private String password;
 
-    @NotBlank(message = "Номер телефона не может быть пустым")
-    @Pattern(regexp = "^\\+?[0-9]{10,15}$", message = "Неверный формат номера телефона")
+    @NotBlank(message = "{user.phone.notBlank}")
+    @Pattern(regexp = "^\\+?[0-9]{10,15}$", message = "{user.phone.invalid}")
     private String phoneNumber;
 
     private String avatar;
 
-    @NotNull(message = "Тип аккаунта обязателен для заполнения")
-    @Pattern(regexp = "APPLICANT|EMPLOYER", message = "Тип аккаунта должен быть либо APPLICANT, либо EMPLOYER")
+    @NotNull(message = "{user.accountType.notNull}")
+    @Pattern(regexp = "APPLICANT|EMPLOYER", message = "{user.accountType.invalid}")
     private AccountType accountType;
 }

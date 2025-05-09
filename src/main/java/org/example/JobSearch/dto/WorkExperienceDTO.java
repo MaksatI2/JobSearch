@@ -14,24 +14,24 @@ public class WorkExperienceDTO {
     private Long resumeId;
 
     @NotNull
-    @Min(value = 0, message = "Количество лет опыта не может быть отрицательным")
-    @Max(value = 50, message = "Количество лет опыта не может превышать 50 лет")
+    @Min(value = 0, message = "{experience.years.min}")
+    @Max(value = 50, message = "{experience.years.max}")
     private Integer years;
 
     @NotNull
-    @Min(value = 0, message = "Количество месяцев опыта не может быть отрицательным")
-    @Max(value = 11, message = "Количество месяцев опыта не может превышать 11")
+    @Min(value = 0, message = "{experience.months.min}")
+    @Max(value = 11, message = "{experience.months.max}")
     private Integer months;
 
-    @NotBlank
-    @Size(min = 2, max = 100, message = "Название компании должно быть от 2 до 100 символов")
+    @NotBlank(message = "{experience.companyName.notBlank}")
+    @Size(min = 2, max = 100, message = "{experience.companyName.size}")
     private String companyName;
 
-    @NotBlank
-    @Size(min = 2, max = 100, message = "Название должности должно быть от 2 до 100 символов")
+    @NotBlank(message = "{experience.position.notBlank}")
+    @Size(min = 2, max = 100, message = "{experience.position.size}")
     private String position;
 
-    @NotBlank
-    @Size(min = 10, max = 1000, message = "Описание обязанностей должно быть от 10 до 1000 символов")
+    @NotBlank(message = "{experience.responsibilities.notBlank}")
+    @Size(min = 10, max = 1000, message = "{experience.responsibilities.size}")
     private String responsibilities;
 }

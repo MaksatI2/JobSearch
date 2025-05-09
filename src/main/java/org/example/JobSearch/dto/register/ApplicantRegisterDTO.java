@@ -11,28 +11,27 @@ import lombok.*;
 @Builder
 public class ApplicantRegisterDTO {
 
-    @NotBlank(message = "Имя обязательно")
-    @Pattern(regexp = "^[a-zA-Zа-яА-Я\\s-]+$", message = "Имя содержит недопустимые символы")
+    @NotBlank(message = "{user.name.notBlank}")
+    @Pattern(regexp = "^[a-zA-Zа-яА-Я\\s-]+$", message = "{user.name.size}")
     private String name;
 
-    @NotBlank(message = "Фамилия обязательна")
-    @Pattern(regexp = "^[a-zA-Zа-яА-Я\\s-]+$", message = "Фамилия содержит недопустимые символы")
+    @NotBlank(message = "{user.surname.notBlank}")
+    @Pattern(regexp = "^[a-zA-Zа-яА-Я\\s-]+$", message = "{user.surname.size}")
     private String surname;
 
-    @NotNull(message = "Возраст обязателен")
-    @Min(value = 18, message = "Минимальный возраст 18 лет")
-    @Max(value = 50, message = "Максимальный возраст 50 лет")
+    @Min(value = 18, message = "{user.age.min}")
+    @Max(value = 60, message = "{user.age.max}")
+    @NotNull(message = "{user.age.notNull}")
     private Integer age;
 
-    @NotBlank(message = "Email обязателен")
-    @Email(message = "Неверный формат email")
+    @NotBlank(message = "{user.email.notBlank}")
+    @Email(message = "{user.email.invalid}")
     private String email;
-
-    @NotBlank(message = "Пароль обязателен")
-    @Size(min = 6, message = "Пароль должен содержать не менее 6 символов")
+    @NotBlank(message = "{user.password.notBlank}")
+    @Size(min = 6, message = "{user.password.size}")
     private String password;
 
-    @NotBlank(message = "Номер телефона обязателен")
-    @Pattern(regexp = "^\\+?[0-9\\s-]{10,15}$", message = "Некорректный номер телефона")
+    @NotBlank(message = "{user.phone.notBlank}")
+    @Pattern(regexp = "^\\+?[0-9]{10,15}$", message = "{user.phone.invalid}")
     private String phoneNumber;
 }

@@ -16,9 +16,8 @@ public class ResumeDTO {
 
     Long id;
 
-    @NotNull
-    @NotNull(message = "ID соискателя не может быть пустым")
-    @Positive(message = "ID соискателя должен быть положительным числом")
+    @NotNull(message = "{resume.applicantId.notNull}")
+    @Positive(message = "{resume.applicantId.positive}")
     private Long applicantId;
 
     private String applicantName;
@@ -26,25 +25,25 @@ public class ResumeDTO {
     private String applicantAvatar;
     private Integer responsesCount;
 
-    @NotNull(message = "ID категории не может быть пустым")
-    @Positive(message = "ID категории должен быть положительным числом")
+    @NotNull(message = "{resume.categoryId.notNull}")
+    @Positive(message = "{resume.categoryId.positive}")
     private Long categoryId;
 
-    @NotBlank(message = "Название резюме не может быть пустым")
-    @Size(min = 2, max = 100, message = "Название резюме должно быть от 2 до 100 символов")
+    @NotBlank(message = "{resume.name.notBlank}")
+    @Size(min = 2, max = 100, message = "{resume.name.size}")
     private String name;
 
-    @NotNull(message = "Зарплата не может быть пустой")
-    @Min(value = 0, message = "Зарплата не может быть отрицательной")
+    @NotNull(message = "{resume.salary.notNull}")
+    @Min(value = 0, message = "{resume.salary.min}")
     private Float salary;
 
-    @NotNull(message = "Статус активности не может быть пустым")
+    @NotNull(message = "{resume.isActive.notNull}")
     private Boolean isActive;
 
-    @NotNull(message = "Время создания не может быть пустым")
+    @NotNull(message = "{resume.createDate.notNull}")
     private Timestamp createDate;
 
-    @NotNull(message = "Время обновления не может быть пустым")
+    @NotNull(message = "{resume.updateTime.notNull}")
     private Timestamp updateTime;
 
     @Valid

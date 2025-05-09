@@ -17,25 +17,25 @@ public class EducationInfoDTO {
 
     private Long resumeId;
 
-    @NotBlank
-    @Size(min = 2, max = 100, message = "Название учебного заведения должно быть от 2 до 100 символов")
+    @NotBlank(message = "{education.institution.notBlank}")
+    @Size(min = 2, max = 100, message = "{education.institution.size}")
     private String institution;
 
-    @NotBlank
-    @Size(min = 2, max = 100, message = "Название программы должно быть от 2 до 100 символов")
+    @NotBlank(message = "{education.program.notBlank}")
+    @Size(min = 2, max = 100, message = "{education.program.size}")
     private String program;
 
-    @NotNull(message = "Дата начала не может быть пустой")
+    @NotNull(message = "{education.startDate.notNull}")
+    @Past(message = "{education.startDate.past}")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    @Past(message = "Дата начала должна быть в прошлом")
     private Date startDate;
 
-    @NotNull(message = "Дата окончания не может быть пустой")
+    @NotNull(message = "{education.endDate.notNull}")
+    @PastOrPresent(message = "{education.endDate.pastOrPresent}")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    @PastOrPresent(message = "Дата окончания должна быть в прошлом или настоящем")
     private Date endDate;
 
-    @NotBlank
-    @Size(min = 2, max = 50, message = "Степень должна быть от 2 до 50 символов")
+    @NotBlank(message = "{education.degree.notBlank}")
+    @Size(min = 2, max = 50, message = "{education.degree.size}")
     private String degree;
 }
