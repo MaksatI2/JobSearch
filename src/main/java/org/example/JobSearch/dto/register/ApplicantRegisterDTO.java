@@ -27,6 +27,7 @@ public class ApplicantRegisterDTO {
     @NotBlank(message = "{user.email.notBlank}")
     @Email(message = "{user.email.invalid}")
     private String email;
+
     @NotBlank(message = "{user.password.notBlank}")
     @Size(min = 6, message = "{user.password.size}")
     private String password;

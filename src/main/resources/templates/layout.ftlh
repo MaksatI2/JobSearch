@@ -54,7 +54,13 @@
                     <a href="/auth/register" class="nav-link <#if activeNav == "register">active</#if>"><@spring.message code="nav.register" /></a>
                 </#if>
                 <div class="lang-switcher">
-                    <a href="?lang=ru">RU</a> | <a href="?lang=en">EN</a>
+                    <form method="get" action="">
+                        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                        <select name="lang" onchange="this.form.submit()">
+                            <option value="ru" <#if .locale == 'ru'>selected</#if>>Русский</option>
+                            <option value="en" <#if .locale == 'en'>selected</#if>>English</option>
+                        </select>
+                    </form>
                 </div>
             </div>
         </nav>

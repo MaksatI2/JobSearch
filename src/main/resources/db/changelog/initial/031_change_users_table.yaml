@@ -1,0 +1,12 @@
+databaseChangeLog:
+  - changeSet:
+      id: 031
+      author: I.Maksat
+      changes:
+        - addColumn:
+            tableName: users
+            columns:
+              - column:
+                  name: language
+                  type: VARCHAR(10)
+                  defaultValue: 'ru'

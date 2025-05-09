@@ -48,6 +48,9 @@ public class User {
     @Column(nullable = false)
     private Boolean enabled = true;
 
+    @Column(length = 10)
+    private String language;
+
     @OneToMany(mappedBy = "applicant", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Resume> resumes = new ArrayList<>();
 

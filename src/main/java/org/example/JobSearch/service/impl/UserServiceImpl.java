@@ -16,6 +16,7 @@ import org.example.JobSearch.service.EmailService;
 import org.example.JobSearch.service.UserService;
 import org.example.JobSearch.util.FileUtil;
 import org.example.JobSearch.util.Utility;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
@@ -60,8 +61,11 @@ public class UserServiceImpl implements UserService {
             throw new InvalidRegisterException("phoneNumber", "{user.phone.already.used}");
         }
 
+        String lang = LocaleContextHolder.getLocale().getLanguage();
+
         User user = new User();
         user.setEmail(dto.getEmail());
+        user.setLanguage(lang);
         user.setPassword(passwordEncoder.encode(dto.getPassword()));
         user.setName(dto.getName());
         user.setSurname(dto.getSurname());
@@ -81,9 +85,11 @@ public class UserServiceImpl implements UserService {
         if (userRepository.existsByPhoneNumber(dto.getPhoneNumber())) {
             throw new InvalidRegisterException("phoneNumber", "{user.phone.already.used}");
         }
+        String lang = LocaleContextHolder.getLocale().getLanguage();
 
         User user = new User();
         user.setEmail(dto.getEmail());
+        user.setLanguage(lang);
         user.setPassword(passwordEncoder.encode(dto.getPassword()));
         user.setName(dto.getCompanyName());
         user.setSurname("");
