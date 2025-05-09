@@ -5,6 +5,8 @@ import org.example.JobSearch.dto.EditDTO.EditUserDTO;
 import org.example.JobSearch.dto.UserDTO;
 import org.example.JobSearch.service.EditUserService;
 import org.example.JobSearch.service.UserService;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -21,6 +23,7 @@ import java.security.Principal;
 public class EditUserController {
     private final EditUserService editUserService;
     private final UserService userService;
+    private final MessageSource messageSource;
 
     @GetMapping("/edit")
     public String showEditProfileForm(Model model, Principal principal) {
@@ -51,9 +54,9 @@ public class EditUserController {
 
         try {
             editUserService.updateUserByEmail(principal.getName(), editUserDTO);
-            redirectAttributes.addFlashAttribute("successMessage", "Профиль успешно обновлен");
+            redirectAttributes.addFlashAttribute("successMessage",  getMessage("edit.profile.success"));
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Ошибка при обновлении профиля: " + e.getMessage());
+            redirectAttributes.addFlashAttribute("errorMessage",  getMessage("edit.profile.error ") + e.getMessage());
         }
 
         return "redirect:/profile";
@@ -75,11 +78,15 @@ public class EditUserController {
                                RedirectAttributes redirectAttributes) {
         try {
             editUserService.updateUserAvatar(userId, file);
-            redirectAttributes.addFlashAttribute("successMessage", "Аватар успешно обновлен");
+            redirectAttributes.addFlashAttribute("successMessage",  getMessage("edit.avatar.success"));
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Ошибка при обновлении аватара: " + e.getMessage());
+            redirectAttributes.addFlashAttribute("errorMessage",  getMessage("edit.avatar.error ") + e.getMessage());
         }
 
         return "redirect:/profile";
+    }
+
+    private String getMessage(String code) {
+        return messageSource.getMessage(code, null, LocaleContextHolder.getLocale());
     }
 }

@@ -1,9 +1,9 @@
 <#import "/spring.ftl" as spring>
 <#import "../layout.ftlh" as layout>
 
-<@layout.page title="Восстановление пароля | JobSearch" styles="/static/css/auth/register.css" activeNav="">
+<@layout.page styles="/static/css/auth/register.css" activeNav="">
     <div class="registration-form-container">
-        <h1 class="page-title">Восстановление пароля</h1>
+        <h1 class="page-title"><@spring.message code="password.forgot.title"/></h1>
 
         <#if error??>
             <div class="global-error">
@@ -25,14 +25,14 @@
 
             <div class="form-group">
                 <label for="email">Email</label>
-                <input type="email" id="email" name="email" class="form-control" placeholder="Введите ваш email">
+                <input type="email" id="email" name="email" class="form-control" placeholder="<@spring.message code="password.forgot.email"/>">
             </div>
 
-            <button type="submit" class="submit-btn">Отправить</button>
+            <button type="submit" class="submit-btn"><@spring.message code="password.forgot.submit"/></button>
         </form>
 
         <div class="login-link">
-            <a href="/auth/login">Вернуться к входу</a>
+            <a href="/auth/login"><@spring.message code="password.reset.back.login"/></a>
         </div>
     </div>
 </@layout.page>

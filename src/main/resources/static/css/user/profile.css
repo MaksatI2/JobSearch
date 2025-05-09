@@ -340,3 +340,9 @@ h3::after {
     font-size: 12px;
     font-weight: 700;
 }
+
+.profile-card-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+}

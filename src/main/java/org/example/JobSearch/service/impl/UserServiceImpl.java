@@ -16,6 +16,7 @@ import org.example.JobSearch.service.EmailService;
 import org.example.JobSearch.service.UserService;
 import org.example.JobSearch.util.FileUtil;
 import org.example.JobSearch.util.Utility;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
@@ -42,26 +43,29 @@ public class UserServiceImpl implements UserService {
     @Transactional(readOnly = true)
     public User getUserId(Long id) {
         return userRepository.findById(id)
-                .orElseThrow(() -> new UserNotFoundException("Пользователь не найден с ID: " + id));
+                .orElseThrow(() -> new UserNotFoundException("{user.not.found.with.id} " + id));
     }
     @Override
     public UserDTO getUserByEmail(String email) {
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new UserNotFoundException("Пользователь не найден"));
+                .orElseThrow(() -> new UserNotFoundException("{user.not.found}"));
         return convertToUserDTO(user);
     }
 
     @Override
     public void registerApplicant(ApplicantRegisterDTO dto) {
         if (userRepository.existsByEmail(dto.getEmail())) {
-            throw new InvalidRegisterException("email", "Email уже используется");
+            throw new InvalidRegisterException("email", "{user.email.already.used}");
         }
         if (userRepository.existsByPhoneNumber(dto.getPhoneNumber())) {
-            throw new InvalidRegisterException("phoneNumber", "Номер телефона уже используется");
+            throw new InvalidRegisterException("phoneNumber", "{user.phone.already.used}");
         }
+
+        String lang = LocaleContextHolder.getLocale().getLanguage();
 
         User user = new User();
         user.setEmail(dto.getEmail());
+        user.setLanguage(lang);
         user.setPassword(passwordEncoder.encode(dto.getPassword()));
         user.setName(dto.getName());
         user.setSurname(dto.getSurname());
@@ -76,14 +80,16 @@ public class UserServiceImpl implements UserService {
     @Override
     public void registerEmployer(EmployerRegisterDTO dto) {
         if (userRepository.existsByEmail(dto.getEmail())) {
-            throw new InvalidRegisterException("email", "Email уже используется");
+            throw new InvalidRegisterException("email", "{user.email.already.used}");
         }
         if (userRepository.existsByPhoneNumber(dto.getPhoneNumber())) {
-            throw new InvalidRegisterException("phoneNumber", "Номер телефона уже используется");
+            throw new InvalidRegisterException("phoneNumber", "{user.phone.already.used}");
         }
+        String lang = LocaleContextHolder.getLocale().getLanguage();
 
         User user = new User();
         user.setEmail(dto.getEmail());
+        user.setLanguage(lang);
         user.setPassword(passwordEncoder.encode(dto.getPassword()));
         user.setName(dto.getCompanyName());
         user.setSurname("");
@@ -113,14 +119,14 @@ public class UserServiceImpl implements UserService {
     public Long getUserId(String email) {
         return userRepository.findByEmail(email)
                 .map(User::getId)
-                .orElseThrow(() -> new UserNotFoundException("Нету пользователя с таким Email"));
+                .orElseThrow(() -> new UserNotFoundException("{user.not.found.with.email}"));
     }
 
     @Override
     public UserDTO getUserById(Long userId) {
         return userRepository.findById(userId)
                 .map(this::convertToUserDTO)
-                .orElseThrow(() -> new UserNotFoundException("Пользователь не найден: " + userId));
+                .orElseThrow(() -> new UserNotFoundException("{user.not.found} " + userId));
     }
 
     private UserDTO convertToUserDTO(User user) {
@@ -143,7 +149,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void updateResetPasswordToken(String token, String email) {
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new UserNotFoundException("Не удалось найти ни одного пользователя с таким адресом электронной почты " + email));
+                .orElseThrow(() -> new UserNotFoundException("{user.not.found.for.reset} " + email));
         user.setResetPasswordToken(token);
         userRepository.saveAndFlush(user);
     }
@@ -173,7 +179,7 @@ public class UserServiceImpl implements UserService {
         } catch (UserNotFoundException ex) {
             throw ex;
         } catch (UnsupportedEncodingException | MessagingException e) {
-            throw new RuntimeException("Ошибка при отправке электронного письма", e);
+            throw new RuntimeException("{reset.email.error}", e);
         }
     }
 }

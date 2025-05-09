@@ -1,7 +1,8 @@
 <#import "../layout.ftlh" as layout>
+<#import "/spring.ftl" as spring>
 
-<@layout.page title="Компании | JobSearch" styles="/static/css/companies/allCompanies.css" activeNav="companies">
-    <h1>Список компаний</h1>
+<@layout.page styles="/static/css/companies/allCompanies.css" activeNav="companies">
+    <h1><@spring.message code="companies.title"/></h1>
 
     <#if companies?? && companies?size gt 0>
         <div class="company-list">
@@ -44,7 +45,7 @@
                     <a href="/company/allCompanies?page=${totalPages - 1}&size=${pageSize}" class="page-link">»»</a>
                 </#if>
                 <div class="page-size">
-                    Элементов на странице:
+                    <@spring.message code="pagination"/>
                     <select onchange="window.location.href='/company/allCompanies?page=0&size='+this.value" class="page-size-select">
                         <option value="5" <#if pageSize == 5>selected</#if>>5</option>
                         <option value="10" <#if pageSize == 10>selected</#if>>10</option>
@@ -56,7 +57,7 @@
         </#if>
     <#else>
         <div class="no-companies">
-            <p>На данный момент нет зарегистрированных компаний</p>
+            <p><@spring.message code="companies.error"/></p>
         </div>
     </#if>
 </@layout.page>

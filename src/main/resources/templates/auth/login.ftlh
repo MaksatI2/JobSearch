@@ -1,9 +1,9 @@
 <#import "../layout.ftlh" as layout>
 <#import "/spring.ftl" as spring>
 
-<@layout.page title="Вход | JobSearch" styles="/static/css/auth/register.css" activeNav="login">
+<@layout.page styles="/static/css/auth/register.css" activeNav="login">
     <div class="registration-form-container">
-        <h1 class="page-title">Вход в систему</h1>
+        <h1 class="page-title"><@spring.message code="login.title"/></h1>
 
         <#if loginError??>
             <div class="global-error">
@@ -26,25 +26,27 @@
                 <input type="email" id="email" name="username" class="form-control">
             </div>
             <div class="form-group">
-                <label for="password">Пароль</label>
+                <label for="password"><@spring.message code="login.password"/></label>
                 <input type="password" id="password" name="password" class="form-control">
             </div>
-            <button type="submit" class="submit-btn">Войти</button>
+            <button type="submit" class="submit-btn"><@spring.message code="login.submit"/></button>
         </form>
 
         <div class="oauth-login">
-            <div class="separator">или</div>
+            <div class="separator">
+                <@spring.message code="login.or"/>
+            </div>
             <a href="/oauth2/authorization/google" class="google-login-btn">
                 <img src="/static/images/contact/gmail-icon-logo-svgrepo-com.svg" alt="Google logo" class="google-logo">
-                Войти через Google
+                <@spring.message code="login.google"/>
             </a>
         </div>
 
         <div class="login-link">
-            Ещё нет аккаунта? <a href="/auth/register">Зарегистрироваться</a>
+            <@spring.message code="login.no.account"/> <a href="/auth/register"><@spring.message code="login.register"/></a>
         </div>
         <div class="login-link">
-            <a href="/auth/forgot_password">Забыли пароль?</a>
+            <a href="/auth/forgot_password"><@spring.message code="login.reset.password"/></a>
         </div>
     </div>
 </@layout.page>

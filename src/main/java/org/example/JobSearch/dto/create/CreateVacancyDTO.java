@@ -13,32 +13,31 @@ public class CreateVacancyDTO {
 
     private Long authorId;
 
-    @NotNull(message = "Категория не может быть пустым")
-    @Positive(message = "ID категории должен быть положительным числом")
+    @NotNull(message = "${vacancy.categoryId.notNull}")
+    @Positive(message = "{vacancy.categoryId.positive}")
     private Long categoryId;
 
-    @NotBlank(message = "Название вакансии не может быть пустым")
-    @Size(min = 2, max = 100, message = "Название вакансии должно быть от 2 до 100 символов")
+    @NotBlank(message = "{vacancy.name.notBlank}")
+    @Size(min = 2, max = 100, message = "{vacancy.name.size}")
     private String name;
 
-    @NotBlank(message = "Описание обязательно")
-    @Size(min = 10, max = 1000, message = "Описание должно быть от 10 до 1000 символов")
+    @NotBlank(message = "{vacancy.description.notBlank}")
+    @Size(min = 10, max = 1000, message = "{vacancy.description.size}")
     private String description;
 
-    @NotNull(message = "Зарплата обязательна")
-    @Positive(message = "Зарплата не может быть отрицательной")
+    @NotNull(message = "{vacancy.salary.notNull}")
+    @Positive(message = "{vacancy.salary.min}")
     private Float salary;
 
-    @NotNull(message = "Укажите минимальный опыт")
-    @Min(value = 0, message = "Опыт не может быть меньше 0")
-    @Max(value = 50, message = "Опыт не может быть больше 50")
+    @NotNull(message = "{vacancy.expFrom.notNull}")
+    @Min(value = 0, message = "{vacancy.expFrom.min}")
     private Integer expFrom;
 
-    @NotNull(message = "Укажите максимальный опыт")
-    @Min(value = 0, message = "Опыт не может быть меньше 0")
-    @Max(value = 50, message = "Опыт не может быть больше 50")
+    @NotNull(message = "{vacancy.expTo.notNull}")
+    @Min(value = 0, message = "{vacancy.expTo.min}")
+    @Max(value = 50, message = "{vacancy.expTo.max}")
     private Integer expTo;
 
-    @NotNull(message = "Статус обязателен")
+    @NotNull(message = "{vacancy.isActive.notNull}")
     private Boolean isActive;
 }

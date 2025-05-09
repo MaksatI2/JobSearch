@@ -1,3 +1,4 @@
+<#import "/spring.ftl" as spring>
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -95,15 +96,15 @@
 <body>
 <div class="error-container">
     <div class="error-icon">🔍</div>
-    <h1>Страница не найдена</h1>
-    <p>Мы не смогли найти то, что вы искали.</p>
-    <div class="error-code">Ошибка 404</div>
+    <h1><@spring.message code="error.404.title"/></h1>
+    <p><@spring.message code="error.404.desc"/></p>
+    <div class="error-code"><@spring.message code="error.404.name"/></div>
 
-    <a href="/" class="home-link">Вернуться на главную</a>
+    <a href="/" class="home-link"><@spring.message code="error.back"/></a>
 
     <#if error??>
     <div class="error-details">
-        <p><strong>Дополнительная информация:</strong></p>
+        <p><strong><@spring.message code="error.extra"/></strong></p>
         <p>${error}</p>
 
         <#if fieldErrors??>

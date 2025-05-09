@@ -1,8 +1,9 @@
 <#import "/spring.ftl" as spring>
 <#import "../layout.ftlh" as layout>
 
-<@layout.page title="Личный кабинет работодателя | JobSearch" styles="/static/css/user/profile.css" activeNav="profile">
-    <h2>Личный кабинет Работодателя</h2>
+<@layout.page styles="/static/css/user/profile.css" activeNav="profile">
+    <h2><@spring.message code="profile.title"/>
+        <@spring.message code="profile.employer.title"/></h2>
 
     <#if successMessage??>
         <div class="alert alert-success">
@@ -26,23 +27,22 @@
 
             <p>${user.name}</p>
             <p>Email: ${user.email}</p>
-            <p>Телефон: ${user.phoneNumber}</p>
+            <p><@spring.message code="profile.phone"/> ${user.phoneNumber}</p>
         </div>
 
         <div class="right-column">
-            <h3>Вакансии компании</h3>
+            <h3><@spring.message code="employer.vacancies.title"/></h3>
             <#list vacancies![] as vacancy>
                 <#if vacancy.id??>
                     <div class="vacancy-card">
+                        <a href="/vacancies/${vacancy.id}/info" class="profile-card-link">
                         <p><strong>${vacancy.name}</strong></p>
-                        <p>Обновлено: ${vacancy.updateTime}</p>
-                        <a href="/vacancies/${vacancy.id}/info" class="button-link">Подробнее</a>
+                        <p><@spring.message code="vacancies.card.date"/> ${vacancy.updateTime}</p>
+                        </a>
                     </div>
                 <#else>
-                    <p>Не удалось загрузить вакансию.</p>
+                    <p><@spring.message code="vacancies.empty.title"/></p>
                 </#if>
-            <#else>
-                <p>У вас пока нет вакансий.</p>
             </#list>
 
             <#if totalVacancyPages?? && (totalVacancyPages > 1)>

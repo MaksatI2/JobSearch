@@ -1,8 +1,13 @@
 <#import "/spring.ftl" as spring>
 <#import "../layout.ftlh" as layout>
 
-<@layout.page title="Личный кабинет | JobSearch" styles="/static/css/user/profile.css" activeNav="profile">
-    <h2>Личный кабинет <#if user.accountType == "APPLICANT">Соискателя<#else>Работодателя</#if></h2>
+<@layout.page styles="/static/css/user/profile.css" activeNav="profile">
+    <h2><@spring.message code="profile.title"/>
+        <#if user.accountType == "APPLICANT">
+            <@spring.message code="profile.applicant.title"/>
+        <#else>
+            <@spring.message code="profile.employer.title"/>
+        </#if></h2>
 
     <#if successMessage??>
         <div class="alert alert-success">
@@ -21,57 +26,61 @@
             <div class="avatar-container">
                 <img src="/api/users/${user.id}/avatar"
                      alt="Аватар">
-                <a href="/profile/avatar/edit" class="change-avatar-button">Изменить аватар</a>
+                <a href="/profile/avatar/edit" class="change-avatar-button"><@spring.message code="profile.edit.avatar"/></a>
             </div>
 
             <#if user.accountType == "APPLICANT">
                 <p>${user.name} ${user.surname}</p>
                 <p>Email: ${user.email}</p>
-                <p>Возраст:<#if user.age??>${user.age}
+                <p><@spring.message code="profile.applicant.age"/><#if user.age??>${user.age}
                     <#else>
-                        <span class="text-danger">не указан</span>
+                        <span class="text-danger"><@spring.message code="profile.empty.user.info"/></span>
                     </#if>
                 </p>
 
-                <p>Телефон: ${user.phoneNumber}</p>
+                <p><@spring.message code="profile.phone"/> ${user.phoneNumber}</p>
             <#else>
                 <p>${user.name}</p>
                 <p>Email: ${user.email}</p>
-                <p>Телефон: ${user.phoneNumber}</p>
+                <p><@spring.message code="profile.phone"/>${user.phoneNumber}</p>
             </#if>
 
-            <a href="/profile/edit" class="edit-button">Редактировать профиль</a>
+            <a href="/profile/edit" class="edit-button"><@spring.message code="profile.edit"/></a>
         </div>
 
         <div class="right-column">
             <#if user.accountType == "APPLICANT">
-                <a href="/resumes/create" class="action-button">Создать резюме</a>
+                <a href="/resumes/create" class="action-button"><@spring.message code="profile.applicant.create.resume"/></a>
                 <a href="/resumes/${user.id}/response" class="responses-button">
-                    Отклики
+                    <@spring.message code="profile.responses"/>
                     <span class="responses-badge">${responsesCount}</span>
                 </a>
-                <h3>Ваши резюме</h3>
+                <h3><@spring.message code="profile.applicant.resumes.title"/></h3>
                 <#list resumes![] as resume>
                     <#if resume.id??>
                         <a href="/resumes/${resume.id}/info" class="resume-card-link">
                             <div class="resume-card">
                                 <p><strong>${resume.name!""}</strong></p>
-                                <p>Обновлено: ${resume.updateTime!""}</p>
+                                <p><@spring.message code="resumes.date"/> ${resume.updateTime!""}</p>
                                 <form action="/resumes/${resume.id}/refresh" method="post" class="inline-form">
                                     <#if _csrf??>
                                         <input type="hidden" name="${(_csrf.parameterName)!'csrf-param-name'}"
                                                value="${(_csrf.token)!'csrf-token'}"/>
                                     </#if>
-                                    <button type="submit" class="button-link refresh-button">Обновить</button>
+                                    <button type="submit" class="button-link refresh-button">
+                                        <@spring.message code="card.btn.refresh"/>
+                                    </button>
                                 </form>
-                                <a href="/resumes/${resume.id}/edit" class="button-link">Редактировать</a>
+                                <a href="/resumes/${resume.id}/edit" class="button-link">
+                                    <@spring.message code="card.btn.edit"/>
+                                </a>
                             </div>
                         </a>
                     <#else>
-                        <p>Не удалось загрузить резюме.</p>
+                        <p><@spring.message code="profile.applicant.resumes.empty"/></p>
                     </#if>
                 <#else>
-                    <p>У вас пока нет резюме.</p>
+                    <p><@spring.message code="vacancies.response.no.resumes"/></p>
                 </#list>
 
                 <#if totalResumePages?? && (totalResumePages > 1)>
@@ -95,33 +104,35 @@
                 </#if>
 
             <#elseif user.accountType == "EMPLOYER">
-                <a href="/vacancies/create" class="action-button">Создать вакансию</a>
+                <a href="/vacancies/create" class="action-button"><@spring.message code="profile.employer.create.vacancies"/></a>
                 <a href="/vacancies/${user.id}/response" class="responses-button">
-                    Отклики
+                    <@spring.message code="profile.responses"/>
                     <span class="responses-badge">${responsesCount}</span>
                 </a>
-                <h3>Ваши вакансии</h3>
+                <h3><@spring.message code="profile.employer.vacancies.title"/></h3>
                 <#list vacancies![] as vacancy>
                     <#if vacancy.id??>
                         <a href="/vacancies/${vacancy.id}/info" class="vacancy-card-link">
                             <div class="vacancy-card">
                                 <p><strong>${vacancy.name}</strong></p>
-                                <p>Обновлено: ${vacancy.updateTime}</p>
+                                <p><@spring.message code="vacancies.card.date"/> ${vacancy.updateTime}</p>
                                 <form action="/vacancies/${vacancy.id}/refresh" method="post" class="inline-form">
                                     <#if _csrf??>
                                         <input type="hidden" name="${(_csrf.parameterName)!'csrf-param-name'}"
                                                value="${(_csrf.token)!'csrf-token'}"/>
                                     </#if>
-                                    <button type="submit" class="button-link refresh-button">Обновить</button>
+                                    <button type="submit" class="button-link refresh-button">
+                                        <@spring.message code="card.btn.refresh"/>
+                                    </button>
                                 </form>
-                                <a href="/vacancies/${vacancy.id}/edit" class="button-link">Редактировать</a>
+                                <a href="/vacancies/${vacancy.id}/edit" class="button-link">
+                                    <@spring.message code="card.btn.edit"/>
+                                </a>
                             </div>
                         </a>
                     <#else>
-                        <p>Не удалось загрузить вакансию.</p>
+                        <p><@spring.message code="profile.employer.vacancies.empty"/></p>
                     </#if>
-                <#else>
-                    <p>У вас пока нет вакансий.</p>
                 </#list>
 
                 <#if totalVacancyPages?? && (totalVacancyPages > 1)>

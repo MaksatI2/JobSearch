@@ -24,6 +24,7 @@ public class SecurityConfig {
     private final CustomSuccessHandler successHandler;
     private final CustomOAuth2UserService oAuth2UserService;
     private final OAuth2AuthenticationSuccessHandler oAuth2SuccessHandler;
+    private final UserLocaleFilter userLocaleFilter;
 
     @Bean
     public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
@@ -37,14 +38,8 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(
-                                "/",
-                                "/auth/**",
-                                "/static/**",
-                                "/favicon.ico",
-                                "/error",
-                                "/vacancies",
-                                "/vacancies/*/info",
-                                "/vacancies/category/**"
+                                "/", "/auth/**", "/static/**", "/favicon.ico", "/error",
+                                "/vacancies", "/vacancies/*/info", "/vacancies/category/**"
                         ).permitAll()
                         .requestMatchers("/profile/viewApplicant/*").hasAuthority("EMPLOYER")
                         .requestMatchers("/profile/viewEmployer/*").hasAuthority("APPLICANT")
@@ -88,6 +83,8 @@ public class SecurityConfig {
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.ALWAYS));
 
-        return http.build();
+        return http
+                .addFilterAfter(userLocaleFilter, org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter.class)
+                .build();
     }
 }

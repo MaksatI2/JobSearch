@@ -1,13 +1,14 @@
 <#import "/spring.ftl" as spring>
 <#import "../layout.ftlh" as layout>
 
-<@layout.page title="Мои отклики" styles="/static/css/vacancies/vacancies.css" activeNav="profile">
+<@layout.page styles="/static/css/vacancies/vacancies.css" activeNav="profile">
+    <a href="/profile" class="reset-btn"><@spring.message code="response.back"/></a>
     <div class="responses-container">
-        <h1 class="page-title">Мои отклики</h1>
+        <h1 class="page-title"><@spring.message code="response.resume.title"/></h1>
 
         <div class="responses-header">
-            <h2>Резюме: ${resume.name!''}</h2>
-            <p class="vacancy-title">Всего откликов: ${totalResponses}</p>
+            <h2><@spring.message code="response.resume"/> ${resume.name!''}</h2>
+            <p class="vacancy-title"><@spring.message code="response.resume.count"/> ${totalResponses}</p>
         </div>
 
         <#if vacancies.content?has_content>
@@ -26,21 +27,22 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                       d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                             </svg>
-                            Опыт: ${vacancy.expFrom}-${vacancy.expTo} лет
+                            <@spring.message code="vacancies.card.exp"/> ${vacancy.expFrom}-${vacancy.expTo}
+                            <@spring.message code="vacancies.card.exp.years"/>
                         </span>
                                 <span class="author">
                             <svg class="icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                       d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
                             </svg>
-                            Автор: ${vacancy.authorName!""}
+                            <@spring.message code="vacancies.card.author"/> ${vacancy.authorName!""}
                         </span>
                                 <span class="update-time">
                             <svg class="icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                       d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
                             </svg>
-                            Обновлена: ${vacancy.updateTime?string("dd.MM.yyyy")}
+                            <@spring.message code="vacancies.card.date"/> ${vacancy.updateTime?string("dd.MM.yyyy")}
                         </span>
 
                                 <#if Session.SPRING_SECURITY_CONTEXT?? && !Session.SPRING_SECURITY_CONTEXT.authentication.authorities?seq_contains('EMPLOYER')>
@@ -64,7 +66,7 @@
                         <#if Session.SPRING_SECURITY_CONTEXT?? && !Session.SPRING_SECURITY_CONTEXT.authentication.authorities?seq_contains('EMPLOYER')>
                             <#if vacancy.authorId??>
                                 <a href="/profile/viewEmployer/${vacancy.authorId}" class="company-profile-btn">
-                                    Профиль компании
+                                    <@spring.message code="vacancies.company.profile"/>
                                 </a>
                             </#if>
                         </#if>
@@ -91,7 +93,7 @@
                             <a href="/response/resumes/${resume.id}?page=${vacancies.totalPages - 1}&size=${pageSize}" class="page-link">»»</a>
                         </#if>
                         <div class="page-size">
-                            Элементов на странице:
+                            <@spring.message code="pagination"/>
                             <select onchange="window.location.href='/response/resumes/${resume.id}?page=0&size='+this.value" class="page-size-select">
                                 <option value="5" <#if pageSize == 5>selected</#if>>5</option>
                                 <option value="10" <#if pageSize == 10>selected</#if>>10</option>
@@ -104,8 +106,8 @@
             </div>
         <#else>
             <div class="no-responses">
-                <p>Вы еще не откликались на вакансии с этим резюме</p>
-                <a href="/vacancies" class="find-vacancies-btn">Найти вакансии</a>
+                <p><@spring.message code="response.resume.no.response"/></p>
+                <a href="/vacancies" class="find-vacancies-btn"><@spring.message code="vacancies.favorites.show"/></a>
             </div>
         </#if>
     </div>

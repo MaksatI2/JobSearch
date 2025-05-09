@@ -2,11 +2,10 @@
 <#import "../layout.ftlh" as layout>
 
 <@layout.page
-title="Список вакансий | JobSearch"
 styles="/static/css/vacancies/vacancies.css"
 activeNav="vacancies">
+    <h1 class="page-title"><@spring.message code="vacancies.title"/></h1>
 
-    <h1 class="page-title"><@spring.messageText "vacancies.title", "Все вакансии"/></h1>
     <#if successMessage??>
         <div class="alert alert-success">
             ${successMessage}
@@ -25,23 +24,23 @@ activeNav="vacancies">
             <input type="hidden" name="size" value="${pageSize}">
 
             <div class="filter-group">
-                <label for="sort">Сортировка:</label>
+                <label for="sort"><@spring.message code="sort.label"/></label>
                 <select id="sort" name="sort" class="form-control">
-                    <option value="">По дате (новые)</option>
+                    <option value=""><@spring.message code="sort.date"/></option>
                     <option value="salaryAsc" <#if selectedSort?? && selectedSort == "salaryAsc">selected</#if>>
-                        По зарплате (↑)
+                        <@spring.message code="sort.salary.asc"/>
                     </option>
                     <option value="salaryDesc" <#if selectedSort?? && selectedSort == "salaryDesc">selected</#if>>
-                        По зарплате (↓)
+                        <@spring.message code="sort.salary.desc"/>
                     </option>
                     <option value="expAsc" <#if selectedSort?? && selectedSort == "expAsc">selected</#if>>
-                        По опыту (↑)
+                        <@spring.message code="sort.exp.asc"/>
                     </option>
                     <option value="expDesc" <#if selectedSort?? && selectedSort == "expDesc">selected</#if>>
-                        По опыту (↓)
+                        <@spring.message code="sort.exp.desc"/>
                     </option>
                     <option value="responsesDesc" <#if selectedSort?? && selectedSort == "responsesDesc">selected</#if>>
-                        По количеству откликов (↓)
+                        <@spring.message code="sort.responses.desc"/>
                     </option>
                 </select>
             </div>
@@ -51,14 +50,14 @@ activeNav="vacancies">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" class="btn-icon">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                     </svg>
-                    Применить
+                    <@spring.message code="filter.apply"/>
                 </button>
                 <#if selectedSort??>
                     <a href="/vacancies?page=0&size=${pageSize}" class="reset-btn">
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" class="btn-icon">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
                         </svg>
-                        Сбросить
+                        <@spring.message code="filter.reset"/>
                     </a>
                 </#if>
             </div>
@@ -67,8 +66,8 @@ activeNav="vacancies">
 
     <#if vacancies?size == 0>
         <div class="empty-state">
-            <h3>Вакансии не найдены</h3>
-            <p>В данный момент нет активных вакансий. Попробуйте позже.</p>
+            <h3><@spring.message code="vacancies.empty.title"/></h3>
+            <p><@spring.message code="vacancies.empty.message"/></p>
         </div>
     </#if>
 
@@ -87,21 +86,22 @@ activeNav="vacancies">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                       d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                             </svg>
-                            Опыт: ${vacancy.expFrom}-${vacancy.expTo} лет
+                           <@spring.message code="vacancies.card.exp"/> ${vacancy.expFrom}-${vacancy.expTo}
+                            <@spring.message code="vacancies.card.exp.years"/>
                         </span>
                         <span class="author">
                             <svg class="icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                       d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
                             </svg>
-                            Автор: ${vacancy.authorName!""}
+                            <@spring.message code="vacancies.card.author"/> ${vacancy.authorName!""}
                         </span>
                         <span class="update-time">
                             <svg class="icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                       d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
                             </svg>
-                            Обновлена: ${vacancy.updateTime?string("dd.MM.yyyy")}
+                             <@spring.message code="vacancies.card.date"/> ${vacancy.updateTime?string("dd.MM.yyyy")}
                         </span>
 
                         <#if Session.SPRING_SECURITY_CONTEXT?? && !Session.SPRING_SECURITY_CONTEXT.authentication.authorities?seq_contains('EMPLOYER')>
@@ -125,17 +125,19 @@ activeNav="vacancies">
                 <#if Session.SPRING_SECURITY_CONTEXT?? && !Session.SPRING_SECURITY_CONTEXT.authentication.authorities?seq_contains('EMPLOYER')>
                     <#if vacancy.authorId??>
                         <a href="/profile/viewEmployer/${vacancy.authorId}" class="company-profile-btn">
-                            Профиль компании
+                            <@spring.message code="vacancies.company.profile"/>
                         </a>
                     </#if>
-                    <a href="#modal-${vacancy.id}" class="respond-btn">Откликнуться</a>
+                    <a href="#modal-${vacancy.id}" class="respond-btn">
+                        <@spring.message code="vacancies.respond.button"/>
+                    </a>
                 </#if>
             </div>
 
             <div id="modal-${vacancy.id}" class="modal">
                 <div class="modal-content">
                     <a href="#" class="close-modal">&times;</a>
-                    <h3 class="modal-title">Отклик на вакансию "${vacancy.name}"</h3>
+                    <h3 class="modal-title"><@spring.message code="vacancies.response.modal.title"/> "${vacancy.name}"</h3>
 
                     <form action="/response/respond" method="post">
                         <input type="hidden" name="vacancyId" value="${vacancy.id}">
@@ -143,18 +145,20 @@ activeNav="vacancies">
                             <input type="hidden" name="${(_csrf.parameterName)!'csrf'}" value="${(_csrf.token)!'--no-token--'}"/>
                         </#if>
 
-                        <label for="resumeId-${vacancy.id}">Выберите резюме:</label>
+                        <label for="resumeId-${vacancy.id}"><@spring.message code="vacancies.response.select.resume"/></label>
                         <select id="resumeId-${vacancy.id}" name="resumeId" class="resume-select" required>
                             <#if userResumes?? && userResumes?size gt 0>
                                 <#list userResumes as resume>
                                     <option value="${resume.id}">${resume.name} (${resume.updateTime?string("dd.MM.yyyy")})</option>
                                 </#list>
                             <#else>
-                                <option value="" disabled>У вас нет резюме</option>
+                                <option value="" disabled><@spring.message code="vacancies.response.no.resumes"/></option>
                             </#if>
                         </select>
 
-                        <button type="submit" class="submit-resume-btn">Отправить отклик</button>
+                        <button type="submit" class="submit-resume-btn">
+                            <@spring.message code="vacancies.response.submit.button"/>
+                        </button>
                     </form>
                 </div>
             </div>
@@ -187,7 +191,7 @@ activeNav="vacancies">
             </#if>
 
             <div class="page-size">
-                Элементов на странице:
+                <@spring.message code="pagination"/>
                 <select onchange="window.location.href='/vacancies?page=0&size='+this.value+'<#if selectedCategory??>&categoryId=${selectedCategory}</#if><#if selectedSort??>&sort=${selectedSort}</#if>'"
                         class="page-size-select">
                     <option value="5" <#if pageSize == 5>selected</#if>>5</option>

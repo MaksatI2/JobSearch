@@ -27,7 +27,7 @@ public class EditUserServiceImpl implements EditUserService {
 
         if (!existingUser.getPhoneNumber().equals(editUserDTO.getPhoneNumber())
                 && userRepository.existsByPhoneNumber(editUserDTO.getPhoneNumber())) {
-            throw new InvalidUserDataException("Номер телефона уже используется");
+            throw new InvalidUserDataException("{user.phone.already.used}");
         }
 
         existingUser.setName(editUserDTO.getName());
