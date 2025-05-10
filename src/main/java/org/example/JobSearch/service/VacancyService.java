@@ -21,7 +21,7 @@ public interface VacancyService {
 
     @Transactional(readOnly = true)
     Page<VacancyDTO> getVacanciesWithResponsesByAuthorId(Long authorId, Pageable pageable);
-    Page<VacancyDTO> getAllVacanciesSorted(String sort, Pageable pageable);
+    Page<VacancyDTO> getAllVacanciesSorted(String sort, Long categoryId, Pageable pageable);
 
     Vacancy getVacancyEntityById(Long id);
 

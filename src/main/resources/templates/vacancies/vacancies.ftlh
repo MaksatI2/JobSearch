@@ -5,6 +5,19 @@
 styles="/static/css/vacancies/vacancies.css"
 activeNav="vacancies">
     <h1 class="page-title"><@spring.message code="vacancies.title"/></h1>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const categorySelect = document.getElementById('category');
+            const sortSelect = document.getElementById('sort');
+            const form = document.querySelector('.filter-form');
+
+            [categorySelect, sortSelect].forEach(select => {
+                select.addEventListener('change', function() {
+                    form.submit();
+                });
+            });
+        });
+    </script>
 
     <#if successMessage??>
         <div class="alert alert-success">
@@ -22,6 +35,18 @@ activeNav="vacancies">
         <form method="get" action="/vacancies" class="filter-form">
             <input type="hidden" name="page" value="0">
             <input type="hidden" name="size" value="${pageSize}">
+
+            <div class="filter-group">
+                <label for="category"><@spring.message code="category.label"/></label>
+                <select id="category" name="categoryId" class="form-control">
+                    <option value=""><@spring.message code="category.all"/></option>
+                    <#list categories as category>
+                        <option value="${category.id}" <#if selectedCategory?? && selectedCategory == category.id>selected</#if>>
+                            ${category.name}
+                        </option>
+                    </#list>
+                </select>
+            </div>
 
             <div class="filter-group">
                 <label for="sort"><@spring.message code="sort.label"/></label>
@@ -52,7 +77,7 @@ activeNav="vacancies">
                     </svg>
                     <@spring.message code="filter.apply"/>
                 </button>
-                <#if selectedSort??>
+                <#if selectedSort?? || selectedCategory??>
                     <a href="/vacancies?page=0&size=${pageSize}" class="reset-btn">
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" class="btn-icon">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>

@@ -38,17 +38,18 @@ public class VacancyViewController {
     private final ResponseService responseService;
     private final MessageSource messageSource;
 
-
     @GetMapping
     public String showVacancies(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size,
             @RequestParam(required = false) String sort,
+            @RequestParam(required = false) Long categoryId,
             Model model,
             Authentication authentication) {
 
         Page<VacancyDTO> vacanciesPage = vacancyService.getAllVacanciesSorted(
                 sort,
+                categoryId,
                 PageRequest.of(page, size)
         );
 
@@ -61,7 +62,6 @@ public class VacancyViewController {
 
             Page<ResumeDTO> resumesPage = resumeService.getResumesByApplicant(user.getId(), 0, 10);
             model.addAttribute("userResumes", resumesPage.getContent());
-
         }
 
         model.addAttribute("vacancies", vacanciesPage.getContent());
@@ -69,6 +69,8 @@ public class VacancyViewController {
         model.addAttribute("totalPages", vacanciesPage.getTotalPages());
         model.addAttribute("pageSize", size);
         model.addAttribute("selectedSort", sort);
+        model.addAttribute("categories", categoryService.getAllCategories());
+        model.addAttribute("selectedCategory", categoryId);
 
         return "vacancies/vacancies";
     }
