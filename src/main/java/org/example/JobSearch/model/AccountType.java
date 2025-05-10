@@ -21,7 +21,7 @@ public enum AccountType {
                 return type;
             }
         }
-        throw new IllegalArgumentException("Нет AccountType с ID " + id);
+        throw new IllegalArgumentException("There is no AccountType with ID " + id);
     }
 
     @Override

@@ -16,6 +16,7 @@ import java.util.List;
 public interface VacancyRepository extends JpaRepository<Vacancy, Long> {
 
     @Query("SELECT v FROM Vacancy v WHERE v.isActive = true " +
+            "AND (:categoryId IS NULL OR v.category.id = :categoryId OR v.category.parent.id = :categoryId) " +
             "ORDER BY " +
             "CASE WHEN :sort = 'salaryAsc' THEN v.salary END ASC, " +
             "CASE WHEN :sort = 'salaryDesc' THEN v.salary END DESC, " +
@@ -23,8 +24,9 @@ public interface VacancyRepository extends JpaRepository<Vacancy, Long> {
             "CASE WHEN :sort = 'expDesc' THEN v.expFrom END DESC, " +
             "CASE WHEN :sort = 'responsesDesc' THEN (SELECT COUNT(ra) FROM RespondedApplicant ra WHERE ra.vacancy = v) END DESC, " +
             "v.updateTime DESC")
-    Page<Vacancy> findAllActiveSorted(@Param("sort") String sort, Pageable pageable);
-
+    Page<Vacancy> findAllActiveSorted(@Param("sort") String sort,
+                                      @Param("categoryId") Long categoryId,
+                                      Pageable pageable);
     @Query("""
     SELECT DISTINCT v FROM Vacancy v 
     JOIN v.applicants ra

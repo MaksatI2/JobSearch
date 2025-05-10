@@ -51,12 +51,12 @@ public class VacancyServiceImpl implements VacancyService {
     @Override
     @Transactional
     public void createVacancy(CreateVacancyDTO createVacancyDto, Long employerId) {
-        log.info(getMessage("vacancy.create.log.start"), employerId);
+        log.info("Создание новой вакансии работодателем ID: {}", employerId);
 
         User employer = userService.getUserId(employerId);
 
         if (!employer.getAccountType().equals(AccountType.EMPLOYER)) {
-            log.error(getMessage("vacancy.create.log.error.not.employer"), employerId);
+            log.error("Попытка создания вакансии пользователем, не являющимся работодателем: {}", employerId);
             throw new AccessDeniedException(getMessage("vacancy.creation.forbidden"));
         }
 
@@ -78,13 +78,13 @@ public class VacancyServiceImpl implements VacancyService {
                 .build();
 
         vacancyRepository.save(vacancy);
-        log.info(getMessage("vacancy.create.log.success"), vacancy.getName());
+        log.info("Вакансия успешно создана: {}", vacancy.getName());
     }
 
     @Override
     @Transactional
     public void updateVacancy(Long vacancyId, EditVacancyDTO editVacancyDto) {
-        log.info(getMessage("vacancy.update.log.start"), vacancyId);
+        log.info("Обновление вакансии ID: {}", vacancyId);
 
         Vacancy vacancy = vacancyRepository.findById(vacancyId)
                 .orElseThrow(() -> new VacancyNotFoundException(getMessage("vacancy.not.found")));
@@ -102,31 +102,31 @@ public class VacancyServiceImpl implements VacancyService {
         vacancy.setIsActive(editVacancyDto.getIsActive());
         vacancy.setUpdateTime(new Timestamp(System.currentTimeMillis()));
         vacancyRepository.save(vacancy);
-        log.info(getMessage("vacancy.update.log.success"), vacancyId);
+        log.info("Вакансия ID {} успешно обновлена", vacancyId);
     }
 
     @Override
     @Transactional
     public void deleteVacancy(Long vacancyId) {
-        log.info(getMessage("vacancy.delete.log.start"), vacancyId);
+        log.info("Удаление вакансии ID: {}", vacancyId);
         if (!vacancyRepository.existsById(vacancyId)) {
-            log.error(getMessage("vacancy.delete.log.error.not.found"), vacancyId);
+            log.error("Вакансия для удаления не найдена ID: {}", vacancyId);
             throw new VacancyNotFoundException(getMessage("vacancy.not.found.id") + " " + vacancyId);
         }
         vacancyRepository.deleteById(vacancyId);
-        log.info(getMessage("vacancy.delete.log.success"), vacancyId);
+        log.info("Вакансия ID {} успешно удалена", vacancyId);
     }
 
     @Override
-    public Page<VacancyDTO> getAllVacanciesSorted(String sort, Pageable pageable) {
-        return vacancyRepository.findAllActiveSorted(sort, pageable)
+    public Page<VacancyDTO> getAllVacanciesSorted(String sort, Long categoryId, Pageable pageable) {
+        return vacancyRepository.findAllActiveSorted(sort, categoryId, pageable)
                 .map(this::toDTO);
     }
 
     @Override
     @Transactional(readOnly = true)
     public VacancyDTO getVacancyById(Long id) {
-        log.info(getMessage("vacancy.get.log.start"), id);
+        log.info("Поиск вакансии по ID: {}", id);
         Vacancy vacancy = vacancyRepository.findById(id)
                 .orElseThrow(() -> new VacancyNotFoundException(getMessage("vacancy.not.found")));
         return toDTO(vacancy);

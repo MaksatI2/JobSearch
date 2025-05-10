@@ -6,6 +6,8 @@ import org.example.JobSearch.dto.*;
 import org.example.JobSearch.dto.EditDTO.EditResumeDTO;
 import org.example.JobSearch.dto.create.CreateResumeDTO;
 import org.example.JobSearch.service.*;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.access.AccessDeniedException;
@@ -33,6 +35,7 @@ public class ResumeViewController {
     private final UserService userService;
     private final FavoriteResumeService favoriteService;
     private final ResponseService responseService;
+    private final MessageSource messageSource;
 
     @GetMapping("/allResumes")
     public String getAllActiveResumes(
@@ -185,7 +188,7 @@ public class ResumeViewController {
         Long currentUserId = userService.getUserId(currentUserEmail);
 
         if (!resume.getApplicantId().equals(currentUserId)) {
-            throw new AccessDeniedException("Вы не можете редактировать это резюме");
+            throw new AccessDeniedException(getMessage("resume.edit.forbidden"));
         }
 
         EditResumeDTO editResumeDto = new EditResumeDTO();
@@ -293,7 +296,7 @@ public class ResumeViewController {
                 .stream().anyMatch(auth -> auth.getAuthority().equals("EMPLOYER"));
 
         if (!isOwner && !isEmployer) {
-            throw new AccessDeniedException("У вас нет доступа к этому резюме");
+            throw new AccessDeniedException(getMessage("response.resume.forbidden"));
         }
 
         resume.setApplicantAvatar("/api/users/" + resume.getApplicantId() + "/avatar");
@@ -313,7 +316,7 @@ public class ResumeViewController {
 
         ResumeDTO resume = resumeService.getResumeById(id);
         if (!resume.getApplicantId().equals(user.getId())) {
-            throw new AccessDeniedException("Вы можете обновлять только свои собственные резюме.");
+            throw new AccessDeniedException(getMessage("resume.refresh.forbidden"));
         }
 
         resumeService.refreshResume(id);
@@ -327,7 +330,7 @@ public class ResumeViewController {
 
         ResumeDTO resume = resumeService.getResumeById(id);
         if (!resume.getApplicantId().equals(user.getId())) {
-            throw new AccessDeniedException("Вы можете удалять только свои собственные резюме.");
+            throw new AccessDeniedException(getMessage("resume.delete.forbidden"));
         }
 
         resumeService.deleteResume(id);
@@ -346,7 +349,7 @@ public class ResumeViewController {
             Long currentUserId = userService.getUserId(currentUserEmail);
 
             if (!currentUserId.equals(userId)) {
-                throw new AccessDeniedException("Вы можете просматривать только свои резюме с откликами");
+                throw new AccessDeniedException(getMessage("resume.view.forbidden"));
             }
 
             Page<ResumeDTO> resumesPage = resumeService.getResumesWithResponsesByApplicantId(
@@ -368,4 +371,7 @@ public class ResumeViewController {
         }
     }
 
+    private String getMessage(String code) {
+        return messageSource.getMessage(code, null, LocaleContextHolder.getLocale());
+    }
 }

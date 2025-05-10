@@ -9,6 +9,8 @@ import org.example.JobSearch.service.ResumeService;
 import org.example.JobSearch.service.ResponseService;
 import org.example.JobSearch.service.UserService;
 import org.example.JobSearch.service.VacancyService;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -24,12 +26,13 @@ public class ResponseServiceImpl implements ResponseService {
     private final ResumeService resumeService;
     private final VacancyService vacancyService;
     private final UserService userService;
+    private final MessageSource messageSource;
 
     @Override
     @Transactional
     public void respondToVacancy(Long resumeId, Long vacancyId) {
         if (respondedApplicantRepository.existsByResumeIdAndVacancyId(resumeId, vacancyId)) {
-            throw new IllegalStateException("Уже откликались на эту вакансию.");
+            throw new IllegalStateException(getMessage("response.already"));
         }
 
         RespondedApplicant response = new RespondedApplicant();
@@ -103,6 +106,10 @@ public class ResponseServiceImpl implements ResponseService {
     @Override
     public int getResponsesCountByResume(Long resumeId) {
         return respondedApplicantRepository.countByResumeId(resumeId);
+    }
+
+    private String getMessage(String code) {
+        return messageSource.getMessage(code, null, LocaleContextHolder.getLocale());
     }
 
 }

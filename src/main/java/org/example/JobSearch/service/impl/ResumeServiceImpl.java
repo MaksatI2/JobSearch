@@ -57,7 +57,7 @@ public class ResumeServiceImpl implements ResumeService {
     @Override
     @Transactional
     public void createResume(CreateResumeDTO resumeDto, BindingResult bindingResult) {
-        log.info(getMessage("resume.create.log.start"), resumeDto.getApplicantId());
+        log.info("Создание нового резюме для соискателя ID: {}", resumeDto.getApplicantId());
         validateCreateResume(resumeDto, bindingResult);
 
         User applicant = userService.getUserId(resumeDto.getApplicantId());
@@ -77,24 +77,24 @@ public class ResumeServiceImpl implements ResumeService {
                 .build();
 
         Resume savedResume = resumeRepository.save(resume);
-        log.info(getMessage("resume.create.log.success"), savedResume.getId());
+        log.info("Резюме создано с ID: {}", savedResume.getId());
 
         if (resumeDto.getEducationInfos() != null) {
-            log.debug(getMessage("resume.education.add.log"), savedResume.getId());
+            log.debug("Добавление информации об образовании для резюме ID: {}", savedResume.getId());
             for (EducationInfoDTO eduDto : resumeDto.getEducationInfos()) {
                 educationInfoService.createEducationInfo(savedResume.getId(), eduDto);
             }
         }
 
         if (resumeDto.getWorkExperiences() != null) {
-            log.debug(getMessage("resume.experience.add.log"), savedResume.getId());
+            log.debug("Добавление информации об опыте работы для резюме ID: {}", savedResume.getId());
             for (WorkExperienceDTO expDto : resumeDto.getWorkExperiences()) {
                 workExperienceService.createWorkExperience(savedResume.getId(), expDto);
             }
         }
 
         if (resumeDto.getContactInfos() != null) {
-            log.debug(getMessage("resume.contacts.add.log"), savedResume.getId());
+            log.debug("Добавление контактной информации для резюме ID: {}", savedResume.getId());
             for (ContactInfoDTO contactDto : resumeDto.getContactInfos()) {
                 if (contactDto.getValue() != null && !contactDto.getValue().isEmpty()) {
                     contactInfoService.createContactInfo(savedResume.getId(), contactDto);
@@ -106,7 +106,7 @@ public class ResumeServiceImpl implements ResumeService {
     @Override
     @Transactional
     public void updateResume(Long resumeId, EditResumeDTO editResumeDto) {
-        log.info(getMessage("resume.update.log.start"), resumeId);
+        log.info("Обновление резюме ID: {}", resumeId);
 
         Resume resume = resumeRepository.findById(resumeId)
                 .orElseThrow(() -> new ResumeNotFoundException(getMessage("resume.not.found.with.id") + " " + resumeId));
@@ -156,7 +156,7 @@ public class ResumeServiceImpl implements ResumeService {
     @Override
     @Transactional
     public void deleteResume(Long resumeId) {
-        log.info(getMessage("resume.delete.log.start"), resumeId);
+        log.info("Удаление резюме ID: {}", resumeId);
         if (!resumeRepository.existsById(resumeId)) {
             throw new ResumeNotFoundException(getMessage("resume.not.found.with.id") + " " + resumeId);
         }

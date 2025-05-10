@@ -1,4 +1,4 @@
-package org.example.JobSearch.util;
+package org.example.JobSearch.common;
 
 import jakarta.servlet.http.HttpServletRequest;
 
