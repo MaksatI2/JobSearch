@@ -11,6 +11,8 @@ import org.example.JobSearch.dto.create.CreateVacancyDTO;
 import org.example.JobSearch.exceptions.CreateVacancyException;
 import org.example.JobSearch.exceptions.EditVacancyException;
 import org.example.JobSearch.service.*;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.access.AccessDeniedException;
@@ -34,6 +36,7 @@ public class VacancyViewController {
     private final ResumeService resumeService;
     private final FavoriteVacancyService favoriteService;
     private final ResponseService responseService;
+    private final MessageSource messageSource;
 
 
     @GetMapping
@@ -114,7 +117,7 @@ public class VacancyViewController {
         Long currentUserId = userService.getUserId(currentUserEmail);
 
         if (!vacancy.getAuthorId().equals(currentUserId)) {
-            throw new AccessDeniedException("Вы не можете редактировать эту вакансию");
+            throw new AccessDeniedException(getMessage("vacancy.edit.forbidden"));
         }
 
         EditVacancyDTO form = vacancyService.convertToEditDTO(vacancy);
@@ -128,16 +131,7 @@ public class VacancyViewController {
     public String editVacancy(@PathVariable Long id,
                               @Valid @ModelAttribute("vacancyForm") EditVacancyDTO form,
                               BindingResult bindingResult,
-                              Model model,
-                              Principal principal) {
-
-        String currentUserEmail = principal.getName();
-        Long currentUserId = userService.getUserId(currentUserEmail);
-
-        VacancyDTO vacancy = vacancyService.getVacancyById(id);
-        if (!vacancy.getAuthorId().equals(currentUserId)) {
-            throw new AccessDeniedException("Вы не можете редактировать эту вакансию");
-        }
+                              Model model) {
 
         try {
             vacancyService.validateEditVacancyData(form, bindingResult);
@@ -196,7 +190,7 @@ public class VacancyViewController {
 
         VacancyDTO vacancy = vacancyService.getVacancyById(id);
         if (!vacancy.getAuthorId().equals(user.getId())) {
-            throw new AccessDeniedException("Вы можете обновлять только свои собственные вакансии.");
+            throw new AccessDeniedException(getMessage("vacancy.refresh.forbidden"));
         }
 
         vacancyService.refreshVacancy(id);
@@ -210,7 +204,7 @@ public class VacancyViewController {
 
         VacancyDTO vacancy = vacancyService.getVacancyById(id);
         if (!vacancy.getAuthorId().equals(user.getId())) {
-            throw new AccessDeniedException("Вы можете удалять только свои собственные вакансии.");
+            throw new AccessDeniedException(getMessage("vacancy.delete.forbidden"));
         }
 
         vacancyService.deleteVacancy(id);
@@ -229,7 +223,7 @@ public class VacancyViewController {
             Long currentUserId = userService.getUserId(currentUserEmail);
 
             if (!currentUserId.equals(userId)) {
-                throw new AccessDeniedException("Вы можете просматривать только свои вакансии с откликами");
+                throw new AccessDeniedException(getMessage("vacancy.view.forbidden"));
             }
 
             Page<VacancyDTO> vacanciesPage = vacancyService.getVacanciesWithResponsesByAuthorId(
@@ -249,6 +243,10 @@ public class VacancyViewController {
         } else {
             return "redirect:/auth/login";
         }
+    }
+
+    private String getMessage(String code) {
+        return messageSource.getMessage(code, null, LocaleContextHolder.getLocale());
     }
 
 }

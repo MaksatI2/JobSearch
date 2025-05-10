@@ -1,6 +1,7 @@
 package org.example.JobSearch.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.example.JobSearch.exceptions.UserNotFoundException;
 import org.example.JobSearch.model.User;
 import org.example.JobSearch.repository.UserRepository;
 import org.springframework.security.core.userdetails.*;
@@ -19,7 +20,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("{user.not.found}: " + email));
+                .orElseThrow(() -> new UserNotFoundException("{user.not.found}: " + email));
 
         String role = user.getAccountType().name();
 
