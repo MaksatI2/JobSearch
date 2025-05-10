@@ -13,11 +13,11 @@ public class EditUserDTO {
     Long id;
 
     @NotBlank(message = "{user.name.notBlank}")
-    @Size(min = 2, max = 50, message = "{user.name.size}")
+    @Pattern(regexp = "^[a-zA-Zа-яА-Я\\s-]+$", message = "{user.name.size}")
     private String name;
 
     @NotBlank(message = "{user.surname.notBlank}")
-    @Size(min = 2, max = 50, message = "{user.surname.size}")
+    @Pattern(regexp = "^[a-zA-Zа-яА-Я\\s-]+$", message = "{user.surname.size}")
     private String surname;
 
     @Min(value = 18, message = "{user.age.min}")

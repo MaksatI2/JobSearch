@@ -54,7 +54,7 @@ public class FileUtil {
                             .body(new ByteArrayResource(resource.getInputStream().readAllBytes()));
                 }
             } catch (Exception e) {
-                log.error("Ошибка загрузки дефолтного аватара", e);
+                log.error("Default avatar loading error", e);
             }
         } else {
             Path filePath = Paths.get(UPLOAD_DIR + IMAGES_SUBDIR).resolve(avatarPath);
@@ -79,7 +79,7 @@ public class FileUtil {
                     .contentType(mediaType)
                     .body(new ByteArrayResource(resource.getInputStream().readAllBytes()));
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Изображение не найдено");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Image not found");
         }
     }
 }
