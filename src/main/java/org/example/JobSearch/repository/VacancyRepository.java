@@ -27,6 +27,10 @@ public interface VacancyRepository extends JpaRepository<Vacancy, Long> {
     Page<Vacancy> findAllActiveSorted(@Param("sort") String sort,
                                       @Param("categoryId") Long categoryId,
                                       Pageable pageable);
+
+    @Query("SELECT v FROM Vacancy v WHERE LOWER(v.name) LIKE LOWER(CONCAT('%', :query, '%')) AND v.isActive = true")
+    Page<Vacancy> searchByNameIgnoreCase(@Param("query") String query, Pageable pageable);
+
     @Query("""
     SELECT DISTINCT v FROM Vacancy v 
     JOIN v.applicants ra

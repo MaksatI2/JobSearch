@@ -5,9 +5,9 @@
 
     <main class="main">
         <div class="container">
-            <h1 class="page-title"></h1>
+            <h1 class="page-title"><@spring.message code="vacancies.responded.title"/></h1>
 
-            <div class="filters-container">
+            <div class="filters-container-back">
                 <a href="/profile" class="reset-btn"><@spring.message code="vacancies.responded.back.profile"/></a>
             </div>
 

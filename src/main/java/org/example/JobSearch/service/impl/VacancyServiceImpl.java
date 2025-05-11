@@ -24,6 +24,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
 
 import java.sql.Timestamp;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -121,6 +124,21 @@ public class VacancyServiceImpl implements VacancyService {
     public Page<VacancyDTO> getAllVacanciesSorted(String sort, Long categoryId, Pageable pageable) {
         return vacancyRepository.findAllActiveSorted(sort, categoryId, pageable)
                 .map(this::toDTO);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<VacancyDTO> searchVacanciesByName(String query, int limit) {
+        String searchQuery = query.trim();
+        if (searchQuery.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        Pageable pageable = PageRequest.of(0, limit);
+        return vacancyRepository.searchByNameIgnoreCase(searchQuery, pageable)
+                .stream()
+                .map(this::toDTO)
+                .collect(Collectors.toList());
     }
 
     @Override

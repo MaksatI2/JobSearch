@@ -9,6 +9,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
 
+import java.util.List;
+
 public interface VacancyService {
     Page<VacancyDTO> getVacanciesByEmployer(Long employerId, int page, int size);
 
@@ -24,6 +26,9 @@ public interface VacancyService {
     Page<VacancyDTO> getAllVacanciesSorted(String sort, Long categoryId, Pageable pageable);
 
     Vacancy getVacancyEntityById(Long id);
+
+    @Transactional(readOnly = true)
+    List<VacancyDTO> searchVacanciesByName(String query, int limit);
 
     VacancyDTO getVacancyById(Long id);
 

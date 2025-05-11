@@ -247,6 +247,18 @@ public class VacancyViewController {
         }
     }
 
+    @GetMapping("/search")
+    @ResponseBody
+    public List<VacancyDTO> searchVacancies(
+            @RequestParam String query,
+            @RequestParam(defaultValue = "10") int limit) {
+
+        System.out.println("Search request received. Query: " + query + ", limit: " + limit);
+        List<VacancyDTO> results = vacancyService.searchVacanciesByName(query, limit);
+        System.out.println("Found " + results.size() + " vacancies");
+        return results;
+    }
+
     private String getMessage(String code) {
         return messageSource.getMessage(code, null, LocaleContextHolder.getLocale());
     }

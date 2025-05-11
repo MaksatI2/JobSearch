@@ -5,19 +5,6 @@
 styles="/static/css/vacancies/vacancies.css"
 activeNav="vacancies">
     <h1 class="page-title"><@spring.message code="vacancies.title"/></h1>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const categorySelect = document.getElementById('category');
-            const sortSelect = document.getElementById('sort');
-            const form = document.querySelector('.filter-form');
-
-            [categorySelect, sortSelect].forEach(select => {
-                select.addEventListener('change', function() {
-                    form.submit();
-                });
-            });
-        });
-    </script>
 
     <#if successMessage??>
         <div class="alert alert-success">
@@ -31,62 +18,65 @@ activeNav="vacancies">
         </div>
     </#if>
 
-    <div class="filters-container">
-        <form method="get" action="/vacancies" class="filter-form">
-            <input type="hidden" name="page" value="0">
-            <input type="hidden" name="size" value="${pageSize}">
+    <div class="unified-search-block">
+        <div class="search-container">
+            <input type="text" id="searchInput" placeholder="<@spring.message code="vacancies.search.placeholder"/>" class="search-input">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="search-icon">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <div id="searchResults" class="search-results"></div>
+        </div>
 
-            <div class="filter-group">
-                <label for="category"><@spring.message code="category.label"/></label>
-                <select id="category" name="categoryId" class="form-control">
-                    <option value=""><@spring.message code="category.all"/></option>
-                    <#list categories as category>
-                        <option value="${category.id}" <#if selectedCategory?? && selectedCategory == category.id>selected</#if>>
-                            ${category.name}
+        <div class="filters-container">
+            <form method="get" action="/vacancies" class="filter-form">
+                <input type="hidden" name="page" value="0">
+                <input type="hidden" name="size" value="${pageSize}">
+
+                <div class="filter-group">
+                    <select id="category" name="categoryId" class="form-control">
+                        <option value=""><@spring.message code="category.all"/></option>
+                        <#list categories as category>
+                            <option value="${category.id}" <#if selectedCategory?? && selectedCategory == category.id>selected</#if>>
+                                ${category.name}
+                            </option>
+                        </#list>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <select id="sort" name="sort" class="form-control">
+                        <option value=""><@spring.message code="sort.date"/></option>
+                        <option value="salaryAsc" <#if selectedSort?? && selectedSort == "salaryAsc">selected</#if>>
+                            <@spring.message code="sort.salary.asc"/>
                         </option>
-                    </#list>
-                </select>
-            </div>
+                        <option value="salaryDesc" <#if selectedSort?? && selectedSort == "salaryDesc">selected</#if>>
+                            <@spring.message code="sort.salary.desc"/>
+                        </option>
+                        <option value="expAsc" <#if selectedSort?? && selectedSort == "expAsc">selected</#if>>
+                            <@spring.message code="sort.exp.asc"/>
+                        </option>
+                        <option value="expDesc" <#if selectedSort?? && selectedSort == "expDesc">selected</#if>>
+                            <@spring.message code="sort.exp.desc"/>
+                        </option>
+                        <option value="responsesDesc" <#if selectedSort?? && selectedSort == "responsesDesc">selected</#if>>
+                            <@spring.message code="sort.responses.desc"/>
+                        </option>
+                    </select>
+                </div>
 
-            <div class="filter-group">
-                <label for="sort"><@spring.message code="sort.label"/></label>
-                <select id="sort" name="sort" class="form-control">
-                    <option value=""><@spring.message code="sort.date"/></option>
-                    <option value="salaryAsc" <#if selectedSort?? && selectedSort == "salaryAsc">selected</#if>>
-                        <@spring.message code="sort.salary.asc"/>
-                    </option>
-                    <option value="salaryDesc" <#if selectedSort?? && selectedSort == "salaryDesc">selected</#if>>
-                        <@spring.message code="sort.salary.desc"/>
-                    </option>
-                    <option value="expAsc" <#if selectedSort?? && selectedSort == "expAsc">selected</#if>>
-                        <@spring.message code="sort.exp.asc"/>
-                    </option>
-                    <option value="expDesc" <#if selectedSort?? && selectedSort == "expDesc">selected</#if>>
-                        <@spring.message code="sort.exp.desc"/>
-                    </option>
-                    <option value="responsesDesc" <#if selectedSort?? && selectedSort == "responsesDesc">selected</#if>>
-                        <@spring.message code="sort.responses.desc"/>
-                    </option>
-                </select>
-            </div>
-
-            <div class="filter-actions">
-                <button type="submit" class="submit-btn">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" class="btn-icon">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                    </svg>
-                    <@spring.message code="filter.apply"/>
-                </button>
-                <#if selectedSort?? || selectedCategory??>
-                    <a href="/vacancies?page=0&size=${pageSize}" class="reset-btn">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" class="btn-icon">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
-                        </svg>
-                        <@spring.message code="filter.reset"/>
-                    </a>
-                </#if>
-            </div>
-        </form>
+                <div class="filter-actions">
+                    <#if selectedSort?? || selectedCategory??>
+                        <a href="/vacancies?page=0&size=${pageSize}" class="reset-btn">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" class="btn-icon">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                            </svg>
+                            <@spring.message code="filter.reset"/>
+                        </a>
+                    </#if>
+                </div>
+            </form>
+        </div>
     </div>
 
     <#if vacancies?size == 0>
@@ -227,4 +217,97 @@ activeNav="vacancies">
             </div>
         </div>
     </#if>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const categorySelect = document.getElementById('category');
+            const sortSelect = document.getElementById('sort');
+            const form = document.querySelector('.filter-form');
+
+            [categorySelect, sortSelect].forEach(select => {
+                select.addEventListener('change', function() {
+                    form.submit();
+                });
+            });
+        });
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('searchInput');
+            const searchResults = document.getElementById('searchResults');
+            const searchIcon = document.querySelector('.search-icon');
+            let debounceTimer;
+
+            searchInput.addEventListener('input', function(e) {
+                clearTimeout(debounceTimer);
+
+                const query = e.target.value.trim();
+
+                if (query.length < 2) {
+                    searchResults.style.display = 'none';
+                    return;
+                }
+
+                debounceTimer = setTimeout(() => {
+                    fetchVacancies(query);
+                }, 300);
+            });
+
+            searchIcon.addEventListener('click', function() {
+                const query = searchInput.value.trim();
+                if (query.length >= 2) {
+                    fetchVacancies(query);
+                } else {
+                    searchInput.focus();
+                }
+            });
+
+            function fetchVacancies(query) {
+                console.log("Starting search with query:", query);
+                searchResults.innerHTML = '<div class="search-result-item">Поиск...</div>';
+                searchResults.classList.add('active');
+                searchResults.style.display = 'block';
+
+                fetch('/vacancies/search?query=' + encodeURIComponent(query) + '&limit=10')
+                    .then(response => {
+                        console.log("Response status:", response.status);
+                        return response.json();
+                    })
+                    .then(vacancies => {
+                        console.log('Received vacancies:', vacancies);
+                        displayResults(vacancies);
+                    })
+                    .catch(error => {
+                        console.error('Full error:', error);
+                        searchResults.innerHTML = '<div class="search-result-item">Error: ' + error.message + '</div>';
+                        searchResults.style.display = 'block';
+                    });
+            }
+
+            function displayResults(vacancies) {
+                if (vacancies.length === 0) {
+                    searchResults.innerHTML = '<div class="search-result-item"><@spring.message code="vacancies.not.found"/></div>';
+                    searchResults.classList.add('active');
+                    return;
+                }
+
+                let resultsHtml = '';
+                for (let i = 0; i < vacancies.length; i++) {
+                    const vacancy = vacancies[i];
+                    resultsHtml += '<div class="search-result-item" onclick="window.location.href=\'/vacancies/' +
+                        vacancy.id + '/info\'"><strong>' + vacancy.name + '</strong><br></div>';
+                }
+                searchResults.innerHTML = resultsHtml;
+                searchResults.classList.add('active');
+            }
+
+            document.addEventListener('click', function(e) {
+                if (!searchInput.contains(e.target) && !searchIcon.contains(e.target) && !searchResults.contains(e.target)) {
+                    searchResults.style.display = 'none';
+                }
+            });
+            searchInput.focus();
+        });
+    </script>
 </@layout.page>
