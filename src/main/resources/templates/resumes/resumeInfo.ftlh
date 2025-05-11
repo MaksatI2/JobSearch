@@ -26,7 +26,7 @@
                 </div>
             </div>
             <div class="salary-area">
-                <div class="salary-label">Ожидаемая зарплата</div>
+                <div class="salary-label"><@spring.message code="resumes.salary"/></div>
                 <div class="salary">${resume.salary} с</div>
             </div>
         </div>

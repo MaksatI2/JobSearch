@@ -30,7 +30,7 @@
             <@spring.bind "resumeForm.categoryId"/>
             <select class="form-control"${spring.status.error?string('is-invalid', '')}"
             id="categoryId" name="${spring.status.expression}" onchange="toggleFields()">
-            <option value="">><@spring.message code="resumes.category"/></option>
+            <option value=""><@spring.message code="resumes.category"/></option>
             <#list categories as category>
                 <option value="${category.id}" ${(spring.stringStatusValue == category.id?string)?string("selected", "")}>${category.name}</option>
             </#list>
