@@ -91,7 +91,6 @@ public class ResumeViewController {
             Model model,
             Principal principal) {
 
-
         if (removeWorkExpIndex != null && resumeDTO.getWorkExperiences() != null
                 && removeWorkExpIndex >= 0 && removeWorkExpIndex < resumeDTO.getWorkExperiences().size()) {
             resumeDTO.getWorkExperiences().remove(removeWorkExpIndex.intValue());
@@ -109,8 +108,8 @@ public class ResumeViewController {
         if (addWorkExp != null && addWorkExp) {
             if (resumeDTO.getWorkExperiences() == null || resumeDTO.getWorkExperiences().isEmpty()) {
                 resumeDTO.setWorkExperiences(new ArrayList<>());
-                resumeDTO.getWorkExperiences().add(new WorkExperienceDTO());
             }
+            resumeDTO.getWorkExperiences().add(new WorkExperienceDTO());
             model.addAttribute("categories", categoryService.getAllCategories());
             return "resumes/createResume";
         }
@@ -118,11 +117,11 @@ public class ResumeViewController {
         if (addEducation != null && addEducation) {
             if (resumeDTO.getEducationInfos() == null || resumeDTO.getEducationInfos().isEmpty()) {
                 resumeDTO.setEducationInfos(new ArrayList<>());
-                EducationInfoDTO education = new EducationInfoDTO();
-                education.setStartDate(new Date());
-                education.setEndDate(new Date());
-                resumeDTO.getEducationInfos().add(education);
             }
+            EducationInfoDTO education = new EducationInfoDTO();
+            education.setStartDate(new Date());
+            education.setEndDate(new Date());
+            resumeDTO.getEducationInfos().add(education);
             model.addAttribute("categories", categoryService.getAllCategories());
             return "resumes/createResume";
         }
@@ -133,7 +132,9 @@ public class ResumeViewController {
         }
 
         resumeService.validateCreateResume(resumeDTO, bindingResult);
-        resumeService.validateEducation(resumeDTO.getEducationInfos(), bindingResult);
+        if (resumeDTO.getEducationInfos() != null) {
+            resumeService.validateEducation(resumeDTO.getEducationInfos(), bindingResult);
+        }
 
         if (bindingResult.hasErrors()) {
             model.addAttribute("categories", categoryService.getAllCategories());
@@ -164,16 +165,16 @@ public class ResumeViewController {
         return "resumes/createResume";
     }
 
-    @PostMapping("/addEducation")
+    @PostMapping(value = "/create", params = {"addEducation"})
     public String addEducation(@ModelAttribute("resumeForm") CreateResumeDTO resumeDTO,
                                Model model) {
         if (resumeDTO.getEducationInfos() == null || resumeDTO.getEducationInfos().isEmpty()) {
             resumeDTO.setEducationInfos(new ArrayList<>());
-            EducationInfoDTO education = new EducationInfoDTO();
-            education.setStartDate(new Date());
-            education.setEndDate(new Date());
-            resumeDTO.getEducationInfos().add(education);
         }
+        EducationInfoDTO education = new EducationInfoDTO();
+        education.setStartDate(new Date());
+        education.setEndDate(new Date());
+        resumeDTO.getEducationInfos().add(education);
 
         model.addAttribute("resumeForm", resumeDTO);
         model.addAttribute("categories", categoryService.getAllCategories());
