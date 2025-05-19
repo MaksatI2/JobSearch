@@ -2,102 +2,122 @@
 <#import "../layout.ftlh" as layout>
 
 <@layout.page styles="/static/css/resumes/resumes.css" activeNav="profile">
+    <div class="container py-4">
+        <h1 class="mb-4 profile-title"><@spring.message code="vacancies.responded.title"/></h1>
 
-    <main class="main">
-        <div class="container">
-            <h1 class="page-title"><@spring.message code="vacancies.responded.title"/></h1>
+        <div class="mb-4">
+            <a href="/profile" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left me-1"></i>
+                <@spring.message code="vacancies.responded.back.profile"/>
+            </a>
+        </div>
 
-            <div class="filters-container">
-                <a href="/profile" class="reset-btn"><@spring.message code="vacancies.responded.back.profile"/></a>
-            </div>
-
-            <#if resumes?size == 0>
-                <div class="empty-state">
-                    <h3><@spring.message code="vacancies.responded.no.vacancies"/></h3>
-                    <p><@spring.message code="vacancies.responded.empty.vacancies"/></p>
+        <#if resumes?size == 0>
+            <div class="card border-0 shadow-sm p-5 text-center">
+                <div class="card-body">
+                    <h3 class="mb-3 text-primary"><@spring.message code="vacancies.responded.no.vacancies"/></h3>
+                    <p class="text-muted"><@spring.message code="vacancies.responded.empty.vacancies"/></p>
                 </div>
-            </#if>
+            </div>
+        </#if>
 
-            <div class="resumes-grid">
-                <#list resumes as resume>
-                    <div class="resume-card">
-                        <a href="/resumes/${resume.id}/info" class="resume-card-link">
-                            <div class="resume-header">
-                                <h2 class="resume-title">${resume.name}</h2>
-                                <div class="salary">${resume.salary?string} c</div>
+        <div class="row g-4">
+            <#list resumes as resume>
+                <div class="col-lg-6">
+                    <div class="card resume-card h-100 border-0 shadow-sm">
+                        <div class="card-body p-4">
+                            <div class="d-flex justify-content-between align-items-start mb-3">
+                                <a href="/resumes/${resume.id}/info" class="text-decoration-none">
+                                    <h5 class="card-title text-primary">${resume.name}</h5>
+                                </a>
+                                <span class="badge bg-primary rounded-pill fs-5">${resume.salary?string} c</span>
                             </div>
-                            <div class="resume-author">
+
+                            <div class="d-flex align-items-center mb-3">
                                 <#if resume.applicantAvatar?? && resume.applicantAvatar?has_content>
-                                    <img src="${resume.applicantAvatar}" alt="Аватар" class="avatar-small">
+                                    <img src="/api/users/${resume.applicantId}/avatar" alt="Аватар"  onerror="this.src='/static/default-avatar/default_avatar.jpg'" class="rounded-circle me-2" style="width: 40px; height: 40px; object-fit: cover;">
                                 <#else>
-                                    <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                              d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-                                    </svg>
+                                    <div class="d-flex align-items-center justify-content-center bg-light rounded-circle me-2" style="width: 40px; height: 40px;">
+                                        <i class="bi bi-person"></i>
+                                    </div>
                                 </#if>
-                                <span>${resume.applicantName!'Неизвестно'}</span>
-                                <#if resume.applicantAge??>
-                                    <span class="age">${resume.applicantAge} <@spring.message code="resumes.years"/></span>
-                                </#if>
+                                <div>
+                                    <span class="fw-medium">${resume.applicantName!'Неизвестно'}</span>
+                                    <#if resume.applicantAge??>
+                                        <span class="text-muted ms-2">${resume.applicantAge} <@spring.message code="resumes.years"/></span>
+                                    </#if>
+                                </div>
                             </div>
-                            <div class="resume-meta">
-                                <span class="responses">
-                                    <svg class="icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                              d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z"></path>
-                                    </svg>
-                                    <@spring.message code="response.count"/> ${resume.responsesCount!0}
-                                </span>
-                                <span class="update-time">
-                                    <svg class="icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                              d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                                    </svg>
-                                    <@spring.message code="resumes.date"/> ${resume.updateTime?string("dd.MM.yyyy")}
-                                </span>
+
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <div class="d-flex align-items-center text-muted">
+                                    <i class="bi bi-chat-text me-1"></i>
+                                    <span><@spring.message code="response.count"/> ${resume.responsesCount!0}</span>
+                                </div>
+                                <div class="d-flex align-items-center text-muted">
+                                    <i class="bi bi-calendar me-1"></i>
+                                    <span><@spring.message code="resumes.date"/> ${resume.updateTime?string("dd.MM.yyyy")}</span>
+                                </div>
                             </div>
-                        </a>
-                        <div class="resume-actions">
-                            <a href="/response/resumes/${resume.id}" class="submit-btn">
-                                <@spring.message code="nav.vacancies"/> (${resume.responsesCount})
-                            </a>
+
+                            <div class="d-grid">
+                                <a href="/response/resumes/${resume.id}" class="btn btn-primary">
+                                    <@spring.message code="nav.vacancies"/> (${resume.responsesCount})
+                                </a>
+                            </div>
                         </div>
                     </div>
-                </#list>
-            </div>
+                </div>
+            </#list>
+        </div>
 
-            <#if totalPages gt 1>
-                <div class="pagination">
+        <#if totalPages gt 1>
+            <nav aria-label="Page navigation" class="mt-4">
+                <ul class="pagination justify-content-center">
                     <#if currentPage gt 0>
-                        <a href="/resumes/${userId}/response?page=0&size=${pageSize}" class="page-link">««</a>
-                        <a href="/resumes/${userId}/response?page=${currentPage - 1}&size=${pageSize}" class="page-link">«</a>
+                        <li class="page-item">
+                            <a class="page-link" href="/resumes/${userId}/response?page=0&size=${pageSize}" aria-label="First">
+                                <span aria-hidden="true">&laquo;&laquo;</span>
+                            </a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="/resumes/${userId}/response?page=${currentPage - 1}&size=${pageSize}" aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
                     </#if>
 
                     <#list 0..totalPages-1 as i>
-                        <#if i == currentPage>
-                            <span class="page-link active">${i + 1}</span>
-                        <#else>
-                            <a href="/resumes/${userId}/response?page=${i}&size=${pageSize}" class="page-link">${i + 1}</a>
-                        </#if>
+                        <li class="page-item <#if i == currentPage>active</#if>">
+                            <a class="page-link" href="/resumes/${userId}/response?page=${i}&size=${pageSize}">${i + 1}</a>
+                        </li>
                     </#list>
 
                     <#if currentPage lt totalPages - 1>
-                        <a href="/resumes/${userId}/response?page=${currentPage + 1}&size=${pageSize}" class="page-link">»</a>
-                        <a href="/resumes/${userId}/response?page=${totalPages - 1}&size=${pageSize}" class="page-link">»»</a>
+                        <li class="page-item">
+                            <a class="page-link" href="/resumes/${userId}/response?page=${currentPage + 1}&size=${pageSize}" aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="/resumes/${userId}/response?page=${totalPages - 1}&size=${pageSize}" aria-label="Last">
+                                <span aria-hidden="true">&raquo;&raquo;</span>
+                            </a>
+                        </li>
                     </#if>
+                </ul>
 
-                    <div class="page-size">
-                        <@spring.message code="pagination"/>
-                        <select onchange="window.location.href='/resumes/${userId}/response?page=0&size='+this.value" class="page-size-select">
-                            <option value="5" <#if pageSize == 5>selected</#if>>5</option>
-                            <option value="10" <#if pageSize == 10>selected</#if>>10</option>
-                            <option value="20" <#if pageSize == 20>selected</#if>>20</option>
-                            <option value="50" <#if pageSize == 50>selected</#if>>50</option>
-                        </select>
-                    </div>
+                <div class="d-flex justify-content-center align-items-center mt-3">
+                    <span class="me-2"><@spring.message code="pagination"/></span>
+                    <select class="form-select form-select-sm" style="width: auto;"
+                            onchange="window.location.href='/resumes/${userId}/response?page=0&size='+this.value">
+                        <option value="5" <#if pageSize == 5>selected</#if>>5</option>
+                        <option value="10" <#if pageSize == 10>selected</#if>>10</option>
+                        <option value="20" <#if pageSize == 20>selected</#if>>20</option>
+                        <option value="50" <#if pageSize == 50>selected</#if>>50</option>
+                    </select>
                 </div>
-            </#if>
-        </div>
-    </main>
-
+            </nav>
+        </#if>
+    </div>
 </@layout.page>

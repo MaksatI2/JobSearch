@@ -42,14 +42,6 @@ body {
     background-color: var(--primary);
 }
 
-.nav-link {
-    color: var(--primary);
-}
-
-.nav-link:hover {
-    color: var(--primary-dark);
-}
-
 .card {
     transition: all 0.3s ease;
 }
