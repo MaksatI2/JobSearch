@@ -24,12 +24,11 @@
             <div class="row g-4">
                 <#list vacancies.content as vacancy>
                     <div class="col-lg-6">
+                        <a href="/vacancies/${vacancy.id}/info" class="text-decoration-none">
                         <div class="card vacancy-card h-100 border-0 shadow-sm">
                             <div class="card-body p-4 position-relative">
                                 <div class="d-flex justify-content-between align-items-start mb-3">
-                                    <a href="/vacancies/${vacancy.id}/info" class="text-decoration-none">
                                         <h5 class="card-title text-primary">${vacancy.name}</h5>
-                                    </a>
                                     <span class="badge bg-primary rounded-pill fs-5">${vacancy.salary} с</span>
                                 </div>
 
@@ -72,6 +71,7 @@
                                 </#if>
                             </div>
                         </div>
+                        </a>
                     </div>
                 </#list>
             </div>

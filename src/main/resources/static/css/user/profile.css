@@ -56,7 +56,6 @@ body {
     border-radius: 2px;
 }
 
-/* Стили для аватара */
 .avatar-container {
     position: relative;
     margin-bottom: 15px;
@@ -99,7 +98,6 @@ body {
     transform: translate(25%, 25%) scale(1.1);
 }
 
-/* Кнопки */
 .action-button {
     background-color: var(--green);
     border-color: var(--green);
@@ -128,7 +126,6 @@ body {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-/* Стили для карточек */
 .resume-card, .vacancy-card {
     transition: all 0.3s ease;
     border-left: 4px solid var(--primary);
@@ -144,7 +141,6 @@ body {
     font-size: 1.1rem;
 }
 
-/* Стили для кнопки обновления */
 .refresh-button {
     background-color: var(--green);
     border-color: var(--green);
@@ -155,7 +151,6 @@ body {
     border-color: #2f8859;
 }
 
-/* Стили для бейджа откликов */
 .responses-button {
     position: relative;
     background-color: var(--primary);
@@ -187,7 +182,6 @@ body {
     justify-content: center;
 }
 
-/* Переопределение цветов Bootstrap */
 .btn-primary {
     background-color: var(--primary);
     border-color: var(--primary);

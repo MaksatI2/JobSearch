@@ -2,6 +2,7 @@
 <#import "/spring.ftl" as spring>
 
 <@layout.page styles="/static/css/auth/register.css" activeNav="register">
+    <script src="/static/Js/auth/register.js"></script>
     <div class="row justify-content-center">
         <div class="col-lg-6 col-md-8">
             <div class="card auth-card border-0 mb-5">
@@ -121,6 +122,4 @@
             </div>
         </div>
     </div>
-    <script src="/static/Js/auth/register.js"></script>
-
 </@layout.page>

@@ -53,41 +53,4 @@
             </div>
         </div>
     </section>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const MAX_FILE_SIZE = 5 * 1024 * 1024;
-            const form = document.getElementById('avatarForm');
-            const fileInput = document.getElementById('avatarFileInput');
-            const fileError = document.getElementById('fileError');
-
-            form.addEventListener('submit', function(e) {
-                fileError.style.display = 'none';
-
-                if (fileInput.files.length > 0) {
-                    const file = fileInput.files[0];
-
-                    if (file.size > MAX_FILE_SIZE) {
-                        e.preventDefault();
-                        fileError.textContent = '<@spring.message code="profile.edit.avatar.error.size" arguments=["5"]/>';
-                        fileError.style.display = 'block';
-                    }
-                }
-            });
-
-            fileInput.addEventListener('change', function() {
-                if (this.files.length > 0) {
-                    const file = this.files[0];
-
-                    if (file.size > MAX_FILE_SIZE) {
-                        fileError.textContent = '<@spring.message code="profile.edit.avatar.error.size" arguments=["5"]/>';
-                        fileError.style.display = 'block';
-                        this.value = '';
-                    } else {
-                        fileError.style.display = 'none';
-                    }
-                }
-            });
-        });
-    </script>
 </@layout.page>

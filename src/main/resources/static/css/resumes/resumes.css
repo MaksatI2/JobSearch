@@ -85,7 +85,6 @@ body {
     color: white;
 }
 
-/* Стили для предупреждений */
 .alert-success {
     background-color: #E6FFFA;
     color: #2C7A7B;
@@ -98,7 +97,6 @@ body {
     border-left: 4px solid var(--red);
 }
 
-/* Иконки Bootstrap */
 @import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css");
 
 .text-primary {

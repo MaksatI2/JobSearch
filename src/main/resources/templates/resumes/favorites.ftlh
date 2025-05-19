@@ -39,12 +39,11 @@
             <div class="row g-4">
                 <#list resumes as resume>
                     <div class="col-lg-6">
+                        <a href="/resumes/${resume.id}/info" class="text-decoration-none">
                         <div class="card resume-card h-100 border-0 shadow-sm">
                             <div class="card-body p-4 position-relative">
                                 <div class="d-flex justify-content-between align-items-start mb-3">
-                                    <a href="/resumes/${resume.id}/info" class="text-decoration-none">
-                                        <h5 class="card-title text-primary">${resume.name}</h5>
-                                    </a>
+                                    <h5 class="card-title text-primary">${resume.name}</h5>
                                     <span class="badge bg-primary rounded-pill fs-5">${resume.salary} с</span>
                                 </div>
 
@@ -88,6 +87,7 @@
                                 </#if>
                             </div>
                         </div>
+                        </a>
                     </div>
                 </#list>
             </div>

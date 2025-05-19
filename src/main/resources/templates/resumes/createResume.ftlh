@@ -2,6 +2,7 @@
 <#import "../layout.ftlh" as layout>
 
 <@layout.page styles="/static/css/resumes/createResume.css" activeNav="resumes">
+    <script src="/static/Js/resumes/create-resume.js"></script>
     <div class="container py-4">
         <h1 class="page-title mb-4"><@spring.message code="resume.create.title"/></h1>
 
@@ -315,5 +316,4 @@
             </div>
         </form>
     </div>
-    <script src="/static/Js/resumes/create-resume.js"></script>
 </@layout.page>
