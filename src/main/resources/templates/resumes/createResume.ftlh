@@ -5,6 +5,21 @@
     <div class="container py-4">
         <h1 class="page-title mb-4"><@spring.message code="resume.create.title"/></h1>
 
+        <div id="i18n"
+             data-company-label="<@spring.message code='resume.work.company' />"
+             data-position-label="<@spring.message code='resume.work.position' />"
+             data-years-label="<@spring.message code='resume.work.years' />"
+             data-months-label="<@spring.message code='resume.work.months' />"
+             data-responsibilities-label="<@spring.message code='resume.work.responsibilities' />"
+             data-remove-label="<@spring.message code='resume.work.remove' />"
+             data-edu-institution="<@spring.message code='resume.education.institution' />"
+             data-edu-degree="<@spring.message code='resume.education.degree' />"
+             data-edu-program="<@spring.message code='resume.education.program' />"
+             data-edu-start-date="<@spring.message code='resume.education.startDate' />"
+             data-edu-end-date="<@spring.message code='resume.education.endDate' />"
+             data-edu-remove="<@spring.message code='resume.education.remove' />">
+        </div>
+
         <@spring.bind "resumeForm" />
         <#if spring.status.error>
             <div class="global-error alert alert-danger mb-4">
@@ -109,9 +124,9 @@
                                 <@spring.formTextarea "resumeForm.workExperiences[${workExp?index}].responsibilities", "class='form-control' rows='3'" />
                                 <@spring.showErrors "<br>", "field-error"/>
                             </div>
-                            <div class="mt-4 pt-3 border-top">
+                            <div class="d-flex justify-content-end">
                                 <button type="button" name="removeWorkExp" value="${workExp?index}"
-                                        class="remove-btn btn btn-danger w-100 w-md-auto">
+                                        class="remove-btn btn btn-danger">
                                     <@spring.message code="resume.work.remove"/>
                                 </button>
                             </div>
@@ -187,11 +202,9 @@
                 <@spring.showErrors "<br>", "error" />
             </div>
 
-            <#if !(resumeForm.educationInfos?? && resumeForm.educationInfos?has_content)>
-                <button type="button" name="addEducation" value="true" class="btn-add btn btn-primary mb-5">
-                    <i class="bi bi-plus me-2"></i><@spring.message code="resume.education.add"/>
-                </button>
-            </#if>
+            <button type="submit" name="addEducation" value="true" class="btn-add btn btn-primary mb-5">
+                <i class="bi bi-plus me-2"></i><@spring.message code="resume.education.add"/>
+            </button>
 
             <h3 class="section-title mb-3"><@spring.message code="resume.contacts.title"/></h3>
             <div id="contact-infos" class="row row-cols-1 row-cols-md-2 g-3 mb-4">

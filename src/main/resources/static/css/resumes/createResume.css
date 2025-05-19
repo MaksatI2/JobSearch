@@ -163,17 +163,3 @@ body {
     border-radius: 6px;
     border: 1px solid #ddd;
 }
-
-@media (max-width: 767.98px) {
-    .page-title {
-        font-size: 1.8rem;
-    }
-
-    .section-title {
-        font-size: 1.3rem;
-    }
-
-    .form-actions {
-        flex-direction: column;
-    }
-}
