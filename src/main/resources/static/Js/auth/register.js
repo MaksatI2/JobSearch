@@ -1,27 +1,26 @@
-function showForm(formType) {
-    document.querySelectorAll('.nav-link[data-type]').forEach(btn => {
-        btn.classList.toggle('active', btn.getAttribute('data-type') === formType);
-    });
+function showForm(type) {
+    const applicantBtn = document.querySelector('button[data-type="applicant"]');
+    const employerBtn = document.querySelector('button[data-type="employer"]');
+    const applicantForm = document.getElementById('form-applicant-block');
+    const employerForm = document.getElementById('form-employer-block');
 
-    document.getElementById('form-applicant-block').style.display =
-        formType === 'applicant' ? 'block' : 'none';
-    document.getElementById('form-employer-block').style.display =
-        formType === 'employer' ? 'block' : 'none';
+    if (type === 'applicant') {
+        applicantBtn.classList.add('active');
+        employerBtn.classList.remove('active');
+        applicantForm.style.display = 'block';
+        employerForm.style.display = 'none';
+    } else {
+        employerBtn.classList.add('active');
+        applicantBtn.classList.remove('active');
+        employerForm.style.display = 'block';
+        applicantForm.style.display = 'none';
+    }
 
-    localStorage.setItem('selectedFormType', formType);
-
-    const url = new URL(window.location);
-    url.searchParams.set('type', formType);
-    window.history.replaceState({}, '', url);
+    sessionStorage.setItem('registerFormType', type);
 }
 
-document.addEventListener('DOMContentLoaded', function() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const typeParam = urlParams.get('type');
-
-    if (typeParam === 'employer' || typeParam === 'applicant') {
-        showForm(typeParam);
-    } else {
-        showForm('applicant');
-    }
+document.addEventListener('DOMContentLoaded', function () {
+    const storedType = sessionStorage.getItem('registerFormType');
+    const initialType = storedType || '${type!""}'  || 'applicant';
+    showForm(initialType);
 });
