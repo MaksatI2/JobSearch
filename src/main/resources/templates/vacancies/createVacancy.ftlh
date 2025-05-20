@@ -31,14 +31,16 @@ activeNav="vacancies">
                     </div>
 
                     <div class="mb-3">
-                        <label for="categoryId" class="form-label"><@spring.message code="vacancies.editing.vacancy.category"/></label>
-                        <select class="form-select" id="categoryId" name="categoryId">
-                            <option value=""><@spring.message code="vacancies.select.category"/></option>
+                        <@spring.bind "vacancyForm.categoryId"/>
+                        <label for="categoryId" class="form-label"><@spring.message code="resumes.category"/></label>
+                        <select class="form-control ${spring.status.error?string('is-invalid', '')}"
+                                id="categoryId" name="${spring.status.expression}" onchange="toggleFields()">
+                            <option value=""><@spring.message code="resumes.category"/></option>
                             <#list categories as category>
-                                <option value="${category.id}" <#if vacancyForm.categoryId?? && vacancyForm.categoryId == category.id>selected</#if>>${category.name}</option>
+                                <option value="${category.id}" ${(spring.stringStatusValue == category.id?string)?string("selected", "")}>${category.name}</option>
                             </#list>
                         </select>
-                        <@spring.showErrors "<br>" "error" />
+                        <@spring.showErrors "<br>", "error" />
                     </div>
 
                     <div class="mb-3">
@@ -82,7 +84,6 @@ activeNav="vacancies">
                             <option value="true" <#if vacancyForm.isActive?? && vacancyForm.isActive == true>selected</#if>><@spring.message code="vacancies.status.active"/></option>
                             <option value="false" <#if vacancyForm.isActive?? && vacancyForm.isActive == false>selected</#if>><@spring.message code="vacancies.status.inactive"/></option>
                         </select>
-                        <@spring.showErrors "isActive" "error" />
                     </div>
 
                     <div class="d-grid">

@@ -19,14 +19,14 @@
             <div class="related-items">
                 <div class="related-item">
                     <h4><@spring.message code="messages.vacancy"/></h4>
-                    <a href="/vacancies/${conversation.vacancyId}" class="badge bg-light text-dark p-2 vacancy-badge">
+                    <a href="/vacancies/${conversation.vacancyId}/info" class="badge bg-light text-dark p-2 vacancy-badge">
                         ${conversation.vacancyTitle}
                     </a>
                 </div>
 
                 <div class="related-item mt-3">
                     <h4><@spring.message code="messages.resume" /></h4>
-                    <a href="/resumes/${conversation.resumeId}" class="badge bg-light text-dark p-2 resume-badge">
+                    <a href="/resumes/${conversation.resumeId}/info" class="badge bg-light text-dark p-2 resume-badge">
                         ${conversation.resumeTitle}
                     </a>
                 </div>

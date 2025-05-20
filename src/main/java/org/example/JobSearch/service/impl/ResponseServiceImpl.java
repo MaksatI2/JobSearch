@@ -1,12 +1,11 @@
 package org.example.JobSearch.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.example.JobSearch.dto.MessageDTO;
 import org.example.JobSearch.dto.ResumeDTO;
 import org.example.JobSearch.dto.VacancyDTO;
 import org.example.JobSearch.model.AccountType;
-import org.example.JobSearch.model.Message;
 import org.example.JobSearch.model.RespondedApplicant;
-import org.example.JobSearch.repository.MessageRepository;
 import org.example.JobSearch.repository.RespondedApplicantRepository;
 import org.example.JobSearch.service.*;
 import org.springframework.context.MessageSource;
@@ -29,7 +28,7 @@ public class ResponseServiceImpl implements ResponseService {
     private final VacancyService vacancyService;
     private final UserService userService;
     private final MessageSource messageSource;
-    private final MessageRepository messageRepository;
+    private final MessageService messageService;
 
     @Override
     @Transactional
@@ -44,13 +43,14 @@ public class ResponseServiceImpl implements ResponseService {
         response.setConfirmation(null);
         respondedApplicantRepository.save(response);
 
-        Message firstMessage = new Message();
-        firstMessage.setDescription("Здравствуйте, меня интересует ваша вакансия. Не могли бы вы посмотреть мое резюме?");
-        firstMessage.setSendTime(new Timestamp(Instant.now().toEpochMilli()));
-        firstMessage.setSenderType(AccountType.APPLICANT);
-        firstMessage.setRespondedApplicant(response);
-        firstMessage.setRead(false);
-        messageRepository.save(firstMessage);
+        MessageDTO messageDTO = new MessageDTO();
+        messageDTO.setContent("Здравствуйте, меня интересует ваша вакансия...");
+        messageDTO.setSendTime(new Timestamp(Instant.now().toEpochMilli()));
+        messageDTO.setSenderType(AccountType.APPLICANT);
+        messageDTO.setRespondedApplicantId(response.getId());
+        messageDTO.setRead(false);
+
+        messageService.saveMessage(messageDTO);
     }
 
     @Override

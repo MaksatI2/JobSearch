@@ -5,8 +5,8 @@ import org.example.JobSearch.dto.MessageDTO;
 import org.example.JobSearch.model.Message;
 import org.example.JobSearch.model.RespondedApplicant;
 import org.example.JobSearch.repository.MessageRepository;
-import org.example.JobSearch.repository.RespondedApplicantRepository;
 import org.example.JobSearch.service.MessageService;
+import org.example.JobSearch.service.RespondedApplicantProvider;
 import org.example.JobSearch.service.UserService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 public class MessageServiceImpl implements MessageService {
 
     private final MessageRepository messageRepository;
-    private final RespondedApplicantRepository respondedApplicantRepository;
+    private final RespondedApplicantProvider respondedApplicantService;
     private final UserService userService;
 
     @Override
@@ -38,8 +38,7 @@ public class MessageServiceImpl implements MessageService {
         message.setSendTime(new Timestamp(Instant.now().toEpochMilli()));
         message.setSenderType(messageDTO.getSenderType());
 
-        RespondedApplicant respondedApplicant = respondedApplicantRepository.findById(messageDTO.getRespondedApplicantId())
-                .orElseThrow(() -> new IllegalArgumentException("Conversation not found"));
+        RespondedApplicant respondedApplicant = respondedApplicantService.getById(messageDTO.getRespondedApplicantId());
 
         message.setRespondedApplicant(respondedApplicant);
         message.setRead(false);
@@ -81,7 +80,7 @@ public class MessageServiceImpl implements MessageService {
     @Override
     @Transactional(readOnly = true)
     public Page<MessageDTO> getConversationsByApplicantId(Long applicantId, Pageable pageable) {
-        List<RespondedApplicant> respondedApplicants = respondedApplicantRepository.findByResumeApplicantId(applicantId);
+        List<RespondedApplicant> respondedApplicants = respondedApplicantService.getByApplicantId(applicantId);
 
         Map<Long, MessageDTO> conversationMap = new HashMap<>();
         for (RespondedApplicant ra : respondedApplicants) {
@@ -114,7 +113,7 @@ public class MessageServiceImpl implements MessageService {
     @Override
     @Transactional(readOnly = true)
     public Page<MessageDTO> getConversationsByEmployerId(Long employerId, Pageable pageable) {
-        List<RespondedApplicant> respondedApplicants = respondedApplicantRepository.findByVacancyAuthorId(employerId);
+        List<RespondedApplicant> respondedApplicants = respondedApplicantService.getByEmployerId(employerId);
 
         Map<Long, MessageDTO> conversationMap = new HashMap<>();
 
@@ -199,8 +198,7 @@ public class MessageServiceImpl implements MessageService {
     @Override
     @Transactional(readOnly = true)
     public MessageDTO getConversationDetails(Long respondedApplicantId) {
-        RespondedApplicant respondedApplicant = respondedApplicantRepository.findById(respondedApplicantId)
-                .orElseThrow(() -> new IllegalArgumentException("Conversation not found"));
+        RespondedApplicant respondedApplicant = respondedApplicantService.getById(respondedApplicantId);
 
         MessageDTO messageDTO = new MessageDTO();
         messageDTO.setRespondedApplicantId(respondedApplicantId);
