@@ -1,0 +1,16 @@
+databaseChangeLog:
+  - changeSet:
+      id: 033
+      author: I.Maksat
+      changes:
+        - addColumn:
+            tableName: messages
+            columns:
+              - column:
+                  name: sender_type
+                  type: VARCHAR(255)
+              - column:
+                  name: is_read
+                  type: BOOLEAN
+                  constraints:
+                    nullable: false
