@@ -21,6 +21,5 @@ public class WorkExperienceDTO {
 
     private String position;
 
-    @Size(min = 10, max = 1000, message = "{experience.responsibilities.size}")
     private String responsibilities;
 }

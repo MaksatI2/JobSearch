@@ -4,6 +4,7 @@ package org.example.JobSearch.service;
 import org.example.JobSearch.dto.EditDTO.EditResumeDTO;
 import org.example.JobSearch.dto.EducationInfoDTO;
 import org.example.JobSearch.dto.ResumeDTO;
+import org.example.JobSearch.dto.WorkExperienceDTO;
 import org.example.JobSearch.dto.create.CreateResumeDTO;
 import org.example.JobSearch.model.Resume;
 import org.springframework.data.domain.Page;
@@ -17,8 +18,10 @@ public interface ResumeService {
     void updateResume(Long resumeId, EditResumeDTO editresumeDto);
     void deleteResume(Long resumeId);
     void refreshResume(Long resumeId);
-    void validateCreateResume(CreateResumeDTO resumeDto, BindingResult bindingResult);
-    void validateEducation(List<EducationInfoDTO> educationInfos, BindingResult bindingResult);
+    void validateCreateResume(CreateResumeDTO resumeDto, BindingResult bindingResult, Integer userAge);
+
+    void validateEducation(List<EducationInfoDTO> educationInfos, Integer userAge, BindingResult bindingResult);
+    void validateWorkExperience(List<WorkExperienceDTO> workExperiences, Integer userAge, BindingResult bindingResult);
 
     Page<ResumeDTO> getResumesByApplicant(Long applicantId, int page, int size);
     Page<ResumeDTO> getAllResumes(String sort,Pageable pageable);

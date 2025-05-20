@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.example.JobSearch.dto.*;
 import org.example.JobSearch.dto.EditDTO.EditResumeDTO;
 import org.example.JobSearch.dto.create.CreateResumeDTO;
+import org.example.JobSearch.exceptions.CreateResumeException;
 import org.example.JobSearch.service.*;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -91,70 +92,75 @@ public class ResumeViewController {
             Model model,
             Principal principal) {
 
-        if (removeWorkExpIndex != null && resumeDTO.getWorkExperiences() != null
+        try {
+            if (removeWorkExpIndex != null && resumeDTO.getWorkExperiences() != null
                 && removeWorkExpIndex >= 0 && removeWorkExpIndex < resumeDTO.getWorkExperiences().size()) {
-            resumeDTO.getWorkExperiences().remove(removeWorkExpIndex.intValue());
-            model.addAttribute("categories", categoryService.getAllCategories());
-            return "resumes/createResume";
-        }
+                resumeDTO.getWorkExperiences().remove(removeWorkExpIndex.intValue());
+                model.addAttribute("categories", categoryService.getAllCategories());
+                return "resumes/createResume";
+            }
 
-        if (removeEducationIndex != null && resumeDTO.getEducationInfos() != null
+            if (removeEducationIndex != null && resumeDTO.getEducationInfos() != null
                 && removeEducationIndex >= 0 && removeEducationIndex < resumeDTO.getEducationInfos().size()) {
-            resumeDTO.getEducationInfos().remove(removeEducationIndex.intValue());
-            model.addAttribute("categories", categoryService.getAllCategories());
-            return "resumes/createResume";
-        }
-
-        if (addWorkExp != null && addWorkExp) {
-            if (resumeDTO.getWorkExperiences() == null || resumeDTO.getWorkExperiences().isEmpty()) {
-                resumeDTO.setWorkExperiences(new ArrayList<>());
+                resumeDTO.getEducationInfos().remove(removeEducationIndex.intValue());
+                model.addAttribute("categories", categoryService.getAllCategories());
+                return "resumes/createResume";
             }
-            resumeDTO.getWorkExperiences().add(new WorkExperienceDTO());
-            model.addAttribute("categories", categoryService.getAllCategories());
-            return "resumes/createResume";
-        }
 
-        if (addEducation != null && addEducation) {
-            if (resumeDTO.getEducationInfos() == null || resumeDTO.getEducationInfos().isEmpty()) {
-                resumeDTO.setEducationInfos(new ArrayList<>());
+            if (addWorkExp != null && addWorkExp) {
+                if (resumeDTO.getWorkExperiences() == null || resumeDTO.getWorkExperiences().isEmpty()) {
+                    resumeDTO.setWorkExperiences(new ArrayList<>());
+                }
+                resumeDTO.getWorkExperiences().add(new WorkExperienceDTO());
+                model.addAttribute("categories", categoryService.getAllCategories());
+                return "resumes/createResume";
             }
-            EducationInfoDTO education = new EducationInfoDTO();
-            education.setStartDate(new Date());
-            education.setEndDate(new Date());
-            resumeDTO.getEducationInfos().add(education);
+
+            if (addEducation != null && addEducation) {
+                if (resumeDTO.getEducationInfos() == null || resumeDTO.getEducationInfos().isEmpty()) {
+                    resumeDTO.setEducationInfos(new ArrayList<>());
+                }
+                EducationInfoDTO education = new EducationInfoDTO();
+                education.setStartDate(new Date());
+                education.setEndDate(new Date());
+                resumeDTO.getEducationInfos().add(education);
+                model.addAttribute("categories", categoryService.getAllCategories());
+                return "resumes/createResume";
+            }
+
+            if (bindingResult.hasErrors()) {
+                model.addAttribute("categories", categoryService.getAllCategories());
+                return "resumes/createResume";
+            }
+
+            String currentUserEmail = principal.getName();
+            UserDTO user = userService.getUserByEmail(currentUserEmail);
+            Integer userAge = user.getAge();
+
+            resumeService.validateCreateResume(resumeDTO, bindingResult, userAge);
+
+            if (bindingResult.hasErrors()) {
+                model.addAttribute("categories", categoryService.getAllCategories());
+                return "resumes/createResume";
+            }
+
+            Long applicantId = userService.getUserId(currentUserEmail);
+            resumeDTO.setApplicantId(applicantId);
+            resumeDTO.setCreateDate(new Timestamp(System.currentTimeMillis()));
+            resumeDTO.setUpdateTime(new Timestamp(System.currentTimeMillis()));
+
+            resumeService.createResume(resumeDTO, bindingResult);
+            return "redirect:/profile";
+        } catch (CreateResumeException e) {
+            bindingResult.rejectValue(e.getFieldName(), "error.resumeForm", e.getMessage());
             model.addAttribute("categories", categoryService.getAllCategories());
             return "resumes/createResume";
         }
-
-        if (bindingResult.hasErrors()) {
-            model.addAttribute("categories", categoryService.getAllCategories());
-            return "resumes/createResume";
-        }
-
-        resumeService.validateCreateResume(resumeDTO, bindingResult);
-        if (resumeDTO.getEducationInfos() != null) {
-            resumeService.validateEducation(resumeDTO.getEducationInfos(), bindingResult);
-        }
-
-        if (bindingResult.hasErrors()) {
-            model.addAttribute("categories", categoryService.getAllCategories());
-            return "resumes/createResume";
-        }
-
-        String currentUserEmail = principal.getName();
-        Long applicantId = userService.getUserId(currentUserEmail);
-        resumeDTO.setApplicantId(applicantId);
-        resumeDTO.setCreateDate(new Timestamp(System.currentTimeMillis()));
-        resumeDTO.setUpdateTime(new Timestamp(System.currentTimeMillis()));
-
-        resumeService.createResume(resumeDTO, bindingResult);
-        return "redirect:/profile";
     }
 
     @PostMapping(value = "/create", params = {"addWorkExp"})
     public String addWorkExperience(@ModelAttribute("resumeForm") CreateResumeDTO resumeDTO,
                                     Model model) {
-
         if (resumeDTO.getWorkExperiences() == null || resumeDTO.getWorkExperiences().isEmpty()) {
             resumeDTO.setWorkExperiences(new ArrayList<>());
         }
@@ -220,6 +226,7 @@ public class ResumeViewController {
         model.addAttribute("resumeForm", editResumeDto);
         model.addAttribute("categories", categoryService.getAllCategories());
         model.addAttribute("resumeId", id);
+        model.addAttribute("userAge", resume.getApplicantAge());
         return "resumes/editResume";
     }
 
@@ -232,13 +239,19 @@ public class ResumeViewController {
             @RequestParam(value = "addEducation", required = false) Boolean addEducation,
             @RequestParam(value = "removeWorkExp", required = false) Integer removeWorkExpIndex,
             @RequestParam(value = "removeEducation", required = false) Integer removeEducationIndex,
-            Model model) {
+            Model model,
+            Principal principal) {
+
+        String currentUserEmail = principal.getName();
+        UserDTO user = userService.getUserByEmail(currentUserEmail);
+        Integer userAge = user.getAge();
 
         if (removeWorkExpIndex != null && editResumeDto.getWorkExperiences() != null
             && removeWorkExpIndex >= 0 && removeWorkExpIndex < editResumeDto.getWorkExperiences().size()) {
             editResumeDto.getWorkExperiences().remove(removeWorkExpIndex.intValue());
             model.addAttribute("categories", categoryService.getAllCategories());
             model.addAttribute("resumeId", id);
+            model.addAttribute("userAge", userAge);
             return "resumes/editResume";
         }
 
@@ -247,6 +260,7 @@ public class ResumeViewController {
             editResumeDto.getEducationInfos().remove(removeEducationIndex.intValue());
             model.addAttribute("categories", categoryService.getAllCategories());
             model.addAttribute("resumeId", id);
+            model.addAttribute("userAge", userAge);
             return "resumes/editResume";
         }
 
@@ -257,6 +271,7 @@ public class ResumeViewController {
             editResumeDto.getWorkExperiences().add(new WorkExperienceDTO());
             model.addAttribute("categories", categoryService.getAllCategories());
             model.addAttribute("resumeId", id);
+            model.addAttribute("userAge", userAge);
             return "resumes/editResume";
         }
 
@@ -270,19 +285,28 @@ public class ResumeViewController {
             editResumeDto.getEducationInfos().add(education);
             model.addAttribute("categories", categoryService.getAllCategories());
             model.addAttribute("resumeId", id);
+            model.addAttribute("userAge", userAge);
             return "resumes/editResume";
         }
-
-        editResumeDto.setUpdateTime(new Timestamp(System.currentTimeMillis()));
 
         if (bindingResult.hasErrors()) {
             model.addAttribute("categories", categoryService.getAllCategories());
             model.addAttribute("resumeId", id);
+            model.addAttribute("userAge", userAge);
             return "resumes/editResume";
         }
 
-        resumeService.validateEducation(editResumeDto.getEducationInfos(), bindingResult);
+        resumeService.validateEducation(editResumeDto.getEducationInfos(), userAge, bindingResult);
+        resumeService.validateWorkExperience(editResumeDto.getWorkExperiences(), userAge, bindingResult);
 
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("categories", categoryService.getAllCategories());
+            model.addAttribute("resumeId", id);
+            model.addAttribute("userAge", userAge);
+            return "resumes/editResume";
+        }
+
+        editResumeDto.setUpdateTime(new Timestamp(System.currentTimeMillis()));
         resumeService.updateResume(id, editResumeDto);
         return "redirect:/profile";
     }

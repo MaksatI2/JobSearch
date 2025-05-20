@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -63,6 +64,15 @@ public class GlobalControllerAdvice {
         ModelAndView mav = new ModelAndView("auth/register");
         mav.addObject("error",  e.getMessage());
         mav.addObject("type", e.getFieldName().contains("company") ? "employer" : "applicant");
+        return mav;
+    }
+
+    @ExceptionHandler(CreateResumeException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ModelAndView handleCreateResumeException(CreateResumeException e) {
+        ModelAndView mav = new ModelAndView("resumes/createResume");
+        mav.addObject("error", e.getMessage());
+        mav.addObject("fieldErrors", Collections.singletonMap(e.getFieldName(), e.getMessage()));
         return mav;
     }
 

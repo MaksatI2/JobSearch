@@ -8,7 +8,6 @@ import org.example.JobSearch.dto.EducationInfoDTO;
 import org.example.JobSearch.dto.ResumeDTO;
 import org.example.JobSearch.dto.WorkExperienceDTO;
 import org.example.JobSearch.dto.create.CreateResumeDTO;
-import org.example.JobSearch.exceptions.CreateResumeException;
 import org.example.JobSearch.exceptions.ResumeNotFoundException;
 import org.example.JobSearch.model.Category;
 import org.example.JobSearch.model.Resume;
@@ -25,6 +24,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
 
 import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.Period;
+import java.time.ZoneId;
 import java.util.List;
 
 @Slf4j
@@ -58,9 +60,8 @@ public class ResumeServiceImpl implements ResumeService {
     @Transactional
     public void createResume(CreateResumeDTO resumeDto, BindingResult bindingResult) {
         log.info("Создание нового резюме для соискателя ID: {}", resumeDto.getApplicantId());
-        validateCreateResume(resumeDto, bindingResult);
-
         User applicant = userService.getUserId(resumeDto.getApplicantId());
+        validateCreateResume(resumeDto, bindingResult, applicant.getAge());
 
         Category category = categoryService.getCategoryById(resumeDto.getCategoryId());
 
@@ -110,14 +111,6 @@ public class ResumeServiceImpl implements ResumeService {
 
         Resume resume = resumeRepository.findById(resumeId)
                 .orElseThrow(() -> new ResumeNotFoundException(getMessage("resume.not.found.with.id") + " " + resumeId));
-
-        if (editResumeDto.getEducationInfos() != null) {
-            updateEducationInfo(resume, editResumeDto.getEducationInfos());
-        }
-
-        if (editResumeDto.getWorkExperiences() != null) {
-            updateWorkExperience(resume, editResumeDto.getWorkExperiences());
-        }
 
         if (editResumeDto.getContactInfos() != null) {
             updateContactInfo(resume, editResumeDto.getContactInfos());
@@ -212,30 +205,18 @@ public class ResumeServiceImpl implements ResumeService {
     }
 
     @Override
-    public void validateCreateResume(CreateResumeDTO resumeDto, BindingResult bindingResult) {
-        if (resumeDto.getCategoryId() == null) {
-            throw new CreateResumeException("categoryId", getMessage("resume.category.empty"));
+    public void validateCreateResume(CreateResumeDTO resumeDto, BindingResult bindingResult, Integer userAge) {
+        if (resumeDto.getWorkExperiences() != null && !resumeDto.getWorkExperiences().isEmpty()) {
+            validateWorkExperience(resumeDto.getWorkExperiences(), userAge, bindingResult);
         }
 
-        if (resumeDto.getName() == null || resumeDto.getName().trim().isEmpty()) {
-            throw new CreateResumeException("name", getMessage("resume.name.empty"));
-        }
-
-        if (resumeDto.getName().matches(".*\\d.*")) {
-            throw new CreateResumeException("name", getMessage("resume.name.numbers"));
-        }
-
-        if (resumeDto.getSalary() != null) {
-            if (resumeDto.getSalary() < 0) {
-                throw new CreateResumeException("salary", getMessage("resume.salary.negative"));
-            }
+        if (resumeDto.getEducationInfos() != null && !resumeDto.getEducationInfos().isEmpty()) {
+            validateEducation(resumeDto.getEducationInfos(), userAge, bindingResult);
         }
 
         if (resumeDto.getContactInfos() != null) {
-            List<ContactInfoDTO> contactInfos = resumeDto.getContactInfos();
-
-            for (int i = 0; i < contactInfos.size(); i++) {
-                ContactInfoDTO contact = contactInfos.get(i);
+            for (int i = 0; i < resumeDto.getContactInfos().size(); i++) {
+                ContactInfoDTO contact = resumeDto.getContactInfos().get(i);
                 String value = contact.getValue();
                 Long typeId = contact.getTypeId();
 
@@ -243,66 +224,107 @@ public class ResumeServiceImpl implements ResumeService {
                     continue;
                 }
 
-                if (typeId == 1 && !value.matches("^996\\d{9}$")) {
-                    throw new CreateResumeException("contactInfos[" + i + "].value",
-                            getMessage("contact.phone.invalid"));
-                }
-
-                if (typeId == 2 && !value.matches("^[\\w.-]+@[\\w.-]+\\.[a-zA-Z]{2,6}$")) {
-                    throw new CreateResumeException("contactInfos[" + i + "].value",
-                            getMessage("contact.email.invalid"));
-                }
-
-                if (typeId == 3 && !value.matches("^https://(www\\.)?linkedin\\.com/in/.+")) {
-                    throw new CreateResumeException("contactInfos[" + i + "].value",
-                            getMessage("contact.linkedin.invalid"));
-                }
-
-                if (typeId == 4 && !value.matches("^https://(www\\.)?github\\.com/.+")) {
-                    throw new CreateResumeException("contactInfos[" + i + "].value",
-                            getMessage("contact.github.invalid"));
-                }
-
-                if (typeId == 5 && !value.matches("^@\\w{5,}$") && !value.matches("^996\\d{9}$")) {
-                    throw new CreateResumeException("contactInfos[" + i + "].value",
-                            getMessage("contact.telegram.invalid"));
-                }
-
-                if (typeId == 6 && !value.matches("^(https?://)?[\\w.-]+\\.[a-z]{2,6}.*$")) {
-                    throw new CreateResumeException("contactInfos[" + i + "].value",
-                            getMessage("contact.website.invalid"));
+                switch (typeId.intValue()) {
+                    case 1:
+                        if (!value.matches("^996\\d{9}$")) {
+                            bindingResult.rejectValue("contactInfos[" + i + "].value",
+                                    "error.resumeForm", getMessage("contact.phone.invalid"));
+                        }
+                        break;
+                    case 2:
+                        if (!value.matches("^[\\w.-]+@[\\w.-]+\\.[a-zA-Z]{2,6}$")) {
+                            bindingResult.rejectValue("contactInfos[" + i + "].value",
+                                    "error.resumeForm", getMessage("contact.email.invalid"));
+                        }
+                        break;
+                    case 3:
+                        if (!value.matches("^https://(www\\.)?linkedin\\.com/in/.+")) {
+                            bindingResult.rejectValue("contactInfos[" + i + "].value",
+                                    "error.resumeForm", getMessage("contact.linkedin.invalid"));
+                        }
+                        break;
+                    case 4:
+                        if (!value.matches("^https://(www\\.)?github\\.com/.+")) {
+                            bindingResult.rejectValue("contactInfos[" + i + "].value",
+                                    "error.resumeForm", getMessage("contact.github.invalid"));
+                        }
+                        break;
+                    case 5:
+                        if (!value.matches("^@\\w{5,}$") && !value.matches("^996\\d{9}$")) {
+                            bindingResult.rejectValue("contactInfos[" + i + "].value",
+                                    "error.resumeForm", getMessage("contact.telegram.invalid"));
+                        }
+                        break;
+                    case 6:
+                        if (!value.matches("^(https?://)?[\\w.-]+\\.[a-z]{2,6}.*$")) {
+                            bindingResult.rejectValue("contactInfos[" + i + "].value",
+                                    "error.resumeForm", getMessage("contact.website.invalid"));
+                        }
+                        break;
+                    default:
+                        bindingResult.rejectValue("contactInfos[" + i + "].typeId",
+                                "error.resumeForm", getMessage("contact.type.invalid"));
                 }
             }
         }
     }
 
     @Override
-    public void validateEducation(List<EducationInfoDTO> educationInfos, BindingResult bindingResult) {
+    public void validateEducation(List<EducationInfoDTO> educationInfos, Integer userAge, BindingResult bindingResult) {
         if (educationInfos == null || educationInfos.isEmpty()) {
             return;
         }
 
         Timestamp now = new Timestamp(System.currentTimeMillis());
+        LocalDate currentDate = now.toLocalDateTime().toLocalDate();
+        LocalDate userAge16Date = currentDate.minusYears(userAge - 16);
 
-        for (EducationInfoDTO eduDto : educationInfos) {
-            if (eduDto.getStartDate() == null) {
-                throw new CreateResumeException("startDate", getMessage("education.start.empty"));
-            }
-
-            if (eduDto.getEndDate() == null) {
-                throw new CreateResumeException("endDate", getMessage("education.end.empty"));
-            }
+        for (int i = 0; i < educationInfos.size(); i++) {
+            EducationInfoDTO eduDto = educationInfos.get(i);
 
             if (eduDto.getStartDate().after(now)) {
-                throw new CreateResumeException("startDate", getMessage("education.start.future"));
+                bindingResult.rejectValue("educationInfos[" + i + "].startDate",
+                        "error.resumeForm", getMessage("education.start.future"));
             }
 
             if (eduDto.getEndDate().after(now)) {
-                throw new CreateResumeException("endDate", getMessage("education.end.future"));
+                bindingResult.rejectValue("educationInfos[" + i + "].endDate",
+                        "error.resumeForm", getMessage("education.end.future"));
             }
 
-            if (eduDto.getStartDate().after(eduDto.getEndDate())) {
-                throw new CreateResumeException("startDate", getMessage("education.period.invalid"));
+            if (eduDto.getStartDate() != null && eduDto.getEndDate() != null
+                && eduDto.getStartDate().after(eduDto.getEndDate())) {
+                bindingResult.rejectValue("educationInfos[" + i + "].startDate",
+                        "error.resumeForm", getMessage("education.period.invalid"));
+            }
+
+            LocalDate startDate = eduDto.getStartDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+            if (startDate.isBefore(userAge16Date)) {
+                bindingResult.rejectValue("educationInfos[" + i + "].startDate",
+                        "error.resumeForm", getMessage("education.start.too.early"));
+            }
+        }
+    }
+
+    public void validateWorkExperience(List<WorkExperienceDTO> workExperiences, Integer userAge, BindingResult bindingResult) {
+        if (workExperiences == null || workExperiences.isEmpty()) {
+            return;
+        }
+
+        LocalDate currentDate = LocalDate.now();
+        LocalDate userAge18Date = currentDate.minusYears(userAge - 18);
+
+        for (int i = 0; i < workExperiences.size(); i++) {
+            WorkExperienceDTO workExp = workExperiences.get(i);
+
+            int totalMonths = (workExp.getYears() != null ? workExp.getYears() * 12 : 0) +
+                              (workExp.getMonths() != null ? workExp.getMonths() : 0);
+            int maxPossibleMonths = Period.between(userAge18Date, currentDate).getYears() * 12 +
+                                    Period.between(userAge18Date, currentDate).getMonths();
+
+            if (totalMonths > maxPossibleMonths) {
+                bindingResult.rejectValue("workExperiences[" + i + "].years",
+                        "error.resumeForm", getMessage("resume.work.experience.too.long"));
             }
         }
     }

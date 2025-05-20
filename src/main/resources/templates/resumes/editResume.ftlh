@@ -12,9 +12,7 @@
              data-years-label="<@spring.message code='resume.work.years' />"
              data-months-label="<@spring.message code='resume.work.months' />"
              data-responsibilities-label="<@spring.message code='resume.work.responsibilities' />"
-             data-remove-label="<@spring.message code='resume.work.remove' />">
-        </div>
-        <div id="i18n"
+             data-remove-label="<@spring.message code='resume.work.remove' />"
              data-edu-institution="<@spring.message code='resume.education.institution' />"
              data-edu-degree="<@spring.message code='resume.education.degree' />"
              data-edu-program="<@spring.message code='resume.education.program' />"
