@@ -2,9 +2,10 @@
 <#import "/spring.ftl" as spring>
 
 <@layout.page styles="/static/css/resumes/resumes.css" activeNav="resumes">
+    <script src="/static/Js/notifications.js"></script>
 
-    <div class="container">
-        <h1 class="page-title"><@spring.message code="resumes.title"/></h1>
+    <div class="container py-4">
+        <h1 class="mb-4 profile-title"><@spring.message code="resumes.title"/></h1>
 
         <#if successMessage??>
             <div class="alert alert-success">
@@ -18,134 +19,154 @@
             </div>
         </#if>
 
-        <div class="filters-container">
-            <form method="get" action="/resumes/allResumes" class="filter-form">
-                <input type="hidden" name="page" value="0">
-                <input type="hidden" name="size" value="${pageSize}">
+        <div class="card shadow-sm mb-4 border-0 rounded-3">
+            <div class="card-body p-3">
+                <form method="get" action="/resumes/allResumes" class="row g-2 align-items-end">
+                    <input type="hidden" name="page" value="0">
+                    <input type="hidden" name="size" value="${pageSize}">
 
-                <div class="filter-group">
-                    <label for="sort"><@spring.message code="sort.label"/></label>
-                    <select id="sort" name="sort" class="form-control">
-                        <option value=""><@spring.message code="sort.date"/></option>
-                        <option value="salaryAsc" <#if selectedSort?? && selectedSort == "salaryAsc">selected</#if>>
-                            <@spring.message code="sort.salary.asc"/>
-                        </option>
-                        <option value="salaryDesc" <#if selectedSort?? && selectedSort == "salaryDesc">selected</#if>>
-                            <@spring.message code="sort.salary.desc"/>
-                        </option>
-                    </select>
-                </div>
+                    <div class="col-md-4">
+                        <label for="sort" class="form-label"><@spring.message code="sort.label"/></label>
+                        <select id="sort" name="sort" class="form-select">
+                            <option value=""><@spring.message code="sort.date"/></option>
+                            <option value="salaryAsc" <#if selectedSort?? && selectedSort == "salaryAsc">selected</#if>>
+                                <@spring.message code="sort.salary.asc"/>
+                            </option>
+                            <option value="salaryDesc" <#if selectedSort?? && selectedSort == "salaryDesc">selected</#if>>
+                                <@spring.message code="sort.salary.desc"/>
+                            </option>
+                        </select>
+                    </div>
 
-                <button type="submit" class="submit-btn">
-                    <@spring.message code="filter.apply"/>
-                </button>
+                    <div class="col-auto">
+                        <button type="submit" class="btn btn-primary">
+                            <@spring.message code="filter.apply"/>
+                        </button>
+                    </div>
 
-                <#if selectedSort??>
-                    <a href="/vacancies?page=0&size=${pageSize}" class="reset-btn">
-                        <@spring.message code="filter.reset"/>
-                    </a>
-                </#if>
-            </form>
+                    <#if selectedSort??>
+                        <div class="col-auto">
+                            <a href="/resumes/allResumes" class="btn btn-outline-secondary">
+                                <@spring.message code="filter.reset"/>
+                            </a>
+                        </div>
+                    </#if>
+                </form>
+            </div>
         </div>
 
         <#if resumes?? && resumes?has_content>
-            <div class="resumes-grid">
+            <div class="row g-4">
                 <#list resumes as resume>
-                    <a href="/resumes/${resume.id}/info" class="resume-link">
-                        <article class="resume-card">
-                            <div class="resume-header">
-                                <h2 class="resume-title">${resume.name}</h2>
-                                <span class="salary">${resume.salary} с</span>
+                    <div class="col-lg-12">
+                        <a href="/resumes/${resume.id}/info" class="text-decoration-none">
+                        <div class="card resume-card h-100 border-0 shadow-sm">
+                            <div class="card-body p-4 position-relative">
+                                <div class="d-flex justify-content-between align-items-start mb-3">
+                                    <h5 class="card-title text-primary">${resume.name}</h5>
+                                    <span class="badge bg-primary rounded-pill fs-5">${resume.salary} с</span>
+                                </div>
+
+                                <div class="d-flex align-items-center mb-3">
+                                    <#if resume.applicantAvatar?? && resume.applicantAvatar?has_content>
+                                        <img src="${resume.applicantAvatar}" alt="Аватар" class="rounded-circle me-2" style="width: 40px; height: 40px; object-fit: cover;">
+                                    <#else>
+                                        <div class="d-flex align-items-center justify-content-center bg-light rounded-circle me-2" style="width: 40px; height: 40px;">
+                                            <i class="bi bi-person"></i>
+                                        </div>
+                                    </#if>
+                                    <div>
+                                        <span class="fw-medium">${resume.applicantName!'Неизвестно'}</span>
+                                        <#if resume.applicantAge??>
+                                            <span class="text-muted ms-2">${resume.applicantAge} <@spring.message code="resumes.years"/></span>
+                                        </#if>
+                                    </div>
+                                </div>
+
+                                <div class="d-flex justify-content-end align-items-center text-muted">
+                                    <i class="bi bi-calendar me-1"></i>
+                                    <small>${resume.updateTime?string("dd.MM.yyyy")}</small>
+                                </div>
+
+                                <form action="/favorites/resumes/${resume.id}/add" method="post" class="position-absolute top-0 end-0 mt-2 me-2">
+                                    <input type="hidden" name="resumeId" value="${resume.id}">
+                                    <#if _csrf??>
+                                        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                                    </#if>
+                                    <button type="submit" class="btn btn-link text-warning p-0 border-0" title="Добавить в избранное">
+                                        <i class="bi bi-bookmark-star<#if favoriteResumeIds?? && favoriteResumeIds?seq_contains(resume.id)>-fill</#if> fs-4"></i>
+                                    </button>
+                                </form>
+
+                                <#if Session.SPRING_SECURITY_CONTEXT?? && !Session.SPRING_SECURITY_CONTEXT.authentication.authorities?seq_contains('APPLICANT')>
+                                    <#if resume.applicantId??>
+                                        <a href="/profile/viewApplicant/${resume.applicantId}" class="btn btn-sm btn-primary mt-3">
+                                            <@spring.message code="resumes.profile"/>
+                                        </a>
+                                    </#if>
+                                </#if>
                             </div>
-
-                            <div class="resume-author">
-                                <#if resume.applicantAvatar?? && resume.applicantAvatar?has_content>
-                                    <img src="${resume.applicantAvatar}" alt="Аватар" class="avatar-small">
-                                <#else>
-                                    <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                              d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-                                    </svg>
-                                </#if>
-                                <span>${resume.applicantName!'Неизвестно'}</span>
-                                <#if resume.applicantAge??>
-                                    <span class="age">${resume.applicantAge} <@spring.message code="resumes.years"/></span>
-                                </#if>
-                            </div>
-
-                            <div class="resume-meta">
-                            <span class="update-time">
-                                <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                          d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                                </svg>
-                                ${resume.updateTime?string("dd.MM.yyyy")}
-                            </span>
-                            </div>
-
-                            <form action="/favorites/resumes/${resume.id}/add" method="post" class="favorite-form">
-                                <input type="hidden" name="resumeId" value="${resume.id}">
-                                <#if _csrf??>
-                                    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-                                </#if>
-                                <button type="submit" class="favorite-btn" title="Добавить в избранное">
-                                    <svg width="24" height="24" viewBox="0 0 24 24"
-                                         fill="<#if favoriteResumeIds?? && favoriteResumeIds?seq_contains(resume.id)>gold<#else>none</#if>"
-                                         stroke="currentColor" stroke-width="2"
-                                         stroke-linecap="round" stroke-linejoin="round" class="favorite-icon">
-                                        <path d="M5 3v18l7-5 7 5V3z"/>
-                                    </svg>
-                                </button>
-                            </form>
-
-                            <#if Session.SPRING_SECURITY_CONTEXT?? && !Session.SPRING_SECURITY_CONTEXT.authentication.authorities?seq_contains('APPLICANT')>
-                                <#if resume.applicantId??>
-                                    <a href="/profile/viewApplicant/${resume.applicantId}" class="applicant-profile-btn">
-                                        <@spring.message code="resumes.profile"/>
-                                    </a>
-                                </#if>
-                            </#if>
-                        </article>
-                    </a>
+                        </div>
+                       </a>
+                    </div>
                 </#list>
             </div>
 
             <#if totalPages gt 1>
-                <div class="pagination">
-                    <#if currentPage gt 0>
-                        <a href="/resumes/allResumes?page=0&size=${pageSize}" class="page-link">««</a>
-                        <a href="/resumes/allResumes?page=${currentPage - 1}&size=${pageSize}" class="page-link">«</a>
-                    </#if>
-
-                    <#list 0..totalPages-1 as i>
-                        <#if i == currentPage>
-                            <span class="page-link active">${i + 1}</span>
-                        <#else>
-                            <a href="/resumes/allResumes?page=${i}&size=${pageSize}" class="page-link">${i + 1}</a>
+                <nav aria-label="Page navigation" class="mt-4">
+                    <ul class="pagination justify-content-center">
+                        <#if currentPage gt 0>
+                            <li class="page-item">
+                                <a class="page-link" href="/resumes/allResumes?page=0&size=${pageSize}" aria-label="First">
+                                    <span aria-hidden="true">&laquo;&laquo;</span>
+                                </a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link" href="/resumes/allResumes?page=${currentPage - 1}&size=${pageSize}" aria-label="Previous">
+                                    <span aria-hidden="true">&laquo;</span>
+                                </a>
+                            </li>
                         </#if>
-                    </#list>
 
-                    <#if currentPage lt totalPages - 1>
-                        <a href="/resumes/allResumes?page=${currentPage + 1}&size=${pageSize}" class="page-link">»</a>
-                        <a href="/resumes/allResumes?page=${totalPages - 1}&size=${pageSize}" class="page-link">»»</a>
-                    </#if>
+                        <#list 0..totalPages-1 as i>
+                            <li class="page-item <#if i == currentPage>active</#if>">
+                                <a class="page-link" href="/resumes/allResumes?page=${i}&size=${pageSize}">${i + 1}</a>
+                            </li>
+                        </#list>
 
-                    <div class="page-size">
-                        <@spring.message code="pagination"/>
-                        <select onchange="window.location.href='/resumes/allResumes?page=0&size='+this.value" class="page-size-select">
+                        <#if currentPage lt totalPages - 1>
+                            <li class="page-item">
+                                <a class="page-link" href="/resumes/allResumes?page=${currentPage + 1}&size=${pageSize}" aria-label="Next">
+                                    <span aria-hidden="true">&raquo;</span>
+                                </a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link" href="/resumes/allResumes?page=${totalPages - 1}&size=${pageSize}" aria-label="Last">
+                                    <span aria-hidden="true">&raquo;&raquo;</span>
+                                </a>
+                            </li>
+                        </#if>
+                    </ul>
+
+                    <div class="d-flex justify-content-center align-items-center mt-3">
+                        <span class="me-2"><@spring.message code="pagination"/></span>
+                        <select class="form-select form-select-sm" style="width: auto;"
+                                onchange="window.location.href='/resumes/allResumes?page=0&size='+this.value">
                             <option value="5" <#if pageSize == 5>selected</#if>>5</option>
                             <option value="10" <#if pageSize == 10>selected</#if>>10</option>
                             <option value="20" <#if pageSize == 20>selected</#if>>20</option>
                             <option value="50" <#if pageSize == 50>selected</#if>>50</option>
                         </select>
                     </div>
-                </div>
+                </nav>
             </#if>
 
         <#else>
-            <div class="empty-state">
-                <h3><@spring.message code="resumes.empty"/></h3>
-                <p><@spring.message code="resumes.message"/></p>
+            <div class="card border-0 shadow-sm p-5 text-center">
+                <div class="card-body">
+                    <h3 class="mb-3 text-primary"><@spring.message code="resumes.empty"/></h3>
+                    <p class="text-muted mb-0"><@spring.message code="resumes.message"/></p>
+                </div>
             </div>
         </#if>
     </div>

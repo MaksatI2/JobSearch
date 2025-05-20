@@ -1,14 +1,13 @@
 package org.example.JobSearch.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.example.JobSearch.dto.MessageDTO;
 import org.example.JobSearch.dto.ResumeDTO;
 import org.example.JobSearch.dto.VacancyDTO;
+import org.example.JobSearch.model.AccountType;
 import org.example.JobSearch.model.RespondedApplicant;
 import org.example.JobSearch.repository.RespondedApplicantRepository;
-import org.example.JobSearch.service.ResumeService;
-import org.example.JobSearch.service.ResponseService;
-import org.example.JobSearch.service.UserService;
-import org.example.JobSearch.service.VacancyService;
+import org.example.JobSearch.service.*;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
@@ -16,6 +15,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.List;
 
 @Service
@@ -27,6 +28,7 @@ public class ResponseServiceImpl implements ResponseService {
     private final VacancyService vacancyService;
     private final UserService userService;
     private final MessageSource messageSource;
+    private final MessageService messageService;
 
     @Override
     @Transactional
@@ -40,6 +42,15 @@ public class ResponseServiceImpl implements ResponseService {
         response.setVacancy(vacancyService.getVacancyEntityById(vacancyId));
         response.setConfirmation(null);
         respondedApplicantRepository.save(response);
+
+        MessageDTO messageDTO = new MessageDTO();
+        messageDTO.setContent("Здравствуйте, меня интересует ваша вакансия...");
+        messageDTO.setSendTime(new Timestamp(Instant.now().toEpochMilli()));
+        messageDTO.setSenderType(AccountType.APPLICANT);
+        messageDTO.setRespondedApplicantId(response.getId());
+        messageDTO.setRead(false);
+
+        messageService.saveMessage(messageDTO);
     }
 
     @Override

@@ -2,80 +2,77 @@
 <#import "/spring.ftl" as spring>
 
 <@layout.page styles="/static/css/resumes/resumes.css" activeNav="favorite">
+    <div class="container py-4">
+        <h1 class="mb-4 profile-title"><@spring.message code="resumes.favorites.title"/></h1>
+        <script src="/static/Js/notifications.js"></script>
 
-            <h1 class="page-title"><@spring.message code="resumes.favorites.title"/></h1>
-
-            <#if successMessage??>
-                <div class="alert alert-success">
-                    ${successMessage}
-                </div>
-            </#if>
-
-            <#if errorMessage??>
-                <div class="alert alert-danger">
-                    ${errorMessage}
-                </div>
-            </#if>
-
-            <div class="favorite-container">
-                <a href="/resumes/allResumes" class="submit-btn">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" class="btn-icon">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                              d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
-                    </svg>
-                    <@spring.message code="resumes.favorites.back.resumes"/>
-                </a>
+        <#if successMessage??>
+            <div class="alert alert-success mb-4">
+                ${successMessage}
             </div>
+        </#if>
 
-            <#if resumes?size == 0>
-                <div class="empty-state">
-                    <h3><@spring.message code="resumes.favorites.no.vacancies"/></h3>
-                    <p><@spring.message code="resumes.favorites.empty.resumes"/></p>
-                    <a href="/resumes/allResumes" class="submit-btn"><@spring.message code="resumes.favorites.show"/></a>
+        <#if errorMessage??>
+            <div class="alert alert-danger mb-4">
+                ${errorMessage}
+            </div>
+        </#if>
+
+        <div class="mb-4">
+            <a href="/resumes/allResumes" class="btn btn-primary">
+                <i class="bi bi-arrow-left me-1"></i>
+                <@spring.message code="resumes.favorites.back.resumes"/>
+            </a>
+        </div>
+
+        <#if resumes?size == 0>
+            <div class="card border-0 shadow-sm p-5 text-center">
+                <div class="card-body">
+                    <h3 class="mb-3 text-primary"><@spring.message code="resumes.favorites.no.vacancies"/></h3>
+                    <p class="text-muted mb-4"><@spring.message code="resumes.favorites.empty.resumes"/></p>
+                    <a href="/resumes/allResumes" class="btn btn-primary">
+                        <@spring.message code="resumes.favorites.show"/>
+                    </a>
                 </div>
-            <#else>
-                <div class="resumes-grid">
-                    <#list resumes as resume>
-                        <a href="/resumes/${resume.id}/info" class="resume-link">
-                            <article class="resume-card">
-                                <div class="resume-header">
-                                    <h2 class="resume-title">${resume.name}</h2>
-                                    <span class="salary">${resume.salary} с</span>
+            </div>
+        <#else>
+            <div class="row g-4">
+                <#list resumes as resume>
+                    <div class="col-lg-6">
+                        <a href="/resumes/${resume.id}/info" class="text-decoration-none">
+                        <div class="card resume-card h-100 border-0 shadow-sm">
+                            <div class="card-body p-4 position-relative">
+                                <div class="d-flex justify-content-between align-items-start mb-3">
+                                    <h5 class="card-title text-primary">${resume.name}</h5>
+                                    <span class="badge bg-primary rounded-pill fs-5">${resume.salary} с</span>
                                 </div>
 
-                                <div class="resume-author">
+                                <div class="d-flex align-items-center mb-3">
                                     <#if resume.applicantAvatar?? && resume.applicantAvatar?has_content>
-                                        <img src="${resume.applicantAvatar}" alt="Аватар" class="avatar-small">
+                                        <img src="/api/users/${resume.applicantId}/avatar" alt="Аватар"  onerror="this.src='/static/default-avatar/default_avatar.jpg'" class="rounded-circle me-2" style="width: 40px; height: 40px; object-fit: cover;">
                                     <#else>
-                                        <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                  d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-                                        </svg>
+                                        <div class="d-flex align-items-center justify-content-center bg-light rounded-circle me-2" style="width: 40px; height: 40px;">
+                                            <i class="bi bi-person"></i>
+                                        </div>
                                     </#if>
-                                    <span>${resume.applicantName}</span>
-                                    <#if resume.applicantAge??>
-                                        <span class="age">${resume.applicantAge} <@spring.message code="resumes.years"/></span>
-                                    </#if>
+                                    <div>
+                                        <span class="fw-medium">${resume.applicantName}</span>
+                                        <#if resume.applicantAge??>
+                                            <span class="text-muted ms-2">${resume.applicantAge} <@spring.message code="resumes.years"/></span>
+                                        </#if>
+                                    </div>
                                 </div>
 
-                                <div class="resume-meta">
-                                <span class="update-time">
-                                    <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                              d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                                    </svg>
-                                    ${resume.updateTime?string("dd.MM.yyyy")}
-                                </span>
+                                <div class="d-flex justify-content-end align-items-center text-muted">
+                                    <i class="bi bi-calendar me-1"></i>
+                                    <small>${resume.updateTime?string("dd.MM.yyyy")}</small>
                                 </div>
 
-                                <div class="favorite-actions">
+                                <div class="position-absolute bottom-0 end-0 mb-3 me-3">
                                     <form action="/favorites/resumes/${resume.id}/remove" method="post">
                                         <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-                                        <button type="submit" class="remove-favorite-btn">
-                                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                      d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
-                                            </svg>
+                                        <button type="submit" class="btn btn-sm btn-danger">
+                                            <i class="bi bi-trash me-1"></i>
                                             <@spring.message code="favorites.delete"/>
                                         </button>
                                     </form>
@@ -83,15 +80,17 @@
 
                                 <#if Session.SPRING_SECURITY_CONTEXT?? && !Session.SPRING_SECURITY_CONTEXT.authentication.authorities?seq_contains('APPLICANT')>
                                     <#if resume.applicantId??>
-                                        <a href="/profile/viewApplicant/${resume.applicantId}" class="applicant-profile-btn">
+                                        <a href="/profile/viewApplicant/${resume.applicantId}" class="btn btn-sm btn-primary mt-3">
                                             <@spring.message code="resumes.profile"/>
                                         </a>
                                     </#if>
                                 </#if>
-                            </article>
+                            </div>
+                        </div>
                         </a>
-                    </#list>
-                </div>
-            </#if>
-
+                    </div>
+                </#list>
+            </div>
+        </#if>
+    </div>
 </@layout.page>

@@ -188,4 +188,12 @@ public class UserServiceImpl implements UserService {
     private String getMessage(String code) {
         return messageSource.getMessage(code, null, LocaleContextHolder.getLocale());
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public boolean isEmployer(String userEmail) {
+        return userRepository.findByEmail(userEmail)
+                .map(user -> user.getAccountType() == AccountType.EMPLOYER)
+                .orElseThrow(() -> new UserNotFoundException(getMessage("user.not.found.with.email") + userEmail));
+    }
 }

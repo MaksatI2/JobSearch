@@ -2,97 +2,113 @@
 <#import "../layout.ftlh" as layout>
 
 <@layout.page styles="/static/css/vacancies/vacancies.css" activeNav="profile">
+    <div class="container py-4">
+        <h1 class="profile-title mb-4"><@spring.message code="vacancies.responded.title"/></h1>
 
-    <main class="main">
-        <div class="container">
-            <h1 class="page-title"></h1>
+        <div class="mb-4">
+            <a href="/profile" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left me-1"></i>
+                <@spring.message code="vacancies.responded.back.profile"/>
+            </a>
+        </div>
 
-            <div class="filters-container">
-                <a href="/profile" class="reset-btn"><@spring.message code="vacancies.responded.back.profile"/></a>
-            </div>
-
-            <#if vacancies?size == 0>
-                <div class="empty-state">
-                    <h3><@spring.message code="vacancies.responded.no.vacancies"/></h3>
-                    <p><@spring.message code="vacancies.responded.empty.vacancies"/></p>
+        <#if vacancies?size == 0>
+            <div class="card border-0 shadow-sm p-5 text-center">
+                <div class="card-body">
+                    <h3 class="mb-3 text-primary"><@spring.message code="vacancies.responded.no.vacancies"/></h3>
+                    <p class="text-muted"><@spring.message code="vacancies.responded.empty.vacancies"/></p>
                 </div>
-            </#if>
+            </div>
+        </#if>
 
-            <div class="vacancies-grid">
-                <#list vacancies as vacancy>
-                    <div class="vacancy-card">
-                        <a href="/vacancies/${vacancy.id}/info" class="vacancy-card-link">
-                            <div class="vacancy-header">
-                                <h2 class="vacancy-title">${vacancy.name}</h2>
-                                <div class="salary">${vacancy.salary?string} c</div>
+        <div class="row g-4">
+            <#list vacancies as vacancy>
+                <div class="col-lg-6">
+                    <a href="/vacancies/${vacancy.id}/info" class="text-decoration-none">
+                    <div class="card vacancy-card h-100 border-0 shadow-sm">
+                        <div class="card-body p-4">
+                            <div class="d-flex justify-content-between align-items-start mb-3">
+                                <h5 class="card-title text-primary">${vacancy.name}</h5>
+                                <span class="badge bg-primary rounded-pill fs-5">${vacancy.salary?string} c</span>
                             </div>
-                            <p class="vacancy-description">${vacancy.description}</p>
-                            <div class="vacancy-meta">
-                            <span class="experience">
-                                <svg class="icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                          d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                </svg>
-                                <@spring.message code="vacancies.card.exp"/> ${vacancy.expFrom}-${vacancy.expTo}
-                                <@spring.message code="vacancies.card.exp.years"/>
-                            </span>
-                                <span class="responses">
-                                <svg class="icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                          d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z"></path>
-                                </svg>
-                                <@spring.message code="vacancies.responded.count"/> ${vacancy.responsesCount!0}
-                            </span>
-                                <span class="update-time">
-                                <svg class="icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                          d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                                </svg>
-                                <@spring.message code="vacancies.card.date"/> ${vacancy.updateTime?string("dd.MM.yyyy")}
-                            </span>
+
+                            <p class="text-muted mb-3">${vacancy.description}</p>
+
+                            <div class="d-flex flex-wrap gap-3 text-muted mb-3">
+                                <div class="d-flex align-items-center">
+                                    <i class="bi bi-clock-history me-1"></i>
+                                    <small><@spring.message code="vacancies.card.exp"/> ${vacancy.expFrom}-${vacancy.expTo}
+                                        <@spring.message code="vacancies.card.exp.years"/></small>
+                                </div>
+                                <div class="d-flex align-items-center">
+                                    <i class="bi bi-chat-text me-1"></i>
+                                    <small><@spring.message code="vacancies.responded.count"/> ${vacancy.responsesCount!0}</small>
+                                </div>
+                                <div class="d-flex align-items-center">
+                                    <i class="bi bi-calendar me-1"></i>
+                                    <small><@spring.message code="vacancies.card.date"/> ${vacancy.updateTime?string("dd.MM.yyyy")}</small>
+                                </div>
                             </div>
-                        </a>
-                        <div class="vacancy-actions">
-                            <a href="/response/vacancies/${vacancy.id}" class="company-profile-btn">
-                                <@spring.message code="vacancies.responded.count.applicant"/> (${vacancy.responsesCount})
-                            </a>
+
+                            <div class="d-grid">
+                                <a href="/response/vacancies/${vacancy.id}" class="btn btn-primary">
+                                    <@spring.message code="vacancies.responded.count.applicant"/> (${vacancy.responsesCount})
+                                </a>
+                            </div>
                         </div>
                     </div>
-                </#list>
-            </div>
+                    </a>
+                </div>
+            </#list>
+        </div>
 
-            <#if totalPages gt 1>
-                <div class="pagination">
+        <#if totalPages gt 1>
+            <nav aria-label="Page navigation" class="mt-4">
+                <ul class="pagination justify-content-center">
                     <#if currentPage gt 0>
-                        <a href="/vacancies/${userId}/response?page=0&size=${pageSize}" class="page-link">««</a>
-                        <a href="/vacancies/${userId}/response?page=${currentPage - 1}&size=${pageSize}" class="page-link">«</a>
+                        <li class="page-item">
+                            <a class="page-link" href="/vacancies/${userId}/response?page=0&size=${pageSize}" aria-label="First">
+                                <span aria-hidden="true">&laquo;&laquo;</span>
+                            </a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="/vacancies/${userId}/response?page=${currentPage - 1}&size=${pageSize}" aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
                     </#if>
 
                     <#list 0..totalPages-1 as i>
-                        <#if i == currentPage>
-                            <span class="page-link active">${i + 1}</span>
-                        <#else>
-                            <a href="/vacancies/${userId}/response?page=${i}&size=${pageSize}" class="page-link">${i + 1}</a>
-                        </#if>
+                        <li class="page-item <#if i == currentPage>active</#if>">
+                            <a class="page-link" href="/vacancies/${userId}/response?page=${i}&size=${pageSize}">${i + 1}</a>
+                        </li>
                     </#list>
 
                     <#if currentPage lt totalPages - 1>
-                        <a href="/vacancies/${userId}/response?page=${currentPage + 1}&size=${pageSize}" class="page-link">»</a>
-                        <a href="/vacancies/${userId}/response?page=${totalPages - 1}&size=${pageSize}" class="page-link">»»</a>
+                        <li class="page-item">
+                            <a class="page-link" href="/vacancies/${userId}/response?page=${currentPage + 1}&size=${pageSize}" aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="/vacancies/${userId}/response?page=${totalPages - 1}&size=${pageSize}" aria-label="Last">
+                                <span aria-hidden="true">&raquo;&raquo;</span>
+                            </a>
+                        </li>
                     </#if>
+                </ul>
 
-                    <div class="page-size">
-                        <@spring.message code="pagination"/>
-                        <select onchange="window.location.href='/vacancies/${userId}/response?page=0&size='+this.value" class="page-size-select">
-                            <option value="5" <#if pageSize == 5>selected</#if>>5</option>
-                            <option value="10" <#if pageSize == 10>selected</#if>>10</option>
-                            <option value="20" <#if pageSize == 20>selected</#if>>20</option>
-                            <option value="50" <#if pageSize == 50>selected</#if>>50</option>
-                        </select>
-                    </div>
+                <div class="d-flex justify-content-center align-items-center mt-3">
+                    <span class="me-2"><@spring.message code="pagination"/></span>
+                    <select class="form-select form-select-sm" style="width: auto;"
+                            onchange="window.location.href='/vacancies/${userId}/response?page=0&size='+this.value">
+                        <option value="5" <#if pageSize == 5>selected</#if>>5</option>
+                        <option value="10" <#if pageSize == 10>selected</#if>>10</option>
+                        <option value="20" <#if pageSize == 20>selected</#if>>20</option>
+                        <option value="50" <#if pageSize == 50>selected</#if>>50</option>
+                    </select>
                 </div>
-            </#if>
-        </div>
-    </main>
-
+            </nav>
+        </#if>
+    </div>
 </@layout.page>

@@ -27,20 +27,14 @@ public class AuthViewController {
     private final MessageSource messageSource;
 
     @GetMapping("/register")
-    public String showRegistrationForm(
-            @RequestParam(value = "type", defaultValue = "applicant") String type,
-            Model model) {
+    public String showRegistrationForm(Model model) {
 
-        model.addAttribute("type", type);
+        if (!model.containsAttribute("applicantRegisterDTO")) {
+            model.addAttribute("applicantRegisterDTO", new ApplicantRegisterDTO());
+        }
 
-        if ("applicant".equals(type)) {
-            if (!model.containsAttribute("applicantRegisterDTO")) {
-                model.addAttribute("applicantRegisterDTO", new ApplicantRegisterDTO());
-            }
-        } else {
-            if (!model.containsAttribute("employerRegisterDTO")) {
-                model.addAttribute("employerRegisterDTO", new EmployerRegisterDTO());
-            }
+        if (!model.containsAttribute("employerRegisterDTO")) {
+            model.addAttribute("employerRegisterDTO", new EmployerRegisterDTO());
         }
 
         return "auth/register";
@@ -56,7 +50,7 @@ public class AuthViewController {
 
         if (bindingResult.hasErrors()) {
             log.warn("Validation errors: {}", bindingResult.getAllErrors());
-            model.addAttribute("type", "applicant");
+            model.addAttribute("employerRegisterDTO", new EmployerRegisterDTO());
             return "auth/register";
         }
 
@@ -65,8 +59,8 @@ public class AuthViewController {
             return "redirect:/auth/login?registered";
         } catch (InvalidRegisterException e) {
             log.error("Registration error: {}", e.getMessage());
-            model.addAttribute("type", "applicant");
             bindingResult.rejectValue(e.getFieldName(), "error.applicantRegisterDTO", e.getMessage());
+            model.addAttribute("employerRegisterDTO", new EmployerRegisterDTO());
             return "auth/register";
         }
     }
@@ -81,7 +75,7 @@ public class AuthViewController {
 
         if (bindingResult.hasErrors()) {
             log.warn("Validation errors: {}", bindingResult.getAllErrors());
-            model.addAttribute("type", "employer");
+            model.addAttribute("applicantRegisterDTO", new ApplicantRegisterDTO());
             return "auth/register";
         }
 
@@ -90,8 +84,8 @@ public class AuthViewController {
             return "redirect:/auth/login?registered";
         } catch (InvalidRegisterException e) {
             log.error("Registration error: {}", e.getMessage());
-            model.addAttribute("type", "employer");
             bindingResult.rejectValue(e.getFieldName(), "error.employerRegisterDTO", e.getMessage());
+            model.addAttribute("applicantRegisterDTO", new ApplicantRegisterDTO());
             return "auth/register";
         }
     }

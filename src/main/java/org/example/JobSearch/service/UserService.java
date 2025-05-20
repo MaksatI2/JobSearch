@@ -10,8 +10,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 
-import java.util.List;
-
 public interface UserService {
 
     void  registerEmployer(EmployerRegisterDTO employerDto);
@@ -27,6 +25,8 @@ public interface UserService {
     Page<UserDTO> getAllEmployers(Pageable pageable);
 
     Long getUserId(String email);
+
+    boolean isEmployer(String userEmail);
 
     User getUserId(Long id);
     User getByResetPasswordToken(String token);

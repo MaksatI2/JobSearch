@@ -43,4 +43,6 @@ public interface RespondedApplicantRepository extends JpaRepository<RespondedApp
 
     List<RespondedApplicant> findByResumeApplicantIdAndViewedFalse(Long applicantId);
     List<RespondedApplicant> findByVacancyAuthorIdAndConfirmationNull(Long employerId);
+    List<RespondedApplicant> findByResumeApplicantId(Long applicantId);
+    List<RespondedApplicant> findByVacancyAuthorId(Long employerId);
 }

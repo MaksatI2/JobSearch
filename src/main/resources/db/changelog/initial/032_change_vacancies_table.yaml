@@ -1,0 +1,9 @@
+databaseChangeLog:
+  - changeSet:
+      id: 032
+      author: I.Maksat
+      changes:
+        - modifyDataType:
+            tableName: vacancies
+            columnName: name
+            newDataType: VARCHAR(255)

@@ -39,7 +39,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(
                                 "/", "/auth/**", "/static/**", "/favicon.ico", "/error",
-                                "/vacancies", "/vacancies/*/info", "/vacancies/category/**"
+                                "/vacancies", "/vacancies/*/info", "/vacancies/category/**","/vacancies/search"
                         ).permitAll()
                         .requestMatchers("/profile/viewApplicant/*").hasAuthority("EMPLOYER")
                         .requestMatchers("/profile/viewEmployer/*").hasAuthority("APPLICANT")
