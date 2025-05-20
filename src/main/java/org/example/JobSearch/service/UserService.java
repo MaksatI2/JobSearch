@@ -26,6 +26,8 @@ public interface UserService {
 
     Long getUserId(String email);
 
+    boolean isEmployer(String userEmail);
+
     User getUserId(Long id);
     User getByResetPasswordToken(String token);
 }
