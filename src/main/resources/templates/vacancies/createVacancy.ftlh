@@ -45,8 +45,15 @@ activeNav="vacancies">
 
                     <div class="mb-3">
                         <label for="description" class="form-label"><@spring.message code="vacancies.editing.description"/></label>
-                        <@spring.formInput "vacancyForm.description", "class='form-control' + ((spring.status.errors['description']?has_content)?then(' error-field', ''))", "id='description'" />
+                        <@spring.formInput "vacancyForm.description", "class='form-control' rows='4' + ((spring.status.errors['description']?has_content)?then(' error-field', ''))", "id='description'" />
                         <@spring.showErrors "<br>" "error" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="responsibilities" class="form-label"><@spring.message code="vacancies.editing.responsibilities"/></label>
+                        <@spring.formInput "vacancyForm.responsibilities", "class='form-control' rows='4' + ((spring.status.errors['responsibilities']?has_content)?then(' error-field', ''))", "id='responsibilities'" />
+                        <@spring.showErrors "<br>" "error" />
+                        <div class="form-text"><@spring.message code="vacancies.editing.responsibilities.help"/></div>
                     </div>
 
                     <div class="row g-3 mb-3">
@@ -76,6 +83,67 @@ activeNav="vacancies">
                             "id='expTo'" />
                             <@spring.showErrors "<br>" "error" />
                         </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <@spring.bind "vacancyForm.regionId"/>
+                        <label for="regionId" class="form-label">
+                            <@spring.message code="vacancies.region"/>
+                        </label>
+                        <select class="form-control ${spring.status.error?string('is-invalid', '')}"
+                                id="regionId" name="${spring.status.expression}">
+                            <#assign defaultRegionId = 1>
+                            <#list regions as region>
+                                <option value="${region.id}"
+                                        <#if (spring.stringStatusValue?? && spring.stringStatusValue == region.id?string)
+                                || (!spring.stringStatusValue?? && region.id == defaultRegionId)>
+                                selected
+                                        </#if>>
+                                    ${region.name}
+                                </option>
+                            </#list>
+                        </select>
+                        <@spring.showErrors "<br>", "error" />
+                    </div>
+
+                    <div class="mb-3">
+                        <@spring.bind "vacancyForm.workScheduleIds"/>
+                        <label class="form-label"><@spring.message code="vacancies.work.schedules"/></label>
+                        <div class="form-control ${spring.status.error?string('is-invalid', '')}">
+                            <#list workSchedules as schedule>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox"
+                                           name="${spring.status.expression}"
+                                           value="${schedule.id}"
+                                           id="schedule-${schedule.id}"
+                                           <#if spring.status.value?? && spring.status.value?is_sequence && spring.status.value?seq_contains(schedule.id)>checked</#if>>
+                                    <label class="form-check-label" for="schedule-${schedule.id}">
+                                        ${schedule.name}
+                                    </label>
+                                </div>
+                            </#list>
+                        </div>
+                        <@spring.showErrors "<br>", "error" />
+                    </div>
+
+                    <div class="mb-3">
+                        <@spring.bind "vacancyForm.employmentTypeIds"/>
+                        <label class="form-label"><@spring.message code="vacancies.employment.types"/></label>
+                        <div class="form-control ${spring.status.error?string('is-invalid', '')}">
+                            <#list employmentTypes as type>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox"
+                                           name="${spring.status.expression}"
+                                           value="${type.id}"
+                                           id="type-${type.id}"
+                                           <#if spring.status.value?? && spring.status.value?is_sequence && spring.status.value?seq_contains(type.id)>checked</#if>>
+                                    <label class="form-check-label" for="type-${type.id}">
+                                        ${type.name}
+                                    </label>
+                                </div>
+                            </#list>
+                        </div>
+                        <@spring.showErrors "<br>", "error" />
                     </div>
 
                     <div class="mb-4">

@@ -216,6 +216,11 @@ body {
     margin-bottom: 20px;
 }
 
+.search-container-wrapper {
+    flex: 1 1 100%;
+}
+
+
 .search-input {
     width: 100%;
     padding: 14px 20px 14px 50px;

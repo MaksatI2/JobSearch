@@ -88,15 +88,22 @@
                                     <small>${resume.updateTime?string("dd.MM.yyyy")}</small>
                                 </div>
 
+                                <div class="position-relative">
                                 <form action="/favorites/resumes/${resume.id}/add" method="post" class="position-absolute top-0 end-0 mt-2 me-2">
                                     <input type="hidden" name="resumeId" value="${resume.id}">
                                     <#if _csrf??>
                                         <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
                                     </#if>
-                                    <button type="submit" class="btn btn-link text-warning p-0 border-0" title="Добавить в избранное">
-                                        <i class="bi bi-bookmark-star<#if favoriteResumeIds?? && favoriteResumeIds?seq_contains(resume.id)>-fill</#if> fs-4"></i>
+                                    <button type="submit" class="btn btn-link p-0 border-0" title="Добавить в избранное">
+                                        <svg width="24" height="24" viewBox="0 0 24 24"
+                                             fill="<#if favoriteResumeIds?? && favoriteResumeIds?seq_contains(resume.id)>gold<#else>none</#if>"
+                                             stroke="black" stroke-width="2"
+                                             stroke-linecap="round" stroke-linejoin="round" class="favorite-icon">
+                                            <path d="M5 3v18l7-5 7 5V3z"/>
+                                        </svg>
                                     </button>
                                 </form>
+                                </div>
 
                                 <#if Session.SPRING_SECURITY_CONTEXT?? && !Session.SPRING_SECURITY_CONTEXT.authentication.authorities?seq_contains('APPLICANT')>
                                     <#if resume.applicantId??>

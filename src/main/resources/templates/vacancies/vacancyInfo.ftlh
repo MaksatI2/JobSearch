@@ -33,6 +33,30 @@
                         <i class="bi bi-person me-1"></i>
                         <@spring.message code="vacancies.card.author"/> ${vacancy.authorName}
                     </div>
+                    <#if vacancy.categoryId??>
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-tag me-1"></i>
+                            <@spring.message code="vacancies.editing.vacancy.category"/>
+                            <#list categories as category>
+                                <#if category.id == vacancy.categoryId>
+                                    ${category.name}
+                                    <#break>
+                                </#if>
+                            </#list>
+                        </div>
+                    </#if>
+                    <#if vacancy.regionId??>
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-geo-alt me-1"></i>
+                            <@spring.message code="vacancies.region"/>:
+                            <#list regions as region>
+                                <#if region.id == vacancy.regionId>
+                                    ${region.name}
+                                    <#break>
+                                </#if>
+                            </#list>
+                        </div>
+                    </#if>
                     <div class="d-flex align-items-center">
                         <i class="bi bi-calendar me-1"></i>
                         <@spring.message code="vacancies.card.date"/> ${vacancy.updateTime?string("dd.MM.yyyy")}
@@ -43,29 +67,82 @@
                     </div>
                 </div>
 
-                <div class="mb-4">
-                    <h2 class="section-title"><@spring.message code="vacancies.card.title"/></h2>
-                    <p class="text-dark">${vacancy.description}</p>
-                </div>
+                <#if vacancy.description??>
+                    <div class="mb-4">
+                        <h2 class="section-title"><@spring.message code="vacancies.card.title"/></h2>
+                        <div class="text-dark">
+                            <#list vacancy.description?split('\n') as line>
+                                <p>${line}</p>
+                            </#list>
+                        </div>
+                    </div>
+                </#if>
 
-                <div class="mb-4">
-                    <h2 class="section-title"><@spring.message code="vacancies.card.requirements"/></h2>
-                    <p class="text-dark">
-                        <@spring.message code="vacancies.card.exp.from"/>
-                        ${vacancy.expFrom}
-                        <@spring.message code="vacancies.card.exp.to"/>
-                        ${vacancy.expTo}
-                        <@spring.message code="vacancies.card.exp.years"/>
-                    </p>
-                </div>
+                <#if vacancy.responsibilities??>
+                    <div class="mb-4">
+                        <h2 class="section-title"><@spring.message code="vacancies.editing.responsibilities"/></h2>
+                        <div class="text-dark">
+                            <#list vacancy.responsibilities?split('\n') as line>
+                                <p>${line}</p>
+                            </#list>
+                        </div>
+                    </div>
+                </#if>
+
+                <#if vacancy.expFrom?? && vacancy.expTo??>
+                    <div class="mb-4">
+                        <h2 class="section-title"><@spring.message code="vacancies.card.requirements"/></h2>
+                        <p class="text-dark">
+                            <@spring.message code="vacancies.card.exp.from"/>
+                            ${vacancy.expFrom}
+                            <@spring.message code="vacancies.card.exp.to"/>
+                            ${vacancy.expTo}
+                            <@spring.message code="vacancies.card.exp.years"/>
+                        </p>
+                    </div>
+                </#if>
+
+                <#if vacancy.workScheduleIds?? && vacancy.workScheduleIds?size gt 0>
+                    <div class="mb-4">
+                        <h2 class="section-title"><@spring.message code="vacancies.work.schedules"/></h2>
+                        <div class="d-flex flex-wrap gap-2">
+                            <#list vacancy.workScheduleIds as scheduleId>
+                                <#list workSchedules as schedule>
+                                    <#if schedule.id == scheduleId>
+                                        <span class="badge bg-secondary">${schedule.name}</span>
+                                        <#break>
+                                    </#if>
+                                </#list>
+                            </#list>
+                        </div>
+                    </div>
+                </#if>
+
+                <#if vacancy.employmentTypeIds?? && vacancy.employmentTypeIds?size gt 0>
+                    <div class="mb-4">
+                        <h2 class="section-title"><@spring.message code="vacancies.employment.types"/></h2>
+                        <div class="d-flex flex-wrap gap-2">
+                            <#list vacancy.employmentTypeIds as typeId>
+                                <#list employmentTypes as type>
+                                    <#if type.id == typeId>
+                                        <span class="badge bg-info">${type.name}</span>
+                                        <#break>
+                                    </#if>
+                                </#list>
+                            </#list>
+                        </div>
+                    </div>
+                </#if>
 
                 <div class="d-flex flex-wrap gap-2">
                     <#if Session.SPRING_SECURITY_CONTEXT?? && !Session.SPRING_SECURITY_CONTEXT.authentication.authorities?seq_contains('EMPLOYER')>
                         <#if vacancy.authorId??>
                             <a href="/profile/viewEmployer/${vacancy.authorId}" class="btn btn-primary">
+                                <i class="bi bi-building me-1"></i>
                                 <@spring.message code="vacancies.company.profile"/>
                             </a>
-                            <a href="#modal-${vacancy.id}" class="btn btn-primary">
+                            <a href="#modal-${vacancy.id}" class="btn btn-success">
+                                <i class="bi bi-envelope me-1"></i>
                                 <@spring.message code="vacancies.respond.button"/>
                             </a>
                         </#if>
