@@ -2,7 +2,6 @@ package org.example.JobSearch.model;
 
 import jakarta.persistence.*;
 import lombok.*;
-
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -36,6 +35,10 @@ public class Vacancy {
     @Column(columnDefinition = "TEXT")
     private String description;
 
+    @Lob
+    @Column(columnDefinition = "TEXT")
+    private String responsibilities;
+
     private Float salary;
 
     @Column(name = "exp_from")
@@ -46,6 +49,29 @@ public class Vacancy {
 
     @Column(name = "is_active", nullable = false)
     private Boolean isActive = true;
+
+    @ManyToOne
+    @JoinColumn(name = "region_id",
+            foreignKey = @ForeignKey(name = "fk_vacancies_region"))
+    private Region region;
+
+    @ManyToMany
+    @JoinTable(
+            name = "vacancy_employment_types",
+            joinColumns = @JoinColumn(name = "vacancy_id"),
+            inverseJoinColumns = @JoinColumn(name = "employment_type_id"),
+            foreignKey = @ForeignKey(name = "fk_vacancy_employment_vacancy"),
+            inverseForeignKey = @ForeignKey(name = "fk_vacancy_employment_type"))
+    private List<EmploymentType> employmentTypes = new ArrayList<>();
+
+    @ManyToMany
+    @JoinTable(
+            name = "vacancy_work_schedules",
+            joinColumns = @JoinColumn(name = "vacancy_id"),
+            inverseJoinColumns = @JoinColumn(name = "work_schedule_id"),
+            foreignKey = @ForeignKey(name = "fk_vacancy_schedule_vacancy"),
+            inverseForeignKey = @ForeignKey(name = "fk_vacancy_schedule_type"))
+    private List<WorkSchedule> workSchedules = new ArrayList<>();
 
     @Column(name = "created_date", nullable = false, updatable = false)
     private Timestamp createdDate;

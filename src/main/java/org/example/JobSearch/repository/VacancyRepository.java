@@ -10,23 +10,27 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Timestamp;
-import java.util.List;
 
 @Repository
 public interface VacancyRepository extends JpaRepository<Vacancy, Long> {
 
     @Query("SELECT v FROM Vacancy v WHERE v.isActive = true " +
-            "AND (:categoryId IS NULL OR v.category.id = :categoryId OR v.category.parent.id = :categoryId) " +
-            "ORDER BY " +
-            "CASE WHEN :sort = 'salaryAsc' THEN v.salary END ASC, " +
-            "CASE WHEN :sort = 'salaryDesc' THEN v.salary END DESC, " +
-            "CASE WHEN :sort = 'expAsc' THEN v.expFrom END ASC, " +
-            "CASE WHEN :sort = 'expDesc' THEN v.expFrom END DESC, " +
-            "CASE WHEN :sort = 'responsesDesc' THEN (SELECT COUNT(ra) FROM RespondedApplicant ra WHERE ra.vacancy = v) END DESC, " +
-            "v.updateTime DESC")
+           "AND (:categoryId IS NULL OR v.category.id = :categoryId OR v.category.parent.id = :categoryId) " +
+           "AND (:regionId IS NULL OR (v.region IS NOT NULL AND v.region.id = :regionId)) " +
+           "ORDER BY " +
+           "CASE WHEN :sort = 'salaryAsc' THEN v.salary END ASC, " +
+           "CASE WHEN :sort = 'salaryDesc' THEN v.salary END DESC, " +
+           "CASE WHEN :sort = 'expAsc' THEN v.expFrom END ASC, " +
+           "CASE WHEN :sort = 'expDesc' THEN v.expFrom END DESC, " +
+           "CASE WHEN :sort = 'responsesDesc' THEN (SELECT COUNT(ra) FROM RespondedApplicant ra WHERE ra.vacancy = v) END DESC, " +
+           "CASE WHEN :sort = 'regionAsc' THEN v.region.name END ASC, " +
+           "CASE WHEN :sort = 'regionDesc' THEN v.region.name END DESC, " +
+           "v.updateTime DESC")
     Page<Vacancy> findAllActiveSorted(@Param("sort") String sort,
                                       @Param("categoryId") Long categoryId,
+                                      @Param("regionId") Long regionId,
                                       Pageable pageable);
+
 
     @Query("SELECT v FROM Vacancy v WHERE LOWER(v.name) LIKE LOWER(CONCAT('%', :query, '%')) AND v.isActive = true")
     Page<Vacancy> searchByNameIgnoreCase(@Param("query") String query, Pageable pageable);

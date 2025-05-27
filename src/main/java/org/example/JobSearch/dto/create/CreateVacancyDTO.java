@@ -3,6 +3,8 @@ package org.example.JobSearch.dto.create;
 import jakarta.validation.constraints.*;
 import lombok.*;
 
+import java.util.List;
+
 
 @Getter
 @Setter
@@ -40,4 +42,12 @@ public class CreateVacancyDTO {
 
     @NotNull(message = "{vacancy.isActive.notNull}")
     private Boolean isActive;
+
+    private String responsibilities;
+
+    private Long regionId;
+
+    private List<Long> workScheduleIds;
+
+    private List<Long> employmentTypeIds;
 }

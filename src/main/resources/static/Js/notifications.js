@@ -1,19 +1,14 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // Находим существующие сообщения
     const successMessage = document.querySelector('.alert-success');
     const errorMessage = document.querySelector('.alert-danger');
 
-    // Функция для создания и показа уведомления
     function showNotification(message, type) {
         if (!message) return;
 
-        // Получаем текст сообщения
         const messageText = message.textContent.trim();
 
-        // Удаляем стандартное сообщение
         message.remove();
 
-        // Создаем уведомление
         const notification = document.createElement('div');
         notification.className = `notification ${type === 'success' ? 'notification-success' : 'notification-error'}`;
         notification.innerHTML = `
@@ -23,7 +18,6 @@ document.addEventListener('DOMContentLoaded', function() {
             </div>
         `;
 
-        // Стили для уведомления
         notification.style.position = 'fixed';
         notification.style.top = '20px';
         notification.style.right = '20px';
@@ -47,13 +41,11 @@ document.addEventListener('DOMContentLoaded', function() {
             notification.style.border = '1px solid #f5c6cb';
         }
 
-        // Стили для содержимого уведомления
         notification.querySelector('.notification-content').style.display = 'flex';
         notification.querySelector('.notification-content').style.justifyContent = 'space-between';
         notification.querySelector('.notification-content').style.alignItems = 'center';
         notification.querySelector('.notification-content').style.width = '100%';
 
-        // Стили для кнопки закрытия
         const closeButton = notification.querySelector('.notification-close');
         closeButton.style.background = 'none';
         closeButton.style.border = 'none';
@@ -68,10 +60,8 @@ document.addEventListener('DOMContentLoaded', function() {
             closeButton.style.color = '#721c24';
         }
 
-        // Добавляем на страницу
         document.body.appendChild(notification);
 
-        // Обработчик для кнопки закрытия
         closeButton.addEventListener('click', function() {
             notification.style.animation = 'slideOut 0.5s ease';
             setTimeout(() => {
@@ -79,7 +69,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }, 500);
         });
 
-        // Автоматическое закрытие через 5 секунд
         setTimeout(() => {
             if (document.body.contains(notification)) {
                 notification.style.animation = 'slideOut 0.5s ease';
@@ -92,7 +81,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 5000);
     }
 
-    // Добавляем CSS анимацию
     const styleElement = document.createElement('style');
     styleElement.textContent = `
         @keyframes slideIn {
@@ -107,7 +95,6 @@ document.addEventListener('DOMContentLoaded', function() {
     `;
     document.head.appendChild(styleElement);
 
-    // Показываем уведомления, если они есть на странице
     if (successMessage) {
         showNotification(successMessage, 'success');
     }

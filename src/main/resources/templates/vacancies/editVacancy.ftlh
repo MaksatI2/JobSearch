@@ -27,23 +27,32 @@ activeNav="vacancies">
                     <div class="mb-3">
                         <label for="name" class="form-label"><@spring.message code="vacancies.editing.vacancy.name"/></label>
                         <@spring.formInput "vacancyForm.name", "class='form-control' + ((spring.status.errors['name']?has_content)?then(' error-field', ''))", "id='name'" />
-                        <@spring.showErrors "<br>" "error" />
+                        <@spring.showErrors "<br>", "error" />
                     </div>
 
                     <div class="mb-3">
+                        <@spring.bind "vacancyForm.categoryId"/>
                         <label for="categoryId" class="form-label"><@spring.message code="vacancies.editing.vacancy.category"/></label>
-                        <select class="form-select" id="categoryId" name="categoryId">
+                        <select class="form-control ${spring.status.error?string('is-invalid', '')}"
+                                id="categoryId" name="${spring.status.expression}">
                             <#list categories as category>
-                                <option value="${category.id}" <#if vacancyForm.categoryId == category.id>selected</#if>>${category.name}</option>
+                                <option value="${category.id}" ${(spring.stringStatusValue == category.id?string)?string("selected", "")}>${category.name}</option>
                             </#list>
                         </select>
-                        <@spring.showErrors "<br>" "error" />
+                        <@spring.showErrors "<br>", "error" />
                     </div>
 
                     <div class="mb-3">
                         <label for="description" class="form-label"><@spring.message code="vacancies.editing.description"/></label>
-                        <@spring.formInput "vacancyForm.description", "class='form-control' + ((spring.status.errors['description']?has_content)?then(' error-field', ''))", "id='description'" />
-                        <@spring.showErrors "<br>" "error" />
+                        <@spring.formInput "vacancyForm.description", "class='form-control' rows='4' + ((spring.status.errors['description']?has_content)?then(' error-field', ''))", "id='description'" />
+                        <@spring.showErrors "<br>", "error" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="responsibilities" class="form-label"><@spring.message code="vacancies.editing.responsibilities"/></label>
+                        <@spring.formInput "vacancyForm.responsibilities", "class='form-control' rows='4' + ((spring.status.errors['responsibilities']?has_content)?then(' error-field', ''))", "id='responsibilities'" />
+                        <@spring.showErrors "<br>", "error" />
+                        <div class="form-text"><@spring.message code="vacancies.editing.responsibilities.help"/></div>
                     </div>
 
                     <div class="row g-3 mb-3">
@@ -53,7 +62,7 @@ activeNav="vacancies">
                             "vacancyForm.salary",
                             "type='number' min='0' class='form-control' + ((spring.status.errors['salary']?has_content)?then(' error-field', ''))",
                             "id='salary'" />
-                            <@spring.showErrors "<br>" "error" />
+                            <@spring.showErrors "<br>", "error" />
                         </div>
 
                         <div class="col-md-4">
@@ -62,7 +71,7 @@ activeNav="vacancies">
                             "vacancyForm.expFrom",
                             "type='number' min='0' class='form-control' + ((spring.status.errors['expFrom']?has_content)?then(' error-field', ''))",
                             "id='expFrom'" />
-                            <@spring.showErrors "<br>" "error" />
+                            <@spring.showErrors "<br>", "error" />
                         </div>
 
                         <div class="col-md-4">
@@ -71,7 +80,48 @@ activeNav="vacancies">
                             "vacancyForm.expTo",
                             "type='number' min='0' class='form-control' + ((spring.status.errors['expTo']?has_content)?then(' error-field', ''))",
                             "id='expTo'" />
-                            <@spring.showErrors "<br>" "error" />
+                            <@spring.showErrors "<br>", "error" />
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <@spring.bind "vacancyForm.regionId"/>
+                        <label for="regionId" class="form-label">
+                            <@spring.message code="vacancies.region"/>
+                        </label>
+                        <select class="form-control ${spring.status.error?string('is-invalid', '')}"
+                                id="regionId" name="${spring.status.expression}">
+                            <#list regions as region>
+                                <option value="${region.id}"
+                                        <#if spring.stringStatusValue?? && spring.stringStatusValue == region.id?string>
+                                selected
+                                        </#if>>
+                                    ${region.name}
+                                </option>
+                            </#list>
+                        </select>
+                        <@spring.showErrors "<br>", "error" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label"><@spring.message code="vacancies.work.schedules"/></label>
+                        <div class="form-control bg-light">
+                            <#list workSchedules as schedule>
+                                <#if vacancyForm.workScheduleIds?seq_contains(schedule.id)>
+                                    <div>${schedule.name}</div>
+                                </#if>
+                            </#list>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label"><@spring.message code="vacancies.employment.types"/></label>
+                        <div class="form-control bg-light">
+                            <#list employmentTypes as type>
+                                <#if vacancyForm.employmentTypeIds?seq_contains(type.id)>
+                                    <div>${type.name}</div>
+                                </#if>
+                            </#list>
                         </div>
                     </div>
 
@@ -81,7 +131,7 @@ activeNav="vacancies">
                             <option value="true" <#if vacancyForm.isActive?? && vacancyForm.isActive == true>selected</#if>><@spring.message code="vacancies.status.active"/></option>
                             <option value="false" <#if vacancyForm.isActive?? && vacancyForm.isActive == false>selected</#if>><@spring.message code="vacancies.status.inactive"/></option>
                         </select>
-                        <@spring.showErrors "isActive" "error" />
+                        <@spring.showErrors "isActive", "error" />
                     </div>
 
                     <div class="d-grid">

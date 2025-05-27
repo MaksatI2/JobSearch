@@ -107,7 +107,7 @@
                                     <div class="form-group">
                                         <label class="form-label"><@spring.message code="resume.work.years"/> *</label>
                                         <@spring.formInput "resumeForm.workExperiences[${workExp?index}].years",
-                                        "type='number' min='0' max='50' class='form-control'" />
+                                        "type='number' class='form-control'" />
                                         <@spring.showErrors "<br>", "field-error"/>
                                     </div>
                                 </div>

@@ -37,6 +37,9 @@ public class VacancyViewController {
     private final FavoriteVacancyService favoriteService;
     private final ResponseService responseService;
     private final MessageSource messageSource;
+    private final RegionService regionService;
+    private final WorkScheduleService workScheduleService;
+    private final EmploymentTypeService employmentTypeService;
 
     @GetMapping
     public String showVacancies(
@@ -44,12 +47,14 @@ public class VacancyViewController {
             @RequestParam(defaultValue = "20") int size,
             @RequestParam(required = false) String sort,
             @RequestParam(required = false) Long categoryId,
+            @RequestParam(required = false) Long regionId,
             Model model,
             Authentication authentication) {
 
         Page<VacancyDTO> vacanciesPage = vacancyService.getAllVacanciesSorted(
                 sort,
                 categoryId,
+                regionId,
                 PageRequest.of(page, size)
         );
 
@@ -71,14 +76,18 @@ public class VacancyViewController {
         model.addAttribute("selectedSort", sort);
         model.addAttribute("categories", categoryService.getAllCategories());
         model.addAttribute("selectedCategory", categoryId);
-
+        model.addAttribute("regions", regionService.findAll());
+        model.addAttribute("selectedRegion", regionId);
         return "vacancies/vacancies";
     }
 
     @GetMapping("/create")
-    public String showCreateForm(Model model) {
+    public String showCreateVacancyForm(Model model) {
         model.addAttribute("vacancyForm", new CreateVacancyDTO());
         model.addAttribute("categories", categoryService.getAllCategories());
+        model.addAttribute("regions", regionService.findAll());
+        model.addAttribute("workSchedules", workScheduleService.findAll());
+        model.addAttribute("employmentTypes", employmentTypeService.findAll());
         return "vacancies/createVacancy";
     }
 
@@ -90,6 +99,9 @@ public class VacancyViewController {
 
         if (bindingResult.hasErrors()) {
             model.addAttribute("categories", categoryService.getAllCategories());
+            model.addAttribute("regions", regionService.findAll());
+            model.addAttribute("workSchedules", workScheduleService.findAll());
+            model.addAttribute("employmentTypes", employmentTypeService.findAll());
             return "vacancies/createVacancy";
         }
 
@@ -107,6 +119,9 @@ public class VacancyViewController {
             log.error("Create vacancy error: {}", e.getMessage());
             bindingResult.rejectValue(e.getFieldName(), "error.createVacancyDTO", e.getMessage());
             model.addAttribute("categories", categoryService.getAllCategories());
+            model.addAttribute("regions", regionService.findAll());
+            model.addAttribute("workSchedules", workScheduleService.findAll());
+            model.addAttribute("employmentTypes", employmentTypeService.findAll());
             return "vacancies/createVacancy";
         }
     }
@@ -126,6 +141,9 @@ public class VacancyViewController {
         model.addAttribute("vacancyForm", form);
         model.addAttribute("categories", categoryService.getAllCategories());
         model.addAttribute("vacancyId", id);
+        model.addAttribute("regions", regionService.findAll());
+        model.addAttribute("workSchedules", workScheduleService.findAll());
+        model.addAttribute("employmentTypes", employmentTypeService.findAll());
         return "vacancies/editVacancy";
     }
 
@@ -141,6 +159,9 @@ public class VacancyViewController {
             if (bindingResult.hasErrors()) {
                 model.addAttribute("categories", categoryService.getAllCategories());
                 model.addAttribute("vacancyId", id);
+                model.addAttribute("regions", regionService.findAll());
+                model.addAttribute("workSchedules", workScheduleService.findAll());
+                model.addAttribute("employmentTypes", employmentTypeService.findAll());
                 return "vacancies/editVacancy";
             }
 
@@ -153,6 +174,9 @@ public class VacancyViewController {
             log.error("Edit vacancy error: {}", e.getMessage());
             bindingResult.rejectValue(e.getFieldName(), "error.editVacancyDTO", e.getMessage());
             model.addAttribute("categories", categoryService.getAllCategories());
+            model.addAttribute("regions", regionService.findAll());
+            model.addAttribute("workSchedules", workScheduleService.findAll());
+            model.addAttribute("employmentTypes", employmentTypeService.findAll());
             model.addAttribute("vacancyId", id);
             return "vacancies/editVacancy";
         }
@@ -165,6 +189,10 @@ public class VacancyViewController {
                                      Authentication authentication) {
         VacancyDTO vacancy = vacancyService.getVacancyById(id);
         model.addAttribute("vacancy", vacancy);
+        model.addAttribute("categories", categoryService.getAllCategories());
+        model.addAttribute("regions", regionService.findAll());
+        model.addAttribute("workSchedules", workScheduleService.findAll());
+        model.addAttribute("employmentTypes", employmentTypeService.findAll());
 
         if (authentication != null && authentication.isAuthenticated()) {
             String email = authentication.getName();

@@ -10,9 +10,7 @@ import org.example.JobSearch.exceptions.EditVacancyException;
 import org.example.JobSearch.exceptions.VacancyNotFoundException;
 import org.example.JobSearch.model.*;
 import org.example.JobSearch.repository.VacancyRepository;
-import org.example.JobSearch.service.CategoryService;
-import org.example.JobSearch.service.UserService;
-import org.example.JobSearch.service.VacancyService;
+import org.example.JobSearch.service.*;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
@@ -24,8 +22,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -36,6 +36,9 @@ public class VacancyServiceImpl implements VacancyService {
     private final UserService userService;
     private final CategoryService categoryService;
     private final MessageSource messageSource;
+    private final RegionService regionService;
+    private final WorkScheduleService workScheduleService;
+    private final EmploymentTypeService employmentTypeService;
 
     @Transactional(readOnly = true)
     @Override
@@ -64,6 +67,9 @@ public class VacancyServiceImpl implements VacancyService {
         }
 
         Category category = categoryService.getCategoryById(createVacancyDto.getCategoryId());
+        Optional<Region> region = regionService.findById(createVacancyDto.getRegionId());
+        List<WorkSchedule> workSchedules = workScheduleService.findAllById(createVacancyDto.getWorkScheduleIds());
+        List<EmploymentType> employmentTypes = employmentTypeService.findAllById(createVacancyDto.getEmploymentTypeIds());
 
         Timestamp now = new Timestamp(System.currentTimeMillis());
 
@@ -72,10 +78,14 @@ public class VacancyServiceImpl implements VacancyService {
                 .category(category)
                 .name(createVacancyDto.getName())
                 .description(createVacancyDto.getDescription())
+                .responsibilities(createVacancyDto.getResponsibilities())
                 .salary(createVacancyDto.getSalary())
                 .expFrom(createVacancyDto.getExpFrom())
                 .expTo(createVacancyDto.getExpTo())
                 .isActive(createVacancyDto.getIsActive())
+                .region(region.orElse(null))
+                .workSchedules(workSchedules)
+                .employmentTypes(employmentTypes)
                 .createdDate(now)
                 .updateTime(now)
                 .build();
@@ -97,13 +107,38 @@ public class VacancyServiceImpl implements VacancyService {
             vacancy.setCategory(category);
         }
 
+        if (editVacancyDto.getRegionId() != null) {
+            Optional<Region> region = regionService.findById(editVacancyDto.getRegionId());
+            vacancy.setRegion(region.orElse(null));
+        }
+
+        if (editVacancyDto.getWorkScheduleIds() != null) {
+            if (editVacancyDto.getWorkScheduleIds().isEmpty()) {
+                vacancy.setWorkSchedules(new ArrayList<>());
+            } else {
+                List<WorkSchedule> workSchedules = workScheduleService.findAllById(editVacancyDto.getWorkScheduleIds());
+                vacancy.setWorkSchedules(workSchedules);
+            }
+        }
+
+        if (editVacancyDto.getEmploymentTypeIds() != null) {
+            if (editVacancyDto.getEmploymentTypeIds().isEmpty()) {
+                vacancy.setEmploymentTypes(new ArrayList<>());
+            } else {
+                List<EmploymentType> employmentTypes = employmentTypeService.findAllById(editVacancyDto.getEmploymentTypeIds());
+                vacancy.setEmploymentTypes(employmentTypes);
+            }
+        }
+
         vacancy.setName(editVacancyDto.getName());
         vacancy.setDescription(editVacancyDto.getDescription());
+        vacancy.setResponsibilities(editVacancyDto.getResponsibilities());
         vacancy.setSalary(editVacancyDto.getSalary());
         vacancy.setExpFrom(editVacancyDto.getExpFrom());
         vacancy.setExpTo(editVacancyDto.getExpTo());
         vacancy.setIsActive(editVacancyDto.getIsActive());
         vacancy.setUpdateTime(new Timestamp(System.currentTimeMillis()));
+
         vacancyRepository.save(vacancy);
         log.info("Вакансия ID {} успешно обновлена", vacancyId);
     }
@@ -121,8 +156,8 @@ public class VacancyServiceImpl implements VacancyService {
     }
 
     @Override
-    public Page<VacancyDTO> getAllVacanciesSorted(String sort, Long categoryId, Pageable pageable) {
-        return vacancyRepository.findAllActiveSorted(sort, categoryId, pageable)
+    public Page<VacancyDTO> getAllVacanciesSorted(String sort, Long categoryId, Long regionId, Pageable pageable) {
+        return vacancyRepository.findAllActiveSorted(sort, categoryId, regionId, pageable)
                 .map(this::toDTO);
     }
 
@@ -172,10 +207,18 @@ public class VacancyServiceImpl implements VacancyService {
                 .categoryId(vacancy.getCategory().getId())
                 .name(vacancy.getName())
                 .description(vacancy.getDescription())
+                .responsibilities(vacancy.getResponsibilities())
                 .salary(vacancy.getSalary())
                 .expFrom(vacancy.getExpFrom())
                 .expTo(vacancy.getExpTo())
                 .isActive(vacancy.getIsActive())
+                .regionId(vacancy.getRegion() != null ? vacancy.getRegion().getId() : null)
+                .workScheduleIds(vacancy.getWorkSchedules().stream()
+                        .map(WorkSchedule::getId)
+                        .collect(Collectors.toList()))
+                .employmentTypeIds(vacancy.getEmploymentTypes().stream()
+                        .map(EmploymentType::getId)
+                        .collect(Collectors.toList()))
                 .createDate(vacancy.getCreatedDate())
                 .updateTime(vacancy.getUpdateTime())
                 .responsesCount(responsesCount)
@@ -188,10 +231,14 @@ public class VacancyServiceImpl implements VacancyService {
                 .categoryId(dto.getCategoryId())
                 .name(dto.getName())
                 .description(dto.getDescription())
+                .responsibilities(dto.getResponsibilities())
                 .salary(dto.getSalary())
                 .expFrom(dto.getExpFrom())
                 .expTo(dto.getExpTo())
                 .isActive(dto.getIsActive())
+                .regionId(dto.getRegionId())
+                .workScheduleIds(dto.getWorkScheduleIds() != null ? dto.getWorkScheduleIds() : new ArrayList<>())
+                .employmentTypeIds(dto.getEmploymentTypeIds() != null ? dto.getEmploymentTypeIds() : new ArrayList<>())
                 .updateTime(new Timestamp(System.currentTimeMillis()))
                 .build();
     }

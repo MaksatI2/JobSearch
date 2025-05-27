@@ -27,6 +27,7 @@ activeNav="vacancies">
                 <input type="hidden" name="page" value="0">
                 <input type="hidden" name="size" value="${pageSize}">
 
+                <div class="search-container-wrapper">
                 <div class="search-container">
                     <input type="text"
                            id="searchInput"
@@ -47,6 +48,7 @@ activeNav="vacancies">
                     </svg>
                     <div id="searchResults" class="search-results"></div>
                 </div>
+                </div>
 
                 <div class="filter-group">
                     <label for="category" class="filter-label"><@spring.message code="category.label"/></label>
@@ -55,6 +57,18 @@ activeNav="vacancies">
                         <#list categories as category>
                             <option value="${category.id}" <#if selectedCategory?? && selectedCategory == category.id>selected</#if>>
                                 ${category.name}
+                            </option>
+                        </#list>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label for="region" class="filter-label"><@spring.message code="region.label"/></label>
+                    <select id="region" name="regionId" class="filter-select">
+                        <option value=""><@spring.message code="region.all"/></option>
+                        <#list regions as region>
+                            <option value="${region.id}" <#if selectedRegion?? && selectedRegion == region.id>selected</#if>>
+                                ${region.name}
                             </option>
                         </#list>
                     </select>
@@ -82,7 +96,14 @@ activeNav="vacancies">
                     </select>
                 </div>
 
-                <#if selectedSort?? || selectedCategory??>
+                <div class="filter-group" style="flex: 0 0 auto;">
+                    <button type="button" id="apply-filters" class="btn filter-btn">
+                        <i class="bi bi-funnel"></i>
+                        <@spring.message code="filter.apply"/>
+                    </button>
+                </div>
+
+                <#if selectedSort?? || selectedCategory?? || selectedRegion??>
                     <div class="filter-group" style="flex: 0 0 auto;">
                         <a href="/vacancies?page=0&size=${pageSize}" class="btn filter-btn filter-btn-reset">
                             <i class="bi bi-arrow-counterclockwise"></i>
@@ -210,12 +231,12 @@ activeNav="vacancies">
                 <ul class="pagination justify-content-center">
                     <#if currentPage gt 0>
                         <li class="page-item">
-                            <a class="page-link" href="/vacancies?page=0&size=${pageSize}<#if selectedCategory??>&categoryId=${selectedCategory}</#if><#if selectedSort??>&sort=${selectedSort}</#if>" aria-label="First">
+                            <a class="page-link" href="/vacancies?page=0&size=${pageSize}<#if selectedCategory??>&categoryId=${selectedCategory}</#if><#if selectedRegion??>&regionId=${selectedRegion}</#if><#if selectedSort??>&sort=${selectedSort}</#if>" aria-label="First">
                                 <span aria-hidden="true">&laquo;&laquo;</span>
                             </a>
                         </li>
                         <li class="page-item">
-                            <a class="page-link" href="/vacancies?page=${currentPage - 1}&size=${pageSize}<#if selectedCategory??>&categoryId=${selectedCategory}</#if><#if selectedSort??>&sort=${selectedSort}</#if>" aria-label="Previous">
+                            <a class="page-link" href="/vacancies?page=${currentPage - 1}&size=${pageSize}<#if selectedCategory??>&categoryId=${selectedCategory}</#if><#if selectedRegion??>&regionId=${selectedRegion}</#if><#if selectedSort??>&sort=${selectedSort}</#if>" aria-label="Previous">
                                 <span aria-hidden="true">&laquo;</span>
                             </a>
                         </li>
@@ -223,18 +244,18 @@ activeNav="vacancies">
 
                     <#list 0..totalPages-1 as i>
                         <li class="page-item <#if i == currentPage>active</#if>">
-                            <a class="page-link" href="/vacancies?page=${i}&size=${pageSize}<#if selectedCategory??>&categoryId=${selectedCategory}</#if><#if selectedSort??>&sort=${selectedSort}</#if>">${i + 1}</a>
+                            <a class="page-link" href="/vacancies?page=${i}&size=${pageSize}<#if selectedCategory??>&categoryId=${selectedCategory}</#if><#if selectedRegion??>&regionId=${selectedRegion}</#if><#if selectedSort??>&sort=${selectedSort}</#if>">${i + 1}</a>
                         </li>
                     </#list>
 
                     <#if currentPage lt totalPages - 1>
                         <li class="page-item">
-                            <a class="page-link" href="/vacancies?page=${currentPage + 1}&size=${pageSize}<#if selectedCategory??>&categoryId=${selectedCategory}</#if><#if selectedSort??>&sort=${selectedSort}</#if>" aria-label="Next">
+                            <a class="page-link" href="/vacancies?page=${currentPage + 1}&size=${pageSize}<#if selectedCategory??>&categoryId=${selectedCategory}</#if><#if selectedRegion??>&regionId=${selectedRegion}</#if><#if selectedSort??>&sort=${selectedSort}</#if>" aria-label="Next">
                                 <span aria-hidden="true">&raquo;</span>
                             </a>
                         </li>
                         <li class="page-item">
-                            <a class="page-link" href="/vacancies?page=${totalPages - 1}&size=${pageSize}<#if selectedCategory??>&categoryId=${selectedCategory}</#if><#if selectedSort??>&sort=${selectedSort}</#if>" aria-label="Last">
+                            <a class="page-link" href="/vacancies?page=${totalPages - 1}&size=${pageSize}<#if selectedCategory??>&categoryId=${selectedCategory}</#if><#if selectedRegion??>&regionId=${selectedRegion}</#if><#if selectedSort??>&sort=${selectedSort}</#if>" aria-label="Last">
                                 <span aria-hidden="true">&raquo;&raquo;</span>
                             </a>
                         </li>
@@ -244,7 +265,7 @@ activeNav="vacancies">
                 <div class="d-flex justify-content-center align-items-center mt-3">
                     <span class="me-2"><@spring.message code="pagination"/></span>
                     <select class="form-select form-select-sm" style="width: auto;"
-                            onchange="window.location.href='/vacancies?page=0&size='+this.value+'<#if selectedCategory??>&categoryId=${selectedCategory}</#if><#if selectedSort??>&sort=${selectedSort}</#if>'">
+                            onchange="window.location.href='/vacancies?page=0&size='+this.value+'<#if selectedCategory??>&categoryId=${selectedCategory}</#if><#if selectedRegion??>&regionId=${selectedRegion}</#if><#if selectedSort??>&sort=${selectedSort}</#if>'">
                         <option value="5" <#if pageSize == 5>selected</#if>>5</option>
                         <option value="10" <#if pageSize == 10>selected</#if>>10</option>
                         <option value="20" <#if pageSize == 20>selected</#if>>20</option>

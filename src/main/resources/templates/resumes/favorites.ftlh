@@ -48,13 +48,7 @@
                                 </div>
 
                                 <div class="d-flex align-items-center mb-3">
-                                    <#if resume.applicantAvatar?? && resume.applicantAvatar?has_content>
                                         <img src="/api/users/${resume.applicantId}/avatar" alt="Аватар"  onerror="this.src='/static/default-avatar/default_avatar.jpg'" class="rounded-circle me-2" style="width: 40px; height: 40px; object-fit: cover;">
-                                    <#else>
-                                        <div class="d-flex align-items-center justify-content-center bg-light rounded-circle me-2" style="width: 40px; height: 40px;">
-                                            <i class="bi bi-person"></i>
-                                        </div>
-                                    </#if>
                                     <div>
                                         <span class="fw-medium">${resume.applicantName}</span>
                                         <#if resume.applicantAge??>

@@ -1,0 +1,69 @@
+databaseChangeLog:
+  - changeSet:
+      id: 035
+      author: I.Maksat
+      changes:
+        - addColumn:
+            tableName: vacancies
+            columns:
+              - column:
+                  name: region_id
+                  type: BIGINT
+                  constraints:
+                    nullable: true
+                    foreignKeyName: fk_vacancies_region
+                    referencedTableName: regions
+                    referencedColumnNames: id
+              - column:
+                  name: responsibilities
+                  type: TEXT
+
+        - createTable:
+            tableName: vacancy_employment_types
+            columns:
+              - column:
+                  name: vacancy_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_vacancy_employment_vacancy
+                    referencedTableName: vacancies
+                    referencedColumnNames: id
+                    onDelete: CASCADE
+              - column:
+                  name: employment_type_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_vacancy_employment_type
+                    referencedTableName: employment_types
+                    referencedColumnNames: id
+                    onDelete: CASCADE
+            constraints:
+              primaryKey:
+                columnNames: vacancy_id, employment_type_id
+
+        - createTable:
+            tableName: vacancy_work_schedules
+            columns:
+              - column:
+                  name: vacancy_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_vacancy_schedule_vacancy
+                    referencedTableName: vacancies
+                    referencedColumnNames: id
+                    onDelete: CASCADE
+              - column:
+                  name: work_schedule_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_vacancy_schedule_type
+                    referencedTableName: work_schedules
+                    referencedColumnNames: id
+                    onDelete: CASCADE
+            constraints:
+              primaryKey:
+                columnNames: vacancy_id, work_schedule_id
