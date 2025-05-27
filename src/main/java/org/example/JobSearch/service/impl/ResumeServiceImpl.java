@@ -317,8 +317,29 @@ public class ResumeServiceImpl implements ResumeService {
         for (int i = 0; i < workExperiences.size(); i++) {
             WorkExperienceDTO workExp = workExperiences.get(i);
 
-            int totalMonths = (workExp.getYears() != null ? workExp.getYears() * 12 : 0) +
-                              (workExp.getMonths() != null ? workExp.getMonths() : 0);
+            Integer years = workExp.getYears();
+            Integer months = workExp.getMonths();
+
+            if (years != null && years < 0) {
+                bindingResult.rejectValue("workExperiences[" + i + "].years",
+                        "error.resumeForm", "resume.work.experience.years");
+            }
+
+            if (months != null) {
+                if (months < 0) {
+                    bindingResult.rejectValue("workExperiences[" + i + "].months",
+                            "error.resumeForm", "resume.work.experience.months");
+                } else if (months > 11) {
+                    bindingResult.rejectValue("workExperiences[" + i + "].months",
+                            "error.resumeForm", "resume.work.experience.months.too.long");
+                }
+            }
+
+            if (years == null && months == null) {
+                continue;
+            }
+
+            int totalMonths = (years != null ? years * 12 : 0) + (months != null ? months : 0);
             int maxPossibleMonths = Period.between(userAge18Date, currentDate).getYears() * 12 +
                                     Period.between(userAge18Date, currentDate).getMonths();
 
@@ -328,6 +349,7 @@ public class ResumeServiceImpl implements ResumeService {
             }
         }
     }
+
 
     @Override
     @Transactional(readOnly = true)
