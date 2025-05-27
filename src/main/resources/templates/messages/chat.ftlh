@@ -1,6 +1,6 @@
 <#import "/spring.ftl" as spring>
 <#import "../layout.ftlh" as layout>
-<@layout.page title="JobSearch - Чат" styles="/static/css/chat.css" activeNav="messages">
+<@layout.page title="JobSearch - Чат" styles="/static/css/chat/chat.css" activeNav="messages">
 <div class="chat-container">
     <div class="chat-sidebar">
         <div class="profile-card">
