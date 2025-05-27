@@ -1,6 +1,5 @@
 package org.example.JobSearch.dto;
 
-import jakarta.validation.constraints.*;
 import lombok.*;
 
 @Getter

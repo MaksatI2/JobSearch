@@ -4,6 +4,7 @@ import jakarta.validation.constraints.*;
 import lombok.*;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 @Getter
 @Setter
@@ -38,6 +39,14 @@ public class EditVacancyDTO {
     @Min(value = 0, message = "{vacancy.expTo.min}")
     @Max(value = 50, message = "{vacancy.expTo.max}")
     private Integer expTo;
+
+    private String responsibilities;
+
+    private Long regionId;
+
+    private List<Long> workScheduleIds;
+
+    private List<Long> employmentTypeIds;
 
     @NotNull
     private Boolean isActive;

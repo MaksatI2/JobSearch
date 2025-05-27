@@ -56,7 +56,7 @@ public class EditUserController {
             editUserService.updateUserByEmail(principal.getName(), editUserDTO);
             redirectAttributes.addFlashAttribute("successMessage",  getMessage("edit.profile.success"));
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("errorMessage",  getMessage("edit.profile.error ") + e.getMessage());
+            redirectAttributes.addFlashAttribute("errorMessage",  getMessage("edit.profile.error") + e.getMessage());
         }
 
         return "redirect:/profile";
@@ -80,7 +80,7 @@ public class EditUserController {
             editUserService.updateUserAvatar(userId, file);
             redirectAttributes.addFlashAttribute("successMessage",  getMessage("edit.avatar.success"));
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("errorMessage",  getMessage("edit.avatar.error ") + e.getMessage());
+            redirectAttributes.addFlashAttribute("errorMessage",  getMessage("edit.avatar.error") + e.getMessage());
         }
 
         return "redirect:/profile";
