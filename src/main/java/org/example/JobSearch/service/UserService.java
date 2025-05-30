@@ -1,6 +1,5 @@
 package org.example.JobSearch.service;
 
-import jakarta.servlet.http.HttpServletRequest;
 import org.example.JobSearch.dto.UserDTO;
 import org.example.JobSearch.dto.register.ApplicantRegisterDTO;
 import org.example.JobSearch.dto.register.EmployerRegisterDTO;
@@ -15,8 +14,6 @@ public interface UserService {
     void  registerEmployer(EmployerRegisterDTO employerDto);
     void  registerApplicant(ApplicantRegisterDTO applicantDto);
     void updatePassword(User user, String newPassword);
-    void updateResetPasswordToken(String token, String email);
-    void makeResetPasswdLink(HttpServletRequest request) throws UserNotFoundException;
 
     UserDTO getUserById(Long userId);
     UserDTO getUserByEmail(String email);
@@ -29,5 +26,8 @@ public interface UserService {
     boolean isEmployer(String userEmail);
 
     User getUserId(Long id);
+
+    String generateResetPasswordToken(String email) throws UserNotFoundException;
+
     User getByResetPasswordToken(String token);
 }

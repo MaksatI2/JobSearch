@@ -18,24 +18,40 @@
                         <div class="alert alert-success mb-4">
                             ${message}
                         </div>
+
+                        <#if token?? && resetLink??>
+                            <div class="alert alert-info mb-4">
+                                <h5><@spring.message code="password.forgot.main"/></h5>
+                                <code class="d-block p-2 bg-light border rounded mb-2">${token}</code>
+
+                                <h5><@spring.message code="password.reset.link.title"/></h5>
+                                <a href="${resetLink}" class="btn btn-primary btn-sm"><@spring.message code="password.reset.go.to.reset"/></a>
+                            </div>
+                        </#if>
                     </#if>
 
-                    <form action="/auth/forgot_password" method="post">
-                        <#if _csrf??>
-                            <input type="hidden" name="${(_csrf.parameterName)!'csrf-param-name'}"
-                                   value="${(_csrf.token)!'csrf-token'}"/>
-                        </#if>
+                    <#if !token??>
+                        <form action="/auth/forgot_password" method="post">
+                            <#if _csrf??>
+                                <input type="hidden" name="${(_csrf.parameterName)!'csrf-param-name'}"
+                                       value="${(_csrf.token)!'csrf-token'}"/>
+                            </#if>
 
                         <div class="mb-4">
                             <label for="email" class="form-label">Email</label>
                             <input type="email" id="email" name="email" class="form-control" placeholder="<@spring.message code="password.forgot.email"/>">
                         </div>
 
-                        <button type="submit" class="btn btn-primary w-100 py-2 mb-3"><@spring.message code="password.forgot.submit"/></button>
-                    </form>
+                            <button type="submit" class="btn btn-primary w-100 py-2 mb-3">
+                                <@spring.message code="password.forgot.submit"/>
+                            </button>
+                        </form>
+                    </#if>
 
                     <div class="text-center mt-3">
-                        <a href="/auth/login" class="text-decoration-none"><@spring.message code="password.reset.back.login"/></a>
+                        <a href="/auth/login" class="text-decoration-none">
+                            <@spring.message code="password.reset.back.login"/>
+                        </a>
                     </div>
                 </div>
             </div>

@@ -28,15 +28,12 @@ public class AuthViewController {
 
     @GetMapping("/register")
     public String showRegistrationForm(Model model) {
-
         if (!model.containsAttribute("applicantRegisterDTO")) {
             model.addAttribute("applicantRegisterDTO", new ApplicantRegisterDTO());
         }
-
         if (!model.containsAttribute("employerRegisterDTO")) {
             model.addAttribute("employerRegisterDTO", new EmployerRegisterDTO());
         }
-
         return "auth/register";
     }
 
@@ -114,12 +111,19 @@ public class AuthViewController {
 
     @PostMapping("/forgot_password")
     public String processForgotPassword(HttpServletRequest request, Model model) {
+        String email = request.getParameter("email");
+
         try {
-            userService.makeResetPasswdLink(request);
-            model.addAttribute("message", getMessage("password.reset.link.sent"));
+            String token = userService.generateResetPasswordToken(email);
+            String resetLink = getBaseUrl(request) + "/auth/reset_password?token=" + token;
+
+            model.addAttribute("token", token);
+            model.addAttribute("resetLink", resetLink);
+            model.addAttribute("message", getMessage("password.reset.token.generated"));
         } catch (UserNotFoundException ex) {
             model.addAttribute("error", getMessage("password.reset.error.user_not_found"));
         }
+
         return "auth/forgot_password_form";
     }
 
@@ -135,8 +139,8 @@ public class AuthViewController {
     public String processResetPassword(
             @ModelAttribute("resetRequest") @Valid ResetPasswordRequest resetRequest,
             BindingResult bindingResult,
-            Model model
-    ) {
+            Model model) {
+
         if (bindingResult.hasErrors()) {
             return "auth/reset_password_form";
         }
@@ -145,11 +149,15 @@ public class AuthViewController {
             User user = userService.getByResetPasswordToken(resetRequest.getToken());
             userService.updatePassword(user, resetRequest.getPassword());
             model.addAttribute("registrationSuccess", getMessage("password.reset.success"));
+            return "auth/login";
         } catch (UserNotFoundException e) {
             bindingResult.rejectValue("token", "invalid.token", getMessage("password.reset.error.invalid_token"));
+            return "auth/reset_password_form";
         }
+    }
 
-        return "auth/login";
+    private String getBaseUrl(HttpServletRequest request) {
+        return request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath();
     }
 
     private String getMessage(String code) {
