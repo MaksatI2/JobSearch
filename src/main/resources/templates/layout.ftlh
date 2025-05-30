@@ -97,7 +97,7 @@
                         <#if Session.SPRING_SECURITY_CONTEXT??>
                             <li class="nav-item">
                                 <a href="/messages" class="nav-link <#if activeNav == "messages">active</#if>">
-                                    <i class="fas fa-comments"></i> <span>Чат</span>
+                                    <i class="fas fa-comments"></i> <span></span>
                                 </a>
                             </li>
                             <li class="nav-item">

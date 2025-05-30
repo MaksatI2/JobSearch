@@ -54,7 +54,11 @@
                             </#if>
                         </p>
                         <a href="${isEmployer?then('/resumes/allResumes', '/vacancies')}" class="btn btn-primary">
-                            ${isEmployer?then("Просмотреть резюме", "Просмотреть вакансии")}
+                            <#if isEmployer>
+                                <@spring.message code="messages.view.resumes" />
+                            <#else>
+                                <@spring.message code="messages.view.vacancies" />
+                            </#if>
                         </a>
                     </div>
                 </#if>
