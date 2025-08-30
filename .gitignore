@@ -35,3 +35,4 @@ build/
 git rm -rf --cached "git"
 /db/
 /logs/
+/.env

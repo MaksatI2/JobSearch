@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  jobsearch-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jobsearch-app
+    ports:
+      - "9099:9099"
+    volumes:
+      - ./data/db:/app/db
+      - ./data/logs:/app/logs
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - TZ=Asia/Bishkek
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9099/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    networks:
+      - jobsearch-network
+
+networks:
+  jobsearch-network:
+    driver: bridge
+
+volumes:
+  db-data:
+  logs-data:
